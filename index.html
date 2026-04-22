@@ -478,10 +478,20 @@
   <div class="section-label">R&eacute;partition du reste &agrave; vivre</div>
   <div class="budget-grid" id="grid"></div>
   <p class="footer-note">Les pourcentages sont fixes &mdash; seuls les montants s&rsquo;adaptent au salaire.</p>
-  <div style="text-align:center;margin:24px 0 8px;">
-    <button id="reset-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s,border-color .15s;">
+  <div style="text-align:center;margin:24px 0 8px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+    <button id="reset-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;width:100%;justify-content:center;">
       &#128260; Nouveau mois
     </button>
+    <div style="display:flex;gap:10px;width:100%;">
+      <button id="export-json-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">
+        &#128229; Exporter
+      </button>
+      <label id="import-json-label" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">
+        &#128228; Importer
+        <input type="file" id="import-json-input" accept=".json" style="display:none;"/>
+      </label>
+    </div>
+    <p style="font-size:11px;color:var(--muted);font-weight:300;margin:0;">Exporte pour sauvegarder ou transférer sur un autre appareil</p>
   </div>
 </div></div>
 
@@ -942,7 +952,7 @@ document.getElementById('dep-submit').addEventListener('click',function(){
   document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('selected');b.style.background='var(--surface)';b.style.borderColor='var(--border)';});
   renderDetails();
   if(document.getElementById('sub-categories').classList.contains('active'))renderCatSummary();
-  refreshStats();
+  refreshStats();saveData();
   document.getElementById('dep-amt').focus();
 });
 document.getElementById('dep-list').addEventListener('click',function(e){
@@ -950,7 +960,7 @@ document.getElementById('dep-list').addEventListener('click',function(e){
   depenses.splice(parseInt(btn.dataset.dep),1);
   renderDetails();
   if(document.getElementById('sub-categories').classList.contains('active'))renderCatSummary();
-  refreshStats();
+  refreshStats();saveData();
 });
 
 /* ── Charges fixes ── */
@@ -1010,7 +1020,7 @@ document.getElementById('charge-add-btn').addEventListener('click',function(){
   chargeItems.push({desc:desc,amt:amt});
   document.getElementById('charge-desc').value='';
   document.getElementById('charge-amt').value='';
-  renderCharges();
+  renderCharges();saveData();
 });
 document.getElementById('charge-amt').addEventListener('keydown',function(e){
   if(e.key==='Enter')document.getElementById('charge-add-btn').click();
@@ -1021,12 +1031,101 @@ document.getElementById('charge-desc').addEventListener('keydown',function(e){
 document.getElementById('charge-list').addEventListener('click',function(e){
   var btn=e.target.closest('[data-charge]');if(!btn)return;
   chargeItems.splice(parseInt(btn.dataset.charge),1);
-  renderCharges();
+  renderCharges();saveData();
 });
 
-buildGrid();update();renderExtra();initPeriod();buildCatGrid();
+/* ── Persistance localStorage ── */
+var STORAGE_KEY = 'budget_app_data';
+
+function saveData(){
+  try{
+    var data = {
+      salary: document.getElementById('salary').value,
+      charges: chargeItems,
+      extras: extraItems,
+      depenses: depenses,
+      periodStart: document.getElementById('period-start').value,
+      periodEnd: document.getElementById('period-end').value
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }catch(e){}
+}
+
+function loadData(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    var data = JSON.parse(raw);
+    if(data.salary !== undefined) document.getElementById('salary').value = data.salary;
+    if(data.charges) chargeItems = data.charges;
+    if(data.extras) extraItems = data.extras;
+    if(data.depenses) depenses = data.depenses;
+    if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
+    if(data.periodEnd) document.getElementById('period-end').value = data.periodEnd;
+    return true;
+  }catch(e){ return false; }
+}
+
+function exportJSON(){
+  var data = {
+    salary: document.getElementById('salary').value,
+    charges: chargeItems,
+    extras: extraItems,
+    depenses: depenses,
+    periodStart: document.getElementById('period-start').value,
+    periodEnd: document.getElementById('period-end').value,
+    exportDate: new Date().toISOString()
+  };
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var pStart = document.getElementById('period-start').value;
+  a.href = url;
+  a.download = 'budget' + (pStart ? '_' + pStart : '') + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(file){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      var data = JSON.parse(e.target.result);
+      if(data.salary !== undefined) document.getElementById('salary').value = data.salary;
+      if(data.charges) chargeItems = data.charges;
+      if(data.extras) extraItems = data.extras;
+      if(data.depenses) depenses = data.depenses;
+      if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
+      if(data.periodEnd) document.getElementById('period-end').value = data.periodEnd;
+      renderCharges();
+      renderExtra();
+      buildGrid(); update();
+      updatePeriodSummary();
+      renderDetails();
+      refreshStats();
+      saveData();
+      alert('Données importées avec succès !');
+    }catch(err){ alert('Fichier invalide.'); }
+  };
+  reader.readAsText(file);
+}
+
+buildGrid();
+var loaded = loadData();
+if(!loaded) initPeriod();
+update();
+renderCharges();
+renderExtra();
+if(loaded) updatePeriodSummary();
+buildCatGrid();
 document.getElementById('dep-date').value=todayISO();
 renderDetails();
+refreshStats();
+
+/* Auto-save on every change */
+document.getElementById('salary').addEventListener('input', saveData);
+document.getElementById('period-start').addEventListener('change', saveData);
+document.getElementById('period-end').addEventListener('change', saveData);
 
 
 document.getElementById('reset-btn').addEventListener('click',function(){
@@ -1072,6 +1171,12 @@ document.getElementById('reset-btn').addEventListener('click',function(){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-budget').classList.add('active');
   document.querySelectorAll('.tab-btn')[1].classList.add('active');
+});
+
+document.getElementById('export-json-btn').addEventListener('click', exportJSON);
+document.getElementById('import-json-input').addEventListener('change', function(e){
+  if(e.target.files[0]) importJSON(e.target.files[0]);
+  e.target.value = '';
 });
 
 document.getElementById('export-pdf-btn').addEventListener('click',function(){
