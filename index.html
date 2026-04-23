@@ -729,7 +729,7 @@ function buildCatGrid(){
     btn.addEventListener('click',function(){
       selectedCat=this.dataset.key;
       document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('selected');var bk=b.dataset.key;var bc=getCat(bk);if(bc){b.style.background=bc.palBg;b.style.borderColor=bc.palBorder;}});
-      var c=getCat(selectedCat);this.classList.add('selected');this.style.background=c.bg;this.style.borderColor=c.color;
+      var c=getCat(selectedCat);this.classList.add('selected');this.style.background=c.palBg;this.style.borderColor=c.palColor;this.style.borderWidth='2px';
     });
     grid.appendChild(btn);
   }
@@ -1085,7 +1085,7 @@ document.getElementById('dep-submit').addEventListener('click',function(){
   document.getElementById('dep-desc').value='';
   document.getElementById('dep-date').value=todayISO();
   selectedCat=null;
-  document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('selected');b.style.background='var(--surface)';b.style.borderColor='var(--border)';});
+  document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('selected');b.style.borderWidth='1.5px';var bk=b.dataset.key;var bc=getCat(bk);if(bc){b.style.background=bc.palBg;b.style.borderColor=bc.palBorder;}});
   renderDetails();
   if(document.getElementById('sub-categories').classList.contains('active'))renderCatSummary();
   refreshStats();saveData();
