@@ -72,6 +72,11 @@
   .add-btn{width:42px;height:42px;border-radius:10px;border:1.5px solid var(--green);background:var(--green-light);color:var(--green);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;}
   .add-btn:hover{background:#d4eddf;}
   .extra-list{display:flex;flex-direction:column;gap:6px;}
+  .extra-toggle{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;border:none;background:none;font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;color:var(--green);cursor:pointer;border-radius:8px;transition:background .15s;}
+  .extra-toggle:hover{background:var(--green-light);}
+  .extra-toggle-arrow{font-size:10px;transition:transform .2s;}
+  .extra-toggle-arrow.open{transform:rotate(180deg);}
+  .extra-item.hidden{display:none;}
   .extra-item{display:flex;align-items:center;justify-content:space-between;background:var(--green-light);border-radius:8px;padding:8px 11px;font-size:13px;animation:fadeIn .2s ease;}
   .extra-item-left{display:flex;align-items:center;gap:7px;}
   .extra-item-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
@@ -663,21 +668,34 @@ function update(){
   }
   refreshStats();
 }
+var extraExpanded = false;
 function renderExtra(){
+  var LIMIT = 1;
   var list=document.getElementById('extra-list'),totalRow=document.getElementById('extra-total-row'),totalEl=document.getElementById('extra-total');
   list.innerHTML='';
   if(extraItems.length===0){
-    var e=document.createElement('span');e.className='extra-empty';e.textContent='Aucun revenu compl\u00e9mentaire ce mois.';list.appendChild(e);
+    var e=document.createElement('span');e.className='extra-empty';e.textContent='Aucun revenu complémentaire ce mois.';list.appendChild(e);
     totalRow.style.display='none';renderSuggestion(0);
   }else{
     var total=0;
     for(var i=0;i<extraItems.length;i++){
       total+=extraItems[i].amt;
       var div=document.createElement('div');div.className='extra-item';
+      if(i>=LIMIT && !extraExpanded) div.style.display='none';
       div.innerHTML='<div class="extra-item-left"><span class="extra-item-dot"></span><span>'+extraItems[i].desc+'</span></div>'+
         '<div class="extra-item-right"><span class="extra-item-amt">+'+fmt(extraItems[i].amt)+'</span>'+
-        '<button class="del-btn" data-extra="'+i+'">\u00d7</button></div>';
+        '<button class="del-btn" data-extra="'+i+'">×</button></div>';
       list.appendChild(div);
+    }
+    if(extraItems.length > LIMIT){
+      var hidden = extraItems.length - LIMIT;
+      var toggle = document.createElement('button');
+      toggle.className = 'extra-toggle';
+      toggle.innerHTML = extraExpanded
+        ? '<span style="font-size:10px;display:inline-block;transform:rotate(180deg);">▼</span>&nbsp;Réduire'
+        : '<span style="font-size:10px;">▼</span>&nbsp;Voir ' + hidden + ' autre' + (hidden>1?'s':'');
+      toggle.onclick = function(){ extraExpanded = !extraExpanded; renderExtra(); };
+      list.appendChild(toggle);
     }
     totalRow.style.display='flex';totalEl.textContent='+'+fmt(total);renderSuggestion(total);
   }
@@ -704,7 +722,7 @@ document.getElementById('extra-add-btn').addEventListener('click',function(){
   var desc=document.getElementById('extra-desc').value.trim()||'Revenu divers';
   var amt=parseFloat(document.getElementById('extra-amt').value);
   if(!amt||amt<=0)return;
-  extraItems.push({desc:desc,amt:amt});
+  extraItems.push({desc:desc,amt:amt});extraExpanded=false;
   document.getElementById('extra-desc').value='';document.getElementById('extra-amt').value='';
   renderExtra();
 });
