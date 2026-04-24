@@ -22,6 +22,7 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
   .tab-bar{display:flex;background:var(--surface);border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;z-index:10;box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding:8px 8px calc(8px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0;}
   .tab-btn{flex:1;padding:8px 4px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:500;color:var(--muted);background:none;border:none;border-radius:12px;cursor:pointer;transition:color .2s,background .2s;-webkit-tap-highlight-color:transparent;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+  .tab-btn svg{flex-shrink:0;overflow:hidden;display:block;}
   .tab-btn.active{color:#fff;background:var(--accent);}
   .tab-panel{display:none;padding:20px 16px 0;}
   .tab-panel.active{display:block;}
@@ -38,7 +39,7 @@
   .period-title{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
   .period-stacked{display:flex;flex-direction:column;gap:10px;}
   .period-stacked-field{display:flex;flex-direction:column;gap:4px;}
-  .period-label{font-size:11px;color:var(--muted);font-weight:500;}
+  .period-label{font-size:12px;color:var(--accent);font-weight:600;}
   .period-input{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Poppins',sans-serif;font-size:15px;color:var(--text);background:#F8F8FA;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s;display:block;-webkit-appearance:none;appearance:none;}
   .period-input:focus{border-color:var(--accent);}
   .period-summary{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:13px;}
@@ -95,6 +96,16 @@
   .suggestion-chips{display:flex;flex-wrap:wrap;gap:6px;}
   .chip{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;font-size:12px;}
   .budget-grid{display:flex;flex-direction:column;gap:7px;}
+  .view-toggle{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .view-toggle-label{font-size:12px;color:var(--muted);font-family:'Poppins',sans-serif;}
+  .toggle-switch{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
+  .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+  .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:background .2s;}
+  .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+  .toggle-switch input:checked ~ .toggle-track{background:var(--accent);}
+  .toggle-switch input:checked ~ .toggle-thumb{transform:translateX(18px);}
+  #budget-pie-wrap{display:none;background:var(--surface);border-radius:20px;padding:20px;box-shadow:var(--shadow);}
+  #budget-pie-wrap.visible{display:block;}
   .budget-item{background:var(--surface);border-radius:16px;padding:13px 15px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);border:none;}
   .item-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
   .item-info{flex:1;}
@@ -439,20 +450,205 @@
     <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:10px;font-weight:300;">Ce total est automatiquement appliqu&eacute; dans l&rsquo;onglet Budget</p>
   </div>
   <div id="charge-empty" class="dep-empty">Aucune charge enregistr&eacute;e. Ajoute ta premi&egrave;re charge ci-dessus.</div>
+
+  <!-- Guide charges -->
+  <div class="card" style="margin-top:16px;">
+    <div style="font-size:0.7rem;font-family:'Poppins',sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;font-weight:600;">Guide de r&eacute;partition</div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;padding:12px;background:var(--accent-light);border-radius:12px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#F7F5FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4F46E5" stroke-width="1.5"/><path d="M10 7v4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.75" fill="#4F46E5"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:3px;">R&egrave;gle des 50 %</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Tes charges fixes ne devraient pas d&eacute;passer <strong style="color:var(--text);">50 % de ton salaire net</strong>. C'est la r&egrave;gle budg&eacute;taire la plus r&eacute;pandue.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#E8F9F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M5 10l4 4 6-6" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#2A9E72;margin-bottom:2px;">Moins de 40 % &mdash; Excellent</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Tu as une grande marge de man&oelig;uvre. Tu peux &eacute;pargner, te faire plaisir et faire face aux impr&eacute;vus sereinement.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#F7F5FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4F46E5" stroke-width="1.5"/><path d="M10 6v4l2 2" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#4F46E5;margin-bottom:2px;">40 &agrave; 50 % &mdash; Correct</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Situation normale dans les grandes villes. Attention &agrave; ne pas trop augmenter tes charges fixes.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#FEF3E8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l7 13H3L10 3z" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 8v4" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14" r="0.75" fill="#C47A30"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#C47A30;margin-bottom:2px;">50 &agrave; 60 % &mdash; Vigilance</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Il reste peu de marges. Essaie de r&eacute;duire certaines charges (loyer, abonnements inutiles...).</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#FDECEC;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#E03E3E" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#E03E3E;margin-bottom:2px;">Plus de 60 % &mdash; Situation critique</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Le budget est sous forte pression. Il est urgent d'agir : n&eacute;gocier, d&eacute;m&eacute;nager ou augmenter tes revenus.</div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--border);margin-bottom:14px;"></div>
+    <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Charges courantes &agrave; ne pas oublier</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M3 19V8l7-5 7 5v11" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><rect x="7" y="13" width="6" height="6" rx="1" stroke="#4F46E5" stroke-width="1.5"/></svg>
+        Loyer / cr&eacute;dit immo
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M3 7h14M5 7V5a2 2 0 012-2h6a2 2 0 012 2v2M6 7v10a1 1 0 001 1h6a1 1 0 001-1V7" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/></svg>
+        &Eacute;lectricit&eacute; / gaz
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#2A9E72" stroke-width="1.5"/><path d="M2 9h16" stroke="#2A9E72" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#2A9E72" stroke-width="1.5"/></svg>
+        Assurances
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#C4638A" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#C4638A" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#C4638A"/><circle cx="12.5" cy="8" r="1" fill="#C4638A"/></svg>
+        Abonnements
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M2 12l2-6h12l2 6" stroke="#A08B20" stroke-width="1.5" stroke-linecap="round"/><rect x="2" y="12" width="16" height="4" rx="2" stroke="#A08B20" stroke-width="1.5"/></svg>
+        Cr&eacute;dit voiture
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>
+        &Eacute;pargne programm&eacute;e
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+    <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Comment rectifier la situation ?</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#F7F5FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 7h14M5 7V5a2 2 0 012-2h6a2 2 0 012 2v2M6 7v10a1 1 0 001 1h6a1 1 0 001-1V7" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M9 11h2M9 14h2" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Traquer les abonnements inutiles</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">Streaming, salle de sport, applis... Liste tout et supprime ce que tu n'utilises plus. Souvent 30 à 80 € récupérables par mois sans effort.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#E8F9F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Générer un revenu complémentaire</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">Vente d'objets, petits services, freelance... Même 100 à 200 € par mois peuvent changer la donne sans toucher à tes charges.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#FEF4F9;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="7" cy="8" r="3" stroke="#C4638A" stroke-width="1.5"/><circle cx="13" cy="8" r="3" stroke="#C4638A" stroke-width="1.5"/><path d="M2 17c0-3 2-5 5-5M13 12c3 0 5 2 5 5" stroke="#C4638A" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">En couple : mutualiser les charges</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">Loyer, électricité, internet partagés à deux réduisent drastiquement la part par personne. Calcule ta quote-part réelle en proportion de chaque salaire.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#FEF3E8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M3 19V8l7-5 7 5v11" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/><rect x="7" y="13" width="6" height="6" rx="1" stroke="#C47A30" stroke-width="1.5"/></svg>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Renégocier ton loyer ou déménager</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">Si le loyer dépasse 35 % de ton salaire seul, envisage une colocation, un logement moins cher, ou négocie à la baisse avec ton propriétaire.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#F0FDF8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Comparer et renégocier tes contrats</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">Assurance auto, mutuelle, box internet, énergie... Changer de fournisseur peut économiser 20 à 50 € par mois sans changer ton mode de vie.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div></div>
 
 <!-- BUDGET -->
+<!-- REVENUS COMPLÉMENTAIRES -->
+<div id="tab-revenus" class="tab-panel"><div class="container" style="min-height:calc(100vh - 90px);">
+  <header><h1>Mes revenus</h1><p>Centralise ici tes revenus compl&eacute;mentaires du mois</p></header>
+  <div class="card">
+    <p class="extra-title" style="margin-bottom:14px;">Ajouter un revenu compl&eacute;mentaire</p>
+    <div class="extra-amt-wrap" style="background:#F8F8FA;border:1.5px solid var(--border);border-radius:12px;padding:0 14px;margin-bottom:10px;">
+      <span class="extra-currency">&euro;</span>
+      <input type="number" class="extra-amt-big" id="rev-amt" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <input type="text" id="rev-desc" placeholder="Source (ex : freelance, vente...)" style="flex:1;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);outline:none;"/>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div style="flex:1;display:flex;align-items:center;gap:8px;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><rect x="3" y="5" width="14" height="12" rx="2" stroke="#0A8F5C" stroke-width="1.5"/><path d="M3 9h14" stroke="#0A8F5C" stroke-width="1.5"/><path d="M7 3v3M13 3v3" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input type="date" id="rev-date" style="flex:1;border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);outline:none;"/>
+      </div>
+      <button class="add-btn" id="rev-add-btn" style="background:#E8F9F2;border:1.5px solid #A8EDD4;color:#0A8F5C;border-radius:10px;width:44px;height:44px;font-size:22px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">+</button>
+    </div>
+  </div>
+  <div id="rev-list-wrap" style="display:none;">
+    <div class="dep-list-header"><span class="section-label" style="margin:0;">Revenus enregistr&eacute;s</span><span class="dep-total-badge" id="rev-total-badge" style="color:#0A8F5C;"></span></div>
+    <div id="rev-list"></div>
+    <div class="charges-row" style="margin-top:10px;"><span style="font-weight:600;color:#0A8F5C;">Total gagn&eacute; autrement</span><span style="font-size:17px;font-weight:600;color:#0A8F5C;" id="rev-total-display"></span></div>
+  </div>
+  <div id="rev-suggestions-wrap" style="display:none;margin-top:6px;">
+    <div class="card" style="padding:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="font-size:0.7rem;font-family:'Poppins',sans-serif;color:#0A8F5C;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">O&ugrave; placer cet argent&nbsp;?</span>
+      </div>
+      <div id="rev-suggestions-list"></div>
+    </div>
+  </div>
+  <div id="rev-empty" class="dep-empty">Aucun revenu compl&eacute;mentaire ce mois. Ajoute ta premi&egrave;re entr&eacute;e ci-dessus.</div>
+</div></div>
+
 <div id="tab-budget" class="tab-panel active"><div class="container">
   <header><h1>Mon budget mensuel</h1><p>Saisis ton salaire du mois pour voir la r&eacute;partition automatique</p></header>
   <div class="period-card">
     <div class="period-title">P&eacute;riode du budget</div>
     <div class="period-stacked">
       <div class="period-stacked-field">
-        <span class="period-label">D&eacute;but</span>
+        <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:6px;">
+          <span class="period-label">D&eacute;but</span>
+          <span style="font-size:11px;color:var(--muted);font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:5px;"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" style="display:inline-block;vertical-align:middle;flex-shrink:0;"><rect x="3" y="5" width="14" height="12" rx="2" stroke="#0A8F5C" stroke-width="1.5"/><path d="M3 9h14" stroke="#0A8F5C" stroke-width="1.5"/><path d="M7 3v3M13 3v3" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round"/></svg> Jour o&ugrave; tu re&ccedil;ois ton salaire</span>
+        </div>
         <input type="date" class="period-input" id="period-start"/>
       </div>
       <div class="period-stacked-field">
-        <span class="period-label">Fin</span>
+        <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:6px;">
+          <span class="period-label">Fin</span>
+          <span style="font-size:11px;color:var(--muted);font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:5px;"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" style="display:inline-block;vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="10" r="7" stroke="#C4638A" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#C4638A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> La veille du prochain salaire</span>
+        </div>
         <input type="date" class="period-input" id="period-end"/>
       </div>
     </div>
@@ -462,37 +658,136 @@
     </div>
   </div>
   <div class="card">
-    <div class="input-row"><span class="input-label">Salaire net ce mois</span>
-      <div class="field-wrap"><span class="currency">&euro;</span><input type="number" id="salary" value="2050" min="0" step="10"/></div>
+    <div class="input-row" style="justify-content:space-between;"><span class="input-label" style="display:flex;align-items:center;gap:7px;">
+        <div style="width:30px;height:30px;border-radius:8px;background:#E8F9F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="10" rx="2" stroke="#0A8F5C" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="#0A8F5C" stroke-width="1.5"/><path d="M5 10h.01M15 10h.01" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        Salaire net ce mois
+      </span>
+      <div class="field-wrap" style="flex:0 0 auto;width:160px;"><span class="currency">&euro;</span><input type="number" id="salary" value="2050" min="0" step="10"/></div>
     </div>
     <div class="charges-row"><span class="charges-label">Charges fixes</span>
-      <div class="field-wrap-sm" style="background:#F8F8FA;opacity:0.8;"><span class="currency">&#8722;&nbsp;&euro;</span><input type="number" id="charges" value="0" min="0" step="0.01" readonly style="cursor:default;color:var(--muted);"/></div>
+      <div style="display:flex;align-items:center;gap:2px;font-family:'Poppins',sans-serif;font-size:15px;"><span id="charges-display" style="color:var(--accent);font-weight:500;"></span></div>
+      <input type="number" id="charges" value="0" min="0" step="0.01" readonly style="display:none;"/>
     </div>
+    <div id="charges-pct-row" style="display:none;align-items:center;justify-content:space-between;padding:6px 2px 2px;"><div id="charges-pct-icon"></div><span id="charges-pct-text" style="font-size:12px;color:var(--muted);"></span></div>
     <div class="reste-banner"><span class="reste-label">Reste &agrave; vivre</span><span class="reste-value" id="reste">&mdash;</span></div>
   </div>
-  <div class="card">
-    <p class="extra-title">Revenus compl&eacute;mentaires ce mois</p>
-    <div class="extra-amt-wrap">
-      <span class="extra-currency">&euro;</span>
-      <input type="number" class="extra-amt-big" id="extra-amt" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/>
+  <div id="warning" class="warning">&#9888; Ton salaire ne couvre pas enti&egrave;rement les charges fixes ce mois-ci.</div>
+
+  <!-- Section personnalisation des pourcentages -->
+  <div class="card" style="margin-bottom:14px;">
+    <div onclick="togglePctPanel()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h8M4 14h10" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div style="font-size:0.7rem;font-family:'Poppins',sans-serif;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">Personnaliser la r&eacute;partition</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div id="pct-total-badge" style="font-size:12px;font-weight:600;color:var(--muted);font-family:'Poppins',sans-serif;"></div>
+        <svg id="pct-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .2s;"><path d="M5 8l5 5 5-5" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
     </div>
-    <div class="extra-add-row">
-      <input type="text" class="extra-input-desc" id="extra-desc" placeholder="Source (ex : freelance, vente...)" maxlength="40"/>
-      <button class="add-btn" id="extra-add-btn">+</button>
-    </div>
-    <div class="extra-list" id="extra-list"></div>
-    <div class="extra-total-row" id="extra-total-row" style="display:none;">
-      <span class="extra-total-label">Total gagn&eacute; autrement</span><span class="extra-total" id="extra-total">&mdash;</span>
-    </div>
-    <div class="extra-suggestion" id="extra-suggestion" style="display:none;">
-      <div class="extra-suggestion-title">Suggestion de r&eacute;partition</div>
-      <div class="suggestion-chips" id="suggestion-chips"></div>
+    <div id="pct-panel" style="display:none;margin-top:14px;">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5;">Ajuste les pourcentages selon ton mode de vie. Le total doit faire <strong style="color:var(--text);">100 %</strong>.</div>
+      <div id="pct-sliders" style="display:flex;flex-direction:column;gap:12px;"></div>
+      <button id="pct-reset-btn" style="margin-top:14px;width:100%;padding:9px;border-radius:10px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">Remettre les valeurs par d&eacute;faut</button>
     </div>
   </div>
-  <div id="warning" class="warning">&#9888; Ton salaire ne couvre pas enti&egrave;rement les charges fixes ce mois-ci.</div>
-  <div class="section-label">R&eacute;partition du reste &agrave; vivre</div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+    <div class="section-label" style="margin-bottom:0;">R&eacute;partition du reste &agrave; vivre</div>
+    <label class="view-toggle" style="margin-bottom:0;cursor:pointer;" title="Vue camembert">
+      <span class="view-toggle-label">Camembert</span>
+      <div class="toggle-switch">
+        <input type="checkbox" id="budget-view-toggle">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </div>
+    </label>
+  </div>
   <div class="budget-grid" id="grid"></div>
+  <div id="budget-pie-wrap">
+    <canvas id="budget-pie" style="display:block;margin:0 auto 16px;width:100%;max-width:440px;"></canvas>
+    <div id="budget-pie-legend" style="display:flex;flex-direction:column;gap:7px;"></div>
+  </div>
   <p class="footer-note">Les pourcentages sont fixes &mdash; seuls les montants s&rsquo;adaptent au salaire.</p>
+
+  <!-- Guide répartition budget -->
+  <div class="card" style="margin-top:16px;">
+    <div style="font-size:0.7rem;font-family:'Poppins',sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;font-weight:600;">Comment r&eacute;partir son reste &agrave; vivre ?</div>
+
+    <!-- Règle intro -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;padding:12px;background:var(--accent-light);border-radius:12px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#F7F5FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4F46E5" stroke-width="1.5"/><path d="M10 7v4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.75" fill="#4F46E5"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:3px;">La r&egrave;gle 50/30/20</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Une r&egrave;gle simple : <strong style="color:var(--text);">50 %</strong> pour les besoins essentiels, <strong style="color:var(--text);">30 %</strong> pour les loisirs et plaisirs, <strong style="color:var(--text);">20 %</strong> pour l'&eacute;pargne.</div>
+      </div>
+    </div>
+
+    <!-- Épargne -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#F7F5FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#6B63C4;margin-bottom:2px;">~20 % &rarr; &Eacute;pargne <span style="font-size:11px;font-weight:400;color:var(--muted);">(priorit&eacute; n°1)</span></div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Paye-toi en premier. Vise un matelas de s&eacute;curit&eacute; de 3 mois de charges, puis &eacute;pargne pour tes projets.</div>
+      </div>
+    </div>
+
+    <!-- Alimentation -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#EDE9FD;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 6h14M3 6c0-1.1.9-2 2-2h10a2 2 0 012 2M3 6l1.5 9a2 2 0 002 1.7h7a2 2 0 002-1.7L17 6" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10h4M10 8v4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#6B63C4;margin-bottom:2px;">~30 % &rarr; Alimentation &amp; courses</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Courses, restaurants, caf&eacute;... C'est souvent la plus grosse part apr&egrave;s le loyer. Cuisine maison = &eacute;conomies importantes.</div>
+      </div>
+    </div>
+
+    <!-- Loisirs -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#FDE8F3;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#C4638A" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#C4638A" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#C4638A"/><circle cx="12.5" cy="8" r="1" fill="#C4638A"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#C4638A;margin-bottom:2px;">~20 % &rarr; Loisirs &amp; plaisirs</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Sorties, cin&eacute;ma, shopping... C'est n&eacute;cessaire pour le bien-&ecirc;tre. Mais &eacute;vite de d&eacute;passer cette enveloppe.</div>
+      </div>
+    </div>
+
+    <!-- Transport -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#FEECD8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M2 12l2-6h12l2 6" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="12" width="16" height="4" rx="2" stroke="#C47A30" stroke-width="1.5"/><circle cx="6" cy="16.5" r="1.5" fill="#C47A30"/><circle cx="14" cy="16.5" r="1.5" fill="#C47A30"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#C47A30;margin-bottom:2px;">~10 % &rarr; Transport &amp; d&eacute;placements</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Carburant, transports en commun, entretien... Si tu as d&eacute;j&agrave; un cr&eacute;dit voiture dans les charges, c'est surtout le carburant ici.</div>
+      </div>
+    </div>
+
+    <!-- Imprévus -->
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:#D8F8EE;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#2A9E72" stroke-width="1.5"/><path d="M10 6v5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.75" fill="#2A9E72"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#2A9E72;margin-bottom:2px;">~10-20 % &rarr; Impr&eacute;vus &amp; divers</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Garde toujours une enveloppe pour les d&eacute;penses inattendues. Sans elle, le moindre p&eacute;pin d&eacute;s&eacute;quilibre tout le budget.</div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--border);margin-bottom:12px;"></div>
+    <div style="display:flex;gap:8px;align-items:flex-start;padding:10px;background:#F0FDF8;border-radius:10px;">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:1px;"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div style="font-size:12px;color:#2A9E72;line-height:1.5;"><strong>Conseil :</strong> Si tu n'arrives pas &agrave; &eacute;pargner, commence par 5 % seulement. L'important c'est la r&eacute;gularit&eacute;, pas le montant.</div>
+    </div>
+  </div>
   <div style="text-align:center;margin:24px 0 8px;display:flex;flex-direction:column;align-items:center;gap:10px;">
     <button id="reset-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:14px;font-weight:500;cursor:pointer;width:100%;justify-content:center;">
       <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M16 10a6 6 0 11-6-6h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 2l2 2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Nouveau mois
@@ -542,6 +837,11 @@
   <div class="stat-print-section">
     <div class="stat-section-title">Revenus</div>
     <div class="stat-card" id="stats-revenus"></div>
+  </div>
+  <div class="stat-print-section" id="stats-charges-section">
+    <div class="stat-section-title">Charges fixes</div>
+    <div class="stat-card" id="stats-charges-wrap"></div>
+    <div id="stats-charges-empty" class="stat-card" style="display:none;font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:20px;">Aucune charge fixe enregistr&eacute;e</div>
   </div>
   <div class="stat-print-section" id="pie-print-section">
     <div class="stat-section-title">R&eacute;partition des d&eacute;penses</div>
@@ -609,6 +909,14 @@ function showMainTab(tab,btn){
   document.getElementById('tab-'+tab).classList.add('active');
   btn.classList.add('active');
   if(tab==='stats')renderStats();
+  if(tab==='revenus')renderRevList();
+  if(tab==='charges')renderCharges();
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Fermer le menu personnalisation
+  var panel=document.getElementById('pct-panel');
+  var chevron=document.getElementById('pct-chevron');
+  if(panel){panel.style.display='none';}
+  if(chevron){chevron.style.transform='';}
 }
 function showSubTab(tab,btn){
   document.querySelectorAll('.sub-tab-panel').forEach(function(p){p.classList.remove('active');});
@@ -636,6 +944,7 @@ function updatePeriodSummary(){
   document.getElementById('period-duration').textContent=isoToFR(s)+' \u2192 '+isoToFR(e)+' \u00b7 '+days+' jour'+(days>1?'s':'');
   summary.style.display='flex';
   refreshStats();
+  if(document.getElementById("budget-view-toggle").checked) renderBudgetPie();
 }
 document.getElementById('period-start').addEventListener('change',updatePeriodSummary);
 document.getElementById('period-end').addEventListener('change',updatePeriodSummary);
@@ -650,6 +959,15 @@ function rebuildGridColors(){
     if(eur)eur.style.color=color;
   }
 }
+function togglePctPanel(){
+  var panel = document.getElementById('pct-panel');
+  var chevron = document.getElementById('pct-chevron');
+  if(!panel) return;
+  var open = panel.style.display === 'block';
+  panel.style.display = open ? 'none' : 'block';
+  chevron.style.transform = open ? '' : 'rotate(180deg)';
+}
+
 function buildGrid(){
   var grid=document.getElementById('grid');grid.innerHTML='';
   for(var i=0;i<categories.length;i++){
@@ -658,7 +976,7 @@ function buildGrid(){
       '<div class="item-info"><div class="item-name">'+cat.label+'</div>'+
       '<div class="bar-row"><div class="bar-bg"><div class="bar-fill" id="bar'+i+'" style="width:0%;background:'+(cat.palColor)+';"></div></div></div></div>'+
       '<div class="item-amounts"><div class="item-euros" id="eur'+i+'" style="color:'+(cat.palColor)+';">—</div>'+
-      '<div class="item-pct">'+Math.round(cat.pct*100)+' %</div></div>';
+      '<div class="item-pct" id="pct'+i+'">'+Math.round(cat.pct*100)+' % du reste à vivre</div></div>';
     grid.appendChild(div);
   }
 }
@@ -667,19 +985,58 @@ function update(){
   document.getElementById('reste').textContent=reste>0?fmt(reste):'\u2014 \u20ac';
   document.getElementById('warning').style.display=(getSalary()-getCharges())<0?'block':'none';
   for(var i=0;i<categories.length;i++){
-    document.getElementById('eur'+i).textContent=reste>0?fmt(reste*categories[i].pct):'\u2014';
+    var eurEl=document.getElementById('eur'+i);
+    var pctEl=document.getElementById('pct'+i);
+    if(eurEl) eurEl.textContent=reste>0?fmt(reste*categories[i].pct):'—';
+    if(pctEl) pctEl.innerHTML=reste>0
+      ? Math.round(categories[i].pct*100)+' % &bull; sur <strong>'+fmt(reste)+'</strong> au total'
+      : Math.round(categories[i].pct*100)+' % du reste &agrave; vivre';
     (function(idx,r){setTimeout(function(){var b=document.getElementById('bar'+idx);if(b){b.style.width=r>0?(categories[idx].pct*100)+'%':'0%';b.style.background=categories[idx].palColor;}var e=document.getElementById('eur'+idx);if(e)e.style.color=categories[idx].palColor;},idx*40);})(i,reste);
   }
   refreshStats();
+  if(document.getElementById("budget-view-toggle").checked) renderBudgetPie();
+  if(document.getElementById("sub-categories").classList.contains("active")) renderCatSummary();
+
+  // Charges % indicator
+  var sal=getSalary(),chg=getCharges();
+  var pctRow=document.getElementById('charges-pct-row');
+  var pctText=document.getElementById('charges-pct-text');
+  var pctIcon=document.getElementById('charges-pct-icon');
+  if(sal>0&&chg>0){
+    var pct=Math.round((chg/sal)*100);
+    pctRow.style.display='flex';
+    var color,svgIcon,label;
+    if(pct<40){
+      color='#2A9E72';label='Excellent ('+pct+'% du salaire)';
+      svgIcon='<div style="width:36px;height:36px;border-radius:10px;background:#E8F9F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M5 10l4 4 6-6" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+    }else if(pct<50){
+      color='#4F46E5';label='Correct ('+pct+'% du salaire)';
+      svgIcon='<div style="width:36px;height:36px;border-radius:10px;background:#F7F5FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4F46E5" stroke-width="1.5"/><path d="M10 6v4l2 2" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg></div>';
+    }else if(pct<60){
+      color='#C47A30';label='Vigilance ('+pct+'% du salaire)';
+      svgIcon='<div style="width:36px;height:36px;border-radius:10px;background:#FEF3E8;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l7 13H3L10 3z" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 8v4" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14" r="0.75" fill="#C47A30"/></svg></div>';
+    }else{
+      color='#E03E3E';label='Critique ('+pct+'% du salaire)';
+      svgIcon='<div style="width:36px;height:36px;border-radius:10px;background:#FDECEC;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#E03E3E" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg></div>';
+    }
+    pctIcon.innerHTML=svgIcon;
+    pctText.innerHTML='<span style="font-weight:600;color:'+color+';">'+label+'</span>';
+  }else{
+    pctRow.style.display='none';
+  }
 }
 var extraExpanded = false;
 function renderExtra(){
   var LIMIT = 1;
-  var list=document.getElementById('extra-list'),totalRow=document.getElementById('extra-total-row'),totalEl=document.getElementById('extra-total');
+  var list=document.getElementById('extra-list');
+  var totalRow=document.getElementById('extra-total-row');
+  var totalEl=document.getElementById('extra-total');
+  if(!list) return;
   list.innerHTML='';
   if(extraItems.length===0){
     var e=document.createElement('span');e.className='extra-empty';e.textContent='Aucun revenu complémentaire ce mois.';list.appendChild(e);
-    totalRow.style.display='none';renderSuggestion(0);
+    if(totalRow) totalRow.style.display='none';
+    renderSuggestion(0);
   }else{
     var total=0;
     for(var i=0;i<extraItems.length;i++){
@@ -701,12 +1058,16 @@ function renderExtra(){
       toggle.onclick = function(){ extraExpanded = !extraExpanded; renderExtra(); };
       list.appendChild(toggle);
     }
-    totalRow.style.display='flex';totalEl.textContent='+'+fmt(total);renderSuggestion(total);
+    if(totalRow) totalRow.style.display='flex';
+    if(totalEl) totalEl.textContent='+'+fmt(total);
+    renderSuggestion(total);
   }
   refreshStats();
 }
 function renderSuggestion(total){
-  var sb=document.getElementById('extra-suggestion'),chips=document.getElementById('suggestion-chips');
+  var sb=document.getElementById('extra-suggestion');
+  var chips=document.getElementById('suggestion-chips');
+  if(!sb||!chips){return;}
   if(!total||total<=0){sb.style.display='none';return;}
   var sugg=[
     {label:'\u00c9pargne s\u00e9curit\u00e9',pct:0.20,color:'#F0EFFF',textColor:'#3730A3'},
@@ -722,17 +1083,8 @@ function renderSuggestion(total){
   }
   sb.style.display='block';
 }
-document.getElementById('extra-add-btn').addEventListener('click',function(){
-  var desc=document.getElementById('extra-desc').value.trim()||'Revenu divers';
-  var amt=parseFloat(document.getElementById('extra-amt').value);
-  if(!amt||amt<=0)return;
-  extraItems.push({desc:desc,amt:amt});extraExpanded=false;
-  document.getElementById('extra-desc').value='';document.getElementById('extra-amt').value='';
-  renderExtra();
-});
-document.getElementById('extra-amt').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('extra-add-btn').click();});
-document.getElementById('extra-desc').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('extra-add-btn').click();});
-document.getElementById('extra-list').addEventListener('click',function(e){
+var extraListEl=document.getElementById('extra-list');
+if(extraListEl) extraListEl.addEventListener('click',function(e){
   var btn=e.target.closest('[data-extra]');if(!btn)return;
   extraItems.splice(parseInt(btn.dataset.extra),1);renderExtra();
 });
@@ -845,6 +1197,77 @@ function renderCatSummary(){
   }
 }
 
+function renderChargesStats(){
+  var wrap    = document.getElementById('stats-charges-wrap');
+  var empty   = document.getElementById('stats-charges-empty');
+  if(!wrap || !empty) return;
+
+  if(chargeItems.length === 0){
+    wrap.style.display  = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  wrap.style.display  = 'block';
+  empty.style.display = 'none';
+  wrap.innerHTML = '';
+
+  var salary       = getSalary();
+  var totalCharges = chargeItems.reduce(function(s,c){return s+c.amt;},0);
+  var palette      = ['#A5B4FC','#F9A8D4','#FDBA74','#6EE7B7','#FDE68A','#C4B5FD','#67E8F9','#D8B4FE','#FCA5A5','#86EFAC'];
+
+  /* Sort by amount descending */
+  var sorted = chargeItems.slice().sort(function(a,b){return b.amt-a.amt;});
+
+  for(var i=0;i<sorted.length;i++){
+    var c           = sorted[i];
+    var color       = palette[i % palette.length];
+    var pctOfTotal  = totalCharges > 0 ? (c.amt/totalCharges*100) : 0;
+    var pctOfSalary = salary > 0       ? (c.amt/salary*100)       : 0;
+    var barW        = salary > 0       ? Math.min(pctOfSalary, 100).toFixed(1) : 0;
+
+    /* Bar color: green <5%, amber 5-15%, red >15% */
+    var barColor = pctOfSalary < 5 ? '#2A9E72' : pctOfSalary < 15 ? '#C47A30' : '#E03E3E';
+
+    var row = document.createElement('div');
+    row.style.cssText = 'padding:11px 0;border-bottom:.5px solid var(--border);';
+    row.innerHTML =
+      /* Header line */
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<div style="width:10px;height:10px;border-radius:3px;background:'+color+';flex-shrink:0;"></div>' +
+          '<span style="font-size:13px;font-weight:500;color:var(--text);">'+c.desc+'</span>' +
+        '</div>' +
+        '<span style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:600;color:#C47A30;">'+fmt(c.amt)+'</span>' +
+      '</div>' +
+      /* Bar + labels */
+      '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<div style="flex:1;height:5px;background:#F0F0F0;border-radius:3px;overflow:hidden;">' +
+          '<div style="width:'+barW+'%;height:100%;background:'+barColor+';border-radius:3px;transition:width .5s;"></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:10px;flex-shrink:0;">' +
+          '<span style="font-size:11px;color:var(--muted);white-space:nowrap;">'+pctOfTotal.toFixed(0)+'% des charges</span>' +
+          '<span style="font-size:11px;font-weight:600;color:'+barColor+';white-space:nowrap;">'+pctOfSalary.toFixed(1)+'% du salaire</span>' +
+        '</div>' +
+      '</div>';
+    wrap.appendChild(row);
+  }
+
+  /* Total row */
+  var totalPct   = salary > 0 ? (totalCharges/salary*100) : 0;
+  var totalColor = totalPct < 40 ? '#2A9E72' : totalPct < 50 ? '#4F46E5' : totalPct < 60 ? '#C47A30' : '#E03E3E';
+  var totalLabel = totalPct < 40 ? 'Excellent — moins de 40 %' : totalPct < 50 ? 'Correct — entre 40 et 50 %' : totalPct < 60 ? 'Vigilance — entre 50 et 60 %' : 'Critique — plus de 60 %';
+
+  var totalRow = document.createElement('div');
+  totalRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:12px 0 2px;';
+  totalRow.innerHTML =
+    '<div>' +
+      '<div style="font-size:13px;font-weight:600;color:var(--text);">Total charges fixes</div>' +
+      '<div style="font-size:11px;margin-top:3px;font-weight:600;color:'+totalColor+';">'+totalPct.toFixed(0)+'% du salaire &middot; '+totalLabel+'</div>' +
+    '</div>' +
+    '<div style="font-family:\'Poppins\',sans-serif;font-size:19px;font-weight:700;color:'+totalColor+';">'+fmt(totalCharges)+'</div>';
+  wrap.appendChild(totalRow);
+}
+
 function renderStats(){
   /* Period banner */
   var pStart=document.getElementById('period-start').value;
@@ -885,7 +1308,7 @@ function renderStats(){
     '<div class="stat-revenu-amt">'+fmt(salary)+'</div>';
   revenusEl.appendChild(rowSal);
 
-  /* Ligne revenus complémentaires regroupés */
+  /* Ligne revenus complementaires regroupes */
   if(extraItems.length>0){
     var extraTotal=extraItems.reduce(function(s,e){return s+e.amt;},0);
     var extraPct=totalRevenus>0?((extraTotal/totalRevenus)*100).toFixed(0):0;
@@ -902,7 +1325,7 @@ function renderStats(){
     revenusEl.appendChild(rowExtra);
   }
 
-  renderPie();
+  renderChargesStats();
   rebuildGridColors();
   var catsEl=document.getElementById('stats-cats');catsEl.innerHTML='';
   var catData=categories.map(function(cat){
@@ -927,7 +1350,10 @@ function renderStats(){
       var isOver=c.spent>budget;
       var restantCat=budget-c.spent;
       var overPct=budget>0?(((c.spent-budget)/budget)*100).toFixed(0):0;
-      var badge=!isOver?'<span style="font-size:16px;margin-left:6px;flex-shrink:0;">&#x2705;</span>':'<span style="font-size:16px;margin-left:6px;flex-shrink:0;">&#x274C;</span>';
+      var pctFill=Math.min(pctOfBudget,100);var arc=2*Math.PI*10*(pctFill/100);var full=2*Math.PI*10;
+      var badge=!isOver
+        ?'<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="flex-shrink:0;margin-left:6px;"><circle cx="14" cy="14" r="10" stroke="#E8F9F2" stroke-width="2.5"/><circle cx="14" cy="14" r="10" stroke="#2A9E72" stroke-width="2.5" stroke-dasharray="'+arc.toFixed(2)+' '+full.toFixed(2)+'" stroke-linecap="round" transform="rotate(-90 14 14)"/><path d="M10 14l3 3 5-5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        :'<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="flex-shrink:0;margin-left:6px;"><circle cx="14" cy="14" r="10" stroke="#FDECEC" stroke-width="2.5"/><circle cx="14" cy="14" r="10" stroke="#E03E3E" stroke-width="2.5" stroke-dasharray="'+full.toFixed(2)+' '+full.toFixed(2)+'" stroke-linecap="round" transform="rotate(-90 14 14)"/><path d="M10.5 10.5l7 7M17.5 10.5l-7 7" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>';
       var detailLine='<span style="font-size:11px;color:var(--muted);">Budget : '+fmt(budget)+'</span>';
       var bigLine=isOver
         ?'<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:500;color:#E24B4A;margin-top:2px;">+'+fmt(Math.abs(restantCat))+' d\u00e9pass\u00e9 ('+overPct+' %)</div>'
@@ -981,13 +1407,16 @@ function renderStats(){
   }else{
     suggestTitle.style.display='block';
     var suggs=[
-      {label:'\u00c9pargne s\u00e9curit\u00e9',desc:'Garder en r\u00e9serve pour les impr\u00e9vus',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>',pct:0.40,bg:'#F7F5FF',color:'#3730A3'},
-      {label:'\u00c9pargne projets',desc:'Console, jeux, achat plaisir\u2026',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',pct:0.35,bg:'#F7F5FF',color:'#3730A3'},
-      {label:'Loisirs & plaisirs',desc:'Sortie, resto, divertissement',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4A2D8B" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#4A2D8B" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#4A2D8B"/><circle cx="12.5" cy="8" r="1" fill="#4A2D8B"/></svg>',pct:0.25,bg:'#FEF4F9',color:'#4A2D8B'}
+      {label:'\u00c9pargne s\u00e9curit\u00e9',desc:'Garder en r\u00e9serve pour les impr\u00e9vus et la tranquillit\u00e9 d\'esprit',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>',pct:0.40,bg:'#F7F5FF',color:'#3730A3'},
+      {label:'\u00c9pargne projets',desc:'Voyage, achat on\u00e9reux, console\u2026',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',pct:0.35,bg:'#F7F5FF',color:'#3730A3'},
+      {label:'Loisirs & plaisirs',desc:'Sortie, resto, divertissement, jeux',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4A2D8B" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#4A2D8B" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#4A2D8B"/><circle cx="12.5" cy="8" r="1" fill="#4A2D8B"/></svg>',pct:0.25,bg:'#FEF4F9',color:'#4A2D8B'}
     ];
     for(var si=0;si<suggs.length;si++){
       var sg=suggs[si],amt2=solde*sg.pct;
-      var sdiv=document.createElement('div');sdiv.className='suggest-card';sdiv.style.background=sg.bg;
+      var sdiv=document.createElement('div');sdiv.className='suggest-card';
+      sdiv.style.background=sg.bg;
+      sdiv.style.border='1.5px solid '+sg.color+'33';
+      sdiv.style.boxShadow='0 2px 8px '+sg.color+'18';
       sdiv.innerHTML='<div class="suggest-icon">'+sg.icon+'</div>'+
         '<div class="suggest-info"><div class="suggest-label" style="color:'+sg.color+';">'+sg.label+'</div>'+
         '<div class="suggest-desc">'+sg.desc+'</div></div>'+
@@ -1003,6 +1432,7 @@ function renderPie(){
   var pieEmpty=document.getElementById('stats-pie-empty');
   var canvas=document.getElementById('stats-pie');
   var legendEl=document.getElementById('stats-pie-legend');
+  if(!pieWrap||!pieEmpty||!canvas||!legendEl) return;
 
   // Calcul des totaux par catégorie
   var data=[];
@@ -1042,6 +1472,7 @@ function renderPie(){
   // Palette harmonieuse
   var palette=piePalette;
 
+  var sliceAngles=[];
   for(var i=0;i<data.length;i++){
     var slice=(data[i].spent/totalDep)*2*Math.PI;
     var color=data[i].color;
@@ -1051,7 +1482,6 @@ function renderPie(){
     ctx.closePath();
     ctx.fillStyle=color;
     ctx.fill();
-    // Espace entre les parts
     ctx.beginPath();
     ctx.moveTo(cx,cy);
     ctx.arc(cx,cy,radius,startAngle,startAngle+slice);
@@ -1059,6 +1489,7 @@ function renderPie(){
     ctx.strokeStyle='#fff';
     ctx.lineWidth=2;
     ctx.stroke();
+    sliceAngles.push({mid:startAngle+slice/2,color:color});
     startAngle+=slice;
   }
   // Trou central (donut)
@@ -1066,6 +1497,20 @@ function renderPie(){
   ctx.arc(cx,cy,innerRadius,0,2*Math.PI);
   ctx.fillStyle='#fff';
   ctx.fill();
+  // Numbers in slices
+  var numR=(radius+innerRadius)/2;
+  for(var i=0;i<sliceAngles.length;i++){
+    var hex=sliceAngles[i].color.replace('#','');
+    var dr=Math.max(0,parseInt(hex.slice(0,2),16)-90);
+    var dg=Math.max(0,parseInt(hex.slice(2,4),16)-90);
+    var db=Math.max(0,parseInt(hex.slice(4,6),16)-90);
+    ctx.save();
+    ctx.font='700 11px Poppins,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='rgb('+dr+','+dg+','+db+')';
+    ctx.fillText(i+1, cx+Math.cos(sliceAngles[i].mid)*numR, cy+Math.sin(sliceAngles[i].mid)*numR);
+    ctx.restore();
+  }
   // Texte central
   ctx.fillStyle='#1C1C1E';
   ctx.font='600 13px Poppins,sans-serif';
@@ -1085,7 +1530,7 @@ function renderPie(){
     var item=document.createElement('div');
     item.style.cssText='display:flex;align-items:center;justify-content:space-between;font-size:13px;';
     item.innerHTML='<div style="display:flex;align-items:center;gap:8px;">'+
-      '<div style="width:10px;height:10px;border-radius:3px;background:'+color+';flex-shrink:0;"></div>'+
+      '<div style="width:18px;height:18px;border-radius:5px;background:'+color+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;color:#fff;">'+((i+1))+'</div>'+
       '<span style="color:var(--text);display:flex;align-items:center;gap:6px;"><span style="display:flex;align-items:center;">'+data[i].cat.svgIcon+'</span>'+data[i].cat.label+'</span></div>'+
       '<div style="display:flex;gap:12px;align-items:center;">'+
       '<span style="color:var(--muted);font-size:12px;">'+pct+' %</span>'+
@@ -1140,32 +1585,37 @@ function renderCharges(){
     var sorted=chargeItems.map(function(c,i){return{item:c,idx:i};});
     sorted.sort(function(a,b){return b.item.amt-a.item.amt;});
     var total=0;
+    for(var i=0;i<sorted.length;i++) total+=sorted[i].item.amt;
     for(var i=0;i<sorted.length;i++){
-      total+=sorted[i].item.amt;
+      var pct=total>0?Math.round((sorted[i].item.amt/total)*100):0;
+      var bars;
+      if(pct>=40) bars='<svg width="20" height="16" viewBox="0 0 20 16" fill="none"><rect x="0" y="12" width="3.5" height="4" rx="1" fill="#A5B4FC"/><rect x="5.5" y="8" width="3.5" height="8" rx="1" fill="#A5B4FC"/><rect x="11" y="4" width="3.5" height="12" rx="1" fill="#A5B4FC"/><rect x="16.5" y="0" width="3.5" height="16" rx="1" fill="#A5B4FC"/></svg>';
+      else if(pct>=20) bars='<svg width="20" height="16" viewBox="0 0 20 16" fill="none"><rect x="0" y="12" width="3.5" height="4" rx="1" fill="#A5B4FC"/><rect x="5.5" y="8" width="3.5" height="8" rx="1" fill="#A5B4FC"/><rect x="11" y="4" width="3.5" height="12" rx="1" fill="#A5B4FC"/><rect x="16.5" y="0" width="3.5" height="16" rx="1" fill="#E5E7EB"/></svg>';
+      else if(pct>=10) bars='<svg width="20" height="16" viewBox="0 0 20 16" fill="none"><rect x="0" y="12" width="3.5" height="4" rx="1" fill="#A5B4FC"/><rect x="5.5" y="8" width="3.5" height="8" rx="1" fill="#A5B4FC"/><rect x="11" y="4" width="3.5" height="12" rx="1" fill="#E5E7EB"/><rect x="16.5" y="0" width="3.5" height="16" rx="1" fill="#E5E7EB"/></svg>';
+      else bars='<svg width="20" height="16" viewBox="0 0 20 16" fill="none"><rect x="0" y="12" width="3.5" height="4" rx="1" fill="#A5B4FC"/><rect x="5.5" y="8" width="3.5" height="8" rx="1" fill="#E5E7EB"/><rect x="11" y="4" width="3.5" height="12" rx="1" fill="#E5E7EB"/><rect x="16.5" y="0" width="3.5" height="16" rx="1" fill="#E5E7EB"/></svg>';
       var div=document.createElement('div');
       div.className='dep-entry';
-      div.style.marginBottom='8px';
+      div.style.cssText='margin-bottom:8px;flex-direction:column;align-items:stretch;gap:6px;';
       div.innerHTML=
-        '<div class="dep-entry-icon" style="background:#F7F5FF;display:flex;align-items:center;justify-content:center;">' + '<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>' + '</div>'+
-        '<div class="dep-entry-info">'+
-          '<div class="dep-entry-desc">'+sorted[i].item.desc+'</div>'+
-        '</div>'+
-        '<div class="dep-entry-right">'+
-          '<span class="dep-entry-amt">'+fmt(sorted[i].item.amt)+'</span>'+
-          '<button class="del-btn" data-charge="'+sorted[i].idx+'">×</button>'+
-        '</div>';
+        '<div style="display:flex;align-items:center;gap:10px;">'+
+        '<div class="dep-entry-icon" style="background:#F7F5FF;display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg></div>'+
+        '<div class="dep-entry-info"><div class="dep-entry-desc">'+sorted[i].item.desc+'</div></div>'+
+        '<div class="dep-entry-right"><span class="dep-entry-amt">'+fmt(sorted[i].item.amt)+'</span>'+
+        '<button class="del-btn" data-charge="'+sorted[i].idx+'">×</button></div></div>'+
+        '<div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);padding:0 4px;">'+bars+'<span>Représente <strong style="color:var(--text);">'+pct+' %</strong> de tes charges fixes ce mois.</span></div>';
       list.appendChild(div);
     }
     totalDisplay.textContent=fmt(total);
     /* Sync with budget charges field */
     var chargesInput=document.getElementById('charges');
     chargesInput.value=total.toFixed(2);
+    var cd=document.getElementById('charges-display');if(cd)cd.textContent=fmt(total);
     update();
     refreshStats();
   }
   /* If no charges, reset to 0 */
   if(chargeItems.length===0){
-    document.getElementById('charges').value='0';
+    document.getElementById('charges').value='0';var cd=document.getElementById('charges-display');if(cd)cd.textContent='0,00';
     update();
     refreshStats();
   }
@@ -1215,9 +1665,9 @@ function loadData(){
     if(!raw) return false;
     var data = JSON.parse(raw);
     if(data.salary !== undefined) document.getElementById('salary').value = data.salary;
-    if(data.charges) chargeItems = data.charges;
-    if(data.extras) extraItems = data.extras;
-    if(data.depenses) depenses = data.depenses;
+    if(data.charges && Array.isArray(data.charges)) chargeItems = data.charges;
+    if(data.extras && Array.isArray(data.extras)) extraItems = data.extras;
+    if(data.depenses && Array.isArray(data.depenses)) depenses = data.depenses;
     if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
     if(data.periodEnd) document.getElementById('period-end').value = data.periodEnd;
     return true;
@@ -1250,7 +1700,7 @@ function importJSON(file){
     try{
       var data = JSON.parse(e.target.result);
       if(data.salary !== undefined) document.getElementById('salary').value = data.salary;
-      if(data.charges) chargeItems = data.charges;
+      if(data.charges && Array.isArray(data.charges)) chargeItems = data.charges;
       if(data.extras) extraItems = data.extras;
       if(data.depenses) depenses = data.depenses;
       if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
@@ -1262,7 +1712,7 @@ function importJSON(file){
       renderDetails();
       refreshStats();
       saveData();
-      alert('Données importées avec succès !');
+      alert('Donn\u00e9es import\u00e9es avec succ\u00e8s !');
     }catch(err){ alert('Fichier invalide.'); }
   };
   reader.readAsText(file);
@@ -1277,6 +1727,14 @@ renderExtra();
 if(loaded) updatePeriodSummary();
 buildCatGrid();
 document.getElementById('dep-date').value=todayISO();
+// Set today's date as default in rev-date (one-time init)
+(function(){
+  var revDate = document.getElementById('rev-date');
+  if(revDate){
+    var t = new Date();
+    revDate.value = t.getFullYear()+'-'+(String(t.getMonth()+1).padStart(2,'0'))+'-'+String(t.getDate()).padStart(2,'0');
+  }
+})();
 renderDetails();
 refreshStats();
 
@@ -1287,7 +1745,7 @@ document.getElementById('period-end').addEventListener('change', saveData);
 
 
 document.getElementById('reset-btn').addEventListener('click',function(){
-  if(!confirm('Nouveau mois ? Les revenus complémentaires, les dépenses et la période seront effacés. Le salaire et les charges sont conservés.')) return;
+  if(!confirm('Nouveau mois ? Les revenus compl\u00e9mentaires, les d\u00e9penses et la p\u00e9riode seront effac\u00e9s. Le salaire et les charges sont conserv\u00e9s.')) return;
 
   /* Reset salary */
   document.getElementById('salary').value = '';
@@ -1301,8 +1759,9 @@ document.getElementById('reset-btn').addEventListener('click',function(){
   selectedCat = null;
   document.querySelectorAll('.cat-btn').forEach(function(b){
     b.classList.remove('selected');
-    b.style.background='var(--surface)';
-    b.style.borderColor='var(--border)';
+    b.style.borderWidth='1.5px';
+    var bk=b.dataset.key;var bc=getCat(bk);
+    if(bc){b.style.background=bc.palBg;b.style.borderColor=bc.palBorder;}
   });
   renderDetails();
   if(document.getElementById('sub-categories').classList.contains('active')) renderCatSummary();
@@ -1365,11 +1824,283 @@ document.getElementById('export-pdf-btn').addEventListener('click',function(){
     }, 200);
   }, 400);
 });
+
+function renderBudgetPie(){
+  var canvas=document.getElementById('budget-pie');
+  var legendEl=document.getElementById('budget-pie-legend');
+  if(!canvas) return;
+  var reste=getReste();
+  if(reste<=0){legendEl.innerHTML='<span style="font-size:13px;color:var(--muted);">Saisis ton salaire pour voir la répartition.</span>';return;}
+
+  var dpr=window.devicePixelRatio||1;
+  var containerW=canvas.parentElement.clientWidth-40;
+  var size=Math.min(Math.max(containerW,200),300);
+  var radius=Math.floor(size/2)-10;
+  var inner=Math.round(radius*0.55);
+  canvas.width=size*dpr; canvas.height=size*dpr;
+  canvas.style.width=size+'px'; canvas.style.height=size+'px';
+  var ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  var cx=size/2, cy=size/2;
+  var startAngle=-Math.PI/2;
+
+  var budgetAngles=[];
+  for(var i=0;i<categories.length;i++){
+    var cat=categories[i];
+    var slice=cat.pct*2*Math.PI;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,radius,startAngle,startAngle+slice);
+    ctx.closePath();
+    ctx.fillStyle=cat.palColor;ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+    budgetAngles.push({mid:startAngle+slice/2,color:cat.palColor});
+    startAngle+=slice;
+  }
+  ctx.beginPath();ctx.arc(cx,cy,inner,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();
+  // Numbers in slices
+  var bNumR=(radius+inner)/2;
+  for(var i=0;i<budgetAngles.length;i++){
+    var hex=budgetAngles[i].color.replace('#','');
+    var dr=Math.max(0,parseInt(hex.slice(0,2),16)-90);
+    var dg=Math.max(0,parseInt(hex.slice(2,4),16)-90);
+    var db=Math.max(0,parseInt(hex.slice(4,6),16)-90);
+    ctx.save();
+    ctx.font='700 11px Poppins,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='rgb('+dr+','+dg+','+db+')';
+    ctx.fillText(i+1, cx+Math.cos(budgetAngles[i].mid)*bNumR, cy+Math.sin(budgetAngles[i].mid)*bNumR);
+    ctx.restore();
+  }
+  ctx.fillStyle='#1C1C1E';ctx.font='600 11px Poppins,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('Reste à vivre',cx,cy-10);
+  ctx.font='700 15px Poppins,sans-serif';ctx.fillStyle='#4F46E5';
+  ctx.fillText(fmt(reste),cx,cy+10);
+
+  legendEl.innerHTML='';
+  for(var i=0;i<categories.length;i++){
+    var cat=categories[i];
+    var item=document.createElement('div');
+    item.style.cssText='display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:6px;';
+    item.innerHTML='<div style="display:flex;align-items:center;gap:8px;">'+
+      '<div style="width:18px;height:18px;border-radius:5px;background:'+cat.palColor+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;">'+(i+1)+'</div>'+
+      '<span style="color:var(--text);">'+cat.label+'</span></div>'+
+      '<div style="display:flex;gap:12px;align-items:center;">'+
+      '<span style="color:var(--muted);font-size:12px;">'+Math.round(cat.pct*100)+' %</span>'+
+      '<span style="color:'+cat.palColor+';font-weight:600;">'+fmt(reste*cat.pct)+'</span></div>';
+    legendEl.appendChild(item);
+  }
+}
+document.getElementById('budget-view-toggle').addEventListener('change',function(){
+  var grid=document.getElementById('grid');
+  var pieWrap=document.getElementById('budget-pie-wrap');
+  if(this.checked){
+    grid.style.display='none';
+    pieWrap.classList.add('visible');
+    renderBudgetPie();
+  }else{
+    grid.style.display='';
+    pieWrap.classList.remove('visible');
+  }
+});
+
+// Default percentages
+var defaultPcts = {
+  'epargne-sec': 9.9, 'epargne-proj': 9.9, 'alim': 29.7,
+  'loisirs': 19.8, 'transport': 9.9, 'vetements': 9.9, 'imprevus': 10.9
+};
+
+function buildPctSliders(){
+  var container = document.getElementById('pct-sliders');
+  if(!container) return;
+  container.innerHTML = '';
+  for(var i=0; i<categories.length; i++){
+    var cat = categories[i];
+    var pctVal = Math.round(cat.pct * 1000) / 10;
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;';
+    row.innerHTML =
+      '<div style="width:28px;height:28px;border-radius:8px;background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+(cat.svgIcon?cat.svgIcon.replace(/width="20" height="20"/g, 'width="14" height="14"'):'')+'</div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'+
+          '<span style="font-size:12px;font-weight:500;color:var(--text);">'+cat.label+'</span>'+
+          '<span style="font-size:12px;font-weight:600;color:'+cat.palText+';" id="pct-val-'+cat.key+'">'+pctVal.toFixed(1)+' %</span>'+
+        '</div>'+
+        '<input type="range" min="1" max="60" step="0.5" value="'+pctVal+'" data-key="'+cat.key+'" class="pct-slider" '+
+          'style="width:100%;height:5px;border-radius:3px;-webkit-appearance:none;background:'+cat.palBg+';outline:none;cursor:pointer;accent-color:'+cat.palColor+';">'+
+      '</div>';
+    container.appendChild(row);
+  }
+  updatePctBadge();
+  // Add listeners
+  document.querySelectorAll('.pct-slider').forEach(function(sl){
+    sl.addEventListener('input', function(){
+      var key = this.dataset.key;
+      var val = parseFloat(this.value);
+      // Update category pct
+      for(var i=0;i<categories.length;i++){
+        if(categories[i].key === key){
+          categories[i].pct = val / 100;
+          break;
+        }
+      }
+      var span = document.getElementById('pct-val-'+key);
+      if(span) span.textContent = val.toFixed(1)+' %';
+      updatePctBadge();
+      buildGrid(); update();
+    });
+  });
+}
+
+function updatePctBadge(){
+  var total = 0;
+  for(var i=0;i<categories.length;i++) total += categories[i].pct;
+  var pct = Math.round(total*1000)/10;
+  var badge = document.getElementById('pct-total-badge');
+  if(!badge) return;
+  var diff = Math.abs(pct-100);
+  if(diff < 0.2){
+    badge.textContent = 'Total : 100 % ✓';
+    badge.style.color = '#2A9E72';
+  } else {
+    badge.textContent = 'Total : '+pct.toFixed(1)+' %';
+    badge.style.color = pct > 100 ? '#E03E3E' : '#C47A30';
+  }
+}
+
+document.getElementById('pct-reset-btn').addEventListener('click', function(){
+  for(var i=0;i<categories.length;i++){
+    categories[i].pct = defaultPcts[categories[i].key] / 100;
+  }
+  buildPctSliders();
+
+  buildGrid(); update();
+});
+
+buildPctSliders();
+
+// ── Revenus tab ──
+var revExpanded = false;
+function renderRevSuggestions(total){
+  var wrap = document.getElementById('rev-suggestions-wrap');
+  var list = document.getElementById('rev-suggestions-list');
+  if(!wrap || !list) return;
+  if(!total || total <= 0){ wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = '';
+
+  /* Répartition basée sur les pourcentages configurés dans l'onglet Budget */
+  var totalPct = categories.reduce(function(s,c){ return s + c.pct; }, 0) || 1;
+
+  for(var i = 0; i < categories.length; i++){
+    var cat = categories[i];
+    var suggested = total * (cat.pct / totalPct);
+    var pctDisplay = Math.round(cat.pct / totalPct * 100);
+
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--border);';
+    if(i === categories.length - 1) row.style.borderBottom = 'none';
+
+    row.innerHTML =
+      '<div style="width:34px;height:34px;border-radius:9px;background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+        cat.svgIcon.replace(/width="20" height="20"/g,'width="16" height="16"')+
+      '</div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:13px;font-weight:500;color:var(--text);">'+cat.label+'</div>'+
+        '<div style="margin-top:4px;height:4px;background:#F0F0F0;border-radius:2px;overflow:hidden;">'+
+          '<div style="width:'+pctDisplay+'%;height:100%;background:'+cat.palColor+';border-radius:2px;"></div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="text-align:right;flex-shrink:0;">'+
+        '<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:600;color:'+cat.palText+';">'+fmt(suggested)+'</div>'+
+        '<div style="font-size:11px;color:var(--muted);margin-top:1px;">'+pctDisplay+' %</div>'+
+      '</div>';
+    list.appendChild(row);
+  }
+}
+
+function renderRevList(){
+  var list = document.getElementById('rev-list');
+  var wrap = document.getElementById('rev-list-wrap');
+  var empty = document.getElementById('rev-empty');
+  var totalBadge = document.getElementById('rev-total-badge');
+  var totalDisplay = document.getElementById('rev-total-display');
+  if(!list) return;
+  list.innerHTML = '';
+  if(extraItems.length === 0){
+    if(wrap) wrap.style.display = 'none';
+    if(empty) empty.style.display = 'block';
+  } else {
+    if(wrap) wrap.style.display = 'block';
+    if(empty) empty.style.display = 'none';
+    // Tri par date décroissante, puis par ordre d'ajout décroissant (le plus récent en haut)
+    var sorted = extraItems.map(function(item, idx){ return {item: item, idx: idx}; });
+    sorted.sort(function(a, b){
+      var da = a.item.date || '0000-00-00';
+      var db = b.item.date || '0000-00-00';
+      var cmp = db.localeCompare(da);
+      return cmp !== 0 ? cmp : b.idx - a.idx;
+    });
+    var total = 0;
+    for(var i = 0; i < sorted.length; i++){
+      var item = sorted[i].item;
+      var origIdx = sorted[i].idx;
+      total += item.amt;
+      var div = document.createElement('div');
+      div.className = 'dep-entry';
+      div.style.marginBottom = '8px';
+      var dStr = '';
+      if(item.date){
+        var dp = item.date.split('-');
+        dStr = '<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+dp[2]+'/'+dp[1]+'/'+dp[0]+'</div>';
+      }
+      div.innerHTML =
+        '<div class="dep-entry-icon" style="background:#E8F9F2;display:flex;align-items:center;justify-content:center;">'+
+        '<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M6 8l4-4 4 4" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+        '<div class="dep-entry-info"><div class="dep-entry-desc">'+item.desc+'</div>'+dStr+'</div>'+
+        '<div class="dep-entry-right"><span class="dep-entry-amt" style="color:#0A8F5C;">+'+fmt(item.amt)+'</span>'+
+        '<button class="del-btn" data-revdel="'+origIdx+'">×</button></div>';
+      list.appendChild(div);
+    }
+    if(totalBadge) totalBadge.textContent = fmt(total);
+    if(totalDisplay) totalDisplay.textContent = '+'+fmt(total);
+    renderRevSuggestions(total);
+  }
+  if(extraItems.length === 0) renderRevSuggestions(0);
+}
+
+document.getElementById('rev-add-btn').addEventListener('click', function(){
+  var amt = parseFloat(document.getElementById('rev-amt').value);
+  var desc = document.getElementById('rev-desc').value.trim() || 'Revenu divers';
+  if(!amt || amt <= 0) return;
+  var dateVal = document.getElementById('rev-date').value;
+  var today = new Date();
+  var dateStr = dateVal || (today.getFullYear()+'-'+(String(today.getMonth()+1).padStart(2,'0'))+'-'+String(today.getDate()).padStart(2,'0'));
+  extraExpanded = false;
+  extraItems.push({desc: desc, amt: amt, date: dateStr});
+  document.getElementById('rev-amt').value = '';
+  document.getElementById('rev-desc').value = '';
+  var t=new Date();document.getElementById('rev-date').value=t.getFullYear()+'-'+(String(t.getMonth()+1).padStart(2,'0'))+'-'+String(t.getDate()).padStart(2,'0');
+  renderExtra(); renderRevList(); saveData();
+});
+
+document.getElementById('rev-amt').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('rev-add-btn').click(); });
+document.getElementById('rev-desc').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('rev-add-btn').click(); });
+
+document.addEventListener('click', function(e){
+  if(e.target && e.target.dataset.revdel !== undefined){
+    extraItems.splice(parseInt(e.target.dataset.revdel), 1);
+    renderExtra(); renderRevList(); saveData();
+  }
+});
+
+renderRevList();
+
 </script>
 
 <div class="tab-bar">
   <button class="tab-btn" onclick="showMainTab('charges',this)"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h16" stroke="currentColor" stroke-width="1.5"/><path d="M8 3v4M14 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 13h4M7 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Charges</button>
   <button class="tab-btn active" onclick="showMainTab('budget',this)"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M3 19V8l8-5 8 5v11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="13" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M9 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Budget</button>
+  <button class="tab-btn" onclick="showMainTab('revenus',this)"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9h8M7 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M15 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M13 2l2 2 2-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Revenus</button>
   <button class="tab-btn" onclick="showMainTab('depenses',this)"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M5 6V4a1 1 0 011-1h10a1 1 0 011 1v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 6l1 13h12l1-13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 10v5M13 10v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> D&eacute;penses</button>
   <button class="tab-btn" onclick="showMainTab('stats',this)"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M4 17V13M8 17V9M12 17V11M16 17V7M20 17V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 17h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Stats</button>
 </div>
