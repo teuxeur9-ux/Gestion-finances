@@ -98,13 +98,20 @@
   .budget-grid{display:flex;flex-direction:column;gap:7px;}
   .view-toggle{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
   .view-toggle-label{font-size:12px;color:var(--muted);font-family:'Poppins',sans-serif;}
-  .toggle-switch{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
+  .toggle-switch{position:relative;width:50px;height:28px;cursor:pointer;flex-shrink:0;}
   .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
-  .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:background .2s;}
-  .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+  .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:14px;transition:background .2s;}
+  .toggle-thumb{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
   .toggle-switch input:checked ~ .toggle-track{background:var(--accent);}
-  .toggle-switch input:checked ~ .toggle-thumb{transform:translateX(18px);}
+  .toggle-switch input:checked ~ .toggle-thumb{transform:translateX(22px);}
   #budget-pie-wrap{display:none;background:var(--surface);border-radius:20px;padding:20px;box-shadow:var(--shadow);}
+  /* ── Sliders de répartition — cross-browser (Safari/iOS, Firefox, Chrome) ── */
+  .pct-slider{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;outline:none;cursor:pointer;border:none;padding:0;}
+  .pct-slider::-webkit-slider-runnable-track{height:6px;border-radius:3px;}
+  .pct-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--thumb-color, #A5B4FC);border:3px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,0.18);cursor:pointer;margin-top:-10px;}
+  .pct-slider::-moz-range-track{height:6px;border-radius:3px;background:inherit;}
+  .pct-slider::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--thumb-color, #A5B4FC);border:3px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,0.18);cursor:pointer;box-sizing:border-box;}
+  .pct-slider::-moz-range-progress{height:6px;border-radius:3px;}
   #budget-pie-wrap.visible{display:block;}
   .budget-item{background:var(--surface);border-radius:16px;padding:13px 15px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);border:none;}
   .item-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
@@ -154,6 +161,10 @@
   .dep-entry-amt{font-family:'Poppins',sans-serif;font-size:15px;color:var(--accent);}
   .dep-entry-date{font-size:11px;color:var(--muted);}
   .dep-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:24px 0;}
+  .tip-row{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:.5px solid var(--border);}
+  .tip-icon-wrap{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .tip-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+  .tip-desc{font-size:12px;color:var(--muted);line-height:1.5;}
   /* Cat summary */
   .cat-summary-item{background:var(--surface);border-radius:12px;padding:14px 16px;border:1px solid var(--border);margin-bottom:9px;cursor:pointer;}
   .cat-summary-top{display:flex;align-items:center;gap:11px;margin-bottom:10px;}
@@ -340,7 +351,81 @@
     .extra-add-row{flex-direction:column;}
     .add-btn{width:100%;border-radius:10px;}
   }
-  /* ── Print / PDF export ── */
+  /* ── Tablette (768px – 1199px) ── */
+  @media(min-width:768px){
+    body{padding:0 0 90px;}
+    .container{max-width:680px;padding:0 4px;}
+    header h1{font-size:30px;}
+    header p{font-size:15px;}
+    .tab-panel{padding:24px 20px 0;}
+    .card{padding:22px 20px;}
+    .period-card{padding:20px;}
+
+    .tab-btn{font-size:13px;padding:16px 6px;gap:6px;}
+    .tab-btn svg{width:20px;height:20px;}
+
+    .stat-grid{grid-template-columns:repeat(2,1fr);gap:14px;}
+    .stat-metric{padding:18px 16px;}
+    .stat-metric-value{font-size:24px;}
+    .stat-metric-label{font-size:12px;}
+
+    .cat-grid{grid-template-columns:repeat(3,1fr);}
+    .budget-item{padding:14px;}
+    .item-name{font-size:14px;}
+    .item-euros{font-size:17px;}
+  }
+
+  /* ── Desktop (≥1200px) ── */
+  @media(min-width:1200px){
+    body{padding:0;background:var(--bg);}
+    .container{max-width:1100px;padding:0 12px;}
+    header{text-align:left;padding:32px 0 20px;}
+    header h1{font-size:32px;}
+
+    /* Tab bar en haut fixe, pas en bas */
+    .tab-bar{
+      position:fixed;top:0;left:0;right:0;bottom:auto;
+      height:58px;padding:0 40px;
+      flex-direction:row;justify-content:center;gap:4px;
+      border-top:none;border-bottom:1px solid var(--border);
+      background:var(--surface);z-index:100;
+    }
+    .tab-btn{
+      flex:0 0 auto;width:auto;padding:0 24px;height:100%;
+      border-radius:0;border-bottom:3px solid transparent;
+      font-size:14px;gap:8px;
+      border-top:none;border-left:none;border-right:none;
+      background:transparent!important;
+    }
+    .tab-btn.active{
+      border-bottom-color:var(--accent);
+      color:var(--accent)!important;
+      background:transparent!important;
+    }
+    .tab-btn svg{width:18px;height:18px;}
+    .tab-panel{padding:80px 0 40px;}
+
+    /* Mise en page 2 colonnes dans chaque onglet */
+    .desktop-two-col{
+      display:grid;
+      grid-template-columns:380px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+    .desktop-col-left{position:sticky;top:80px;}
+
+    .stat-grid{grid-template-columns:repeat(4,1fr);gap:16px;}
+    .stat-metric{padding:20px 18px;}
+    .stat-metric-value{font-size:26px;}
+
+    .cat-grid{grid-template-columns:repeat(4,1fr);}
+
+    /* Budget pie plus grand */
+    #budget-pie{max-width:340px!important;}
+
+    /* Cards plus aérées */
+    .card{padding:24px 22px;border-radius:18px;}
+  }
   @media print {
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
@@ -428,7 +513,8 @@
 <body>
 <!-- CHARGES -->
 <div id="tab-charges" class="tab-panel"><div class="container">
-  <header><h1>Mes charges fixes</h1><p>R&eacute;pertorie tes charges mensuelles r&eacute;currentes</p></header>
+  <header><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;"><div style="width:36px;height:36px;border-radius:10px;background:#F0EFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="14" rx="2" stroke="#4F46E5" stroke-width="1.5"/><path d="M3 9h16" stroke="#4F46E5" stroke-width="1.5"/><path d="M8 3v4M14 3v4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M7 13h4M7 16h6" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg></div><h1>Mes charges fixes</h1></div><p>R&eacute;pertorie tes charges mensuelles r&eacute;currentes</p></header>
+  <div class="desktop-two-col">
   <div class="card">
     <p class="extra-title">Ajouter une charge</p>
     <div class="extra-amt-wrap">
@@ -450,8 +536,9 @@
     <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:10px;font-weight:300;">Ce total est automatiquement appliqu&eacute; dans l&rsquo;onglet Budget</p>
   </div>
   <div id="charge-empty" class="dep-empty">Aucune charge enregistr&eacute;e. Ajoute ta premi&egrave;re charge ci-dessus.</div>
+  </div><!-- /desktop-two-col -->
 
-  <!-- Guide charges -->
+  <!-- Guide charges - pleine largeur -->
   <div class="card" style="margin-top:16px;">
     <div style="font-size:0.7rem;font-family:'Poppins',sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;font-weight:600;">Guide de r&eacute;partition</div>
 
@@ -545,7 +632,17 @@
         </div>
         <div>
           <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Traquer les abonnements inutiles</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.5;">Streaming, salle de sport, applis... Liste tout et supprime ce que tu n'utilises plus. Souvent 30 à 80 € récupérables par mois sans effort.</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+            Streaming, salle de sport, applis, presse&hellip; Liste tous tes pr&eacute;l&egrave;vements et applique une r&egrave;gle simple&nbsp;: <strong style="color:var(--text);">moins d&rsquo;une utilisation par semaine = &agrave; r&eacute;silier</strong>. Souvent 30 &agrave; 80&nbsp;&euro; r&eacute;cup&eacute;rables sans effort.
+            <span style="display:flex;align-items:flex-start;gap:7px;margin-top:7px;">
+              <svg style="flex-shrink:0;margin-top:1px;" width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="7" r="3" stroke="#4F46E5" stroke-width="1.5"/><circle cx="15" cy="7" r="3" stroke="#4F46E5" stroke-width="1.5"/><path d="M3 17c0-2.8 2-4.5 4.5-4.5M15 12.5c2.5 0 4.5 1.7 4.5 4.5" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M9 12.5h4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span><strong style="color:var(--text);">Offres famille ou duo</strong> (Netflix, Spotify, Disney+&hellip;) partag&eacute;es entre proches&nbsp;: un abonnement &agrave; 15&nbsp;&euro; peut descendre &agrave; moins de 5&nbsp;&euro;/mois chacun.</span>
+            </span>
+            <span style="display:flex;align-items:flex-start;gap:7px;margin-top:6px;">
+              <svg style="flex-shrink:0;margin-top:1px;" width="13" height="13" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="#4F46E5" stroke-width="1.5"/><path d="M2 8h16" stroke="#4F46E5" stroke-width="1.5"/><path d="M6 2v3M14 2v3" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M6 12h3v2H6z" fill="#4F46E5"/></svg>
+              <span>Si tu gardes un service, passe en <strong style="color:var(--text);">facturation annuelle</strong>&nbsp;: la plupart offrent 1 &agrave; 2 mois gratuits.</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -591,13 +688,10 @@
 
     </div>
   </div>
-
 </div></div>
-
-<!-- BUDGET -->
 <!-- REVENUS COMPLÉMENTAIRES -->
 <div id="tab-revenus" class="tab-panel"><div class="container" style="min-height:calc(100vh - 90px);">
-  <header><h1>Mes revenus</h1><p>Centralise ici tes revenus compl&eacute;mentaires du mois</p></header>
+  <header><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;"><div style="width:36px;height:36px;border-radius:10px;background:#F0EFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="#4F46E5" stroke-width="1.5"/><path d="M7 9h8M7 12h5" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M15 3v4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M13 2l2 2 2-2" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h1>Mes revenus</h1></div><p>Centralise ici tes revenus compl&eacute;mentaires du mois</p></header>
   <div class="card">
     <p class="extra-title" style="margin-bottom:14px;">Ajouter un revenu compl&eacute;mentaire</p>
     <div class="extra-amt-wrap" style="background:#F8F8FA;border:1.5px solid var(--border);border-radius:12px;padding:0 14px;margin-bottom:10px;">
@@ -618,22 +712,280 @@
   <div id="rev-list-wrap" style="display:none;">
     <div class="dep-list-header"><span class="section-label" style="margin:0;">Revenus enregistr&eacute;s</span><span class="dep-total-badge" id="rev-total-badge" style="color:#0A8F5C;"></span></div>
     <div id="rev-list"></div>
-    <div class="charges-row" style="margin-top:10px;"><span style="font-weight:600;color:#0A8F5C;">Total gagn&eacute; autrement</span><span style="font-size:17px;font-weight:600;color:#0A8F5C;" id="rev-total-display"></span></div>
-  </div>
-  <div id="rev-suggestions-wrap" style="display:none;margin-top:6px;">
-    <div class="card" style="padding:18px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span style="font-size:0.7rem;font-family:'Poppins',sans-serif;color:#0A8F5C;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">O&ugrave; placer cet argent&nbsp;?</span>
+    </div>
+  <div id="rev-suggestions-wrap" style="display:none;margin-top:16px;">
+    <div style="height:1px;background:var(--border);margin-bottom:16px;opacity:0.5;"></div>
+    <div class="card" style="padding:16px 18px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <svg width="17" height="17" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="font-size:0.75rem;font-family:'Poppins',sans-serif;color:#0A8F5C;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">O&ugrave; placer cet argent&nbsp;?</span>
+        <span id="rev-sugg-required-badge" style="display:none;font-size:10px;font-weight:600;background:#FEF0F0;color:#E03E3E;padding:2px 8px;border-radius:6px;margin-left:4px;">Requis avant export</span>
       </div>
       <div id="rev-suggestions-list"></div>
     </div>
   </div>
   <div id="rev-empty" class="dep-empty">Aucun revenu compl&eacute;mentaire ce mois. Ajoute ta premi&egrave;re entr&eacute;e ci-dessus.</div>
+
+  <!-- Section tips revenus alternatifs -->
+  <div style="margin-top:8px;">
+    <div class="card" style="padding:0;overflow:hidden;">
+
+      <!-- Header accordéon global -->
+      <div id="tips-header" onclick="toggleTipsSection()" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;user-select:none;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:32px;height:32px;border-radius:9px;background:#F0EFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <!-- Ampoule custom -->
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3C8.69 3 6 5.69 6 9c0 2.12 1.1 3.99 2.75 5.09L9 15.5V17h6v-1.5l.25-1.41C16.9 12.99 18 11.12 18 9c0-3.31-2.69-6-6-6z" stroke="#4F46E5" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M9 17h6M9.5 20h5" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 7v2M10.5 8.5l1.5 1.5 1.5-1.5" stroke="#4F46E5" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#4F46E5;">Comment gagner plus&nbsp;?</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:1px;">Id&eacute;es class&eacute;es par niveau d&rsquo;effort</div>
+          </div>
+        </div>
+        <svg id="tips-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .3s;flex-shrink:0;"><path d="M5 8l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- Contenu -->
+      <div id="tips-body" style="display:none;border-top:.5px solid var(--border);">
+
+        <!-- Niveau 1 : Sans effort -->
+        <div class="tips-level-block" style="padding:14px 18px 8px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#2A9E72;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#2A9E72;text-transform:uppercase;letter-spacing:.09em;">Sans effort</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#E8F9F2;">
+              <!-- Tirelire -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <ellipse cx="12" cy="14" rx="8" ry="6" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M20 12c1.1.5 2 1.5 2 2.5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M10 6.5C10 5.1 10.9 4 12 4s2 1.1 2 2.5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M8 14h.01M12 14h.01" stroke="#2A9E72" stroke-width="2" stroke-linecap="round"/>
+                <path d="M15 8.5l1-1.5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Livret A / LDDS</div>
+              <div class="tip-desc">Place ton &eacute;pargne sur un Livret A ou LDDS. Les int&eacute;r&ecirc;ts tombent automatiquement chaque mois, sans rien faire.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#E8F9F2;">
+              <!-- Cadeau / cashback -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="10" width="18" height="11" rx="2" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M3 13h18" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M12 10V21" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M8 10C8 8 9 6 11 6s3 2 1 4" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M16 10c0-2-1-4-3-4s-3 2-1 4" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Cashback &amp; offres de bienvenue</div>
+              <div class="tip-desc">Utilise des cartes ou applis cashback (Lydia, Rakuten&hellip;) pour tes achats habituels. Quelques euros chaque mois sans changer tes habitudes.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#E8F9F2;">
+              <!-- Arrondi solidaire / petite pièce -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M12 7v1.5M12 15.5V17" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M9.5 9.5C9.5 8.7 10.7 8 12 8s2.5.7 2.5 1.5c0 2-5 2-5 4 0 1 1.1 1.5 2.5 1.5s2.5-.6 2.5-1.5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Remboursements &amp; r&eacute;clamations</div>
+              <div class="tip-desc">V&eacute;rifie tes assurances, garanties et aides auxquelles tu as droit (aides logement, prime &eacute;nergie&hellip;). De l'argent souvent laiss&eacute; sur la table.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:.5px;background:var(--border);margin:0 18px;"></div>
+
+        <!-- Niveau 2 : Peu d'effort -->
+        <div class="tips-level-block" style="padding:14px 18px 8px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#4F46E5;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#4F46E5;text-transform:uppercase;letter-spacing:.09em;">Peu d&rsquo;effort</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#F0EFFF;">
+              <!-- Boîte / vente d'objets -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M3 9l9-5 9 5v7l-9 5-9-5V9z" stroke="#4F46E5" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M3 9l9 5 9-5" stroke="#4F46E5" stroke-width="1.5"/>
+                <path d="M12 14v7" stroke="#4F46E5" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Vente d&rsquo;objets</div>
+              <div class="tip-desc">Vide-dressing, Leboncoin, Vinted&hellip; Tes affaires qui tra&icirc;nent peuvent rapporter facilement 50 &agrave; 200&nbsp;&euro; par mois avec peu de temps investi.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#F0EFFF;">
+              <!-- Questionnaire -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="3" width="14" height="18" rx="2" stroke="#4F46E5" stroke-width="1.5"/>
+                <path d="M9 8h6M9 12h6M9 16h4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="7" cy="8" r=".8" fill="#4F46E5"/>
+                <circle cx="7" cy="12" r=".8" fill="#4F46E5"/>
+                <circle cx="7" cy="16" r=".8" fill="#4F46E5"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Sondages &amp; tests r&eacute;mun&eacute;r&eacute;s</div>
+              <div class="tip-desc">Toluna, YouGov, Ipsos iSay&hellip; R&eacute;ponds &agrave; des enquêtes sur ton t&eacute;l&eacute;phone pendant tes temps morts. Rarement plus de 30&nbsp;&euro;/mois mais z&eacute;ro contrainte.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#F0EFFF;">
+              <!-- Partage de voiture -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M5 13l1.5-4h11L19 13" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="3" y="13" width="18" height="5" rx="1.5" stroke="#4F46E5" stroke-width="1.5"/>
+                <circle cx="7.5" cy="18" r="1.5" stroke="#4F46E5" stroke-width="1.5"/>
+                <circle cx="16.5" cy="18" r="1.5" stroke="#4F46E5" stroke-width="1.5"/>
+                <path d="M3 16h18" stroke="#4F46E5" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Covoiturage</div>
+              <div class="tip-desc">Si tu fais des trajets r&eacute;guliers, propose des places sur BlaBlaCar ou Klaxit. Quelques euros couvrent l'essence, parfois bien plus.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:.5px;background:var(--border);margin:0 18px;"></div>
+
+        <!-- Niveau 3 : Effort modéré -->
+        <div class="tips-level-block" style="padding:14px 18px 8px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#C47A30;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#C47A30;text-transform:uppercase;letter-spacing:.09em;">Effort mod&eacute;r&eacute;</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FFF4E5;">
+              <!-- Outil / service -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M14.5 3.5a5 5 0 0 1 0 7L8 17l-4 1 1-4 6.5-6.5a5 5 0 0 1 3-4z" stroke="#C47A30" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M12 6l3 3" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Services &agrave; la personne</div>
+              <div class="tip-desc">Bricolage, jardinage, garde d'animaux, aide aux courses&hellip; Des plateformes comme Yoojo ou TaskRabbit mettent en relation avec des voisins qui paient bien.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FFF4E5;">
+              <!-- Appareil photo / revente créas -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="7" width="20" height="14" rx="2" stroke="#C47A30" stroke-width="1.5"/>
+                <circle cx="12" cy="14" r="4" stroke="#C47A30" stroke-width="1.5"/>
+                <path d="M8 7l1.5-3h5L16 7" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="17.5" cy="11" r=".8" fill="#C47A30"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Photos stock &amp; cr&eacute;ations num&eacute;riques</div>
+              <div class="tip-desc">Si tu fais des photos ou du design, vends tes cr&eacute;ations sur Shutterstock, Adobe Stock ou Etsy. Revenus passifs une fois le catalogue constitu&eacute;.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#FFF4E5;">
+              <!-- Location -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10.5z" stroke="#C47A30" stroke-width="1.5" stroke-linejoin="round"/>
+                <rect x="9" y="13" width="6" height="8" rx="1" stroke="#C47A30" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Location d&rsquo;un espace ou d&rsquo;un objet</div>
+              <div class="tip-desc">Cave, parking, chambre d'h&ocirc;te ponctuelle, v&eacute;lo, mat&eacute;riel de sport&hellip; Des plateformes existent pour tout louer et g&eacute;n&eacute;rer un compl&eacute;ment passif.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:.5px;background:var(--border);margin:0 18px;"></div>
+
+        <!-- Niveau 4 : Investissement temps -->
+        <div class="tips-level-block" style="padding:14px 18px 12px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#E03E3E;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#E03E3E;text-transform:uppercase;letter-spacing:.09em;">Investissement en temps</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FEF0F0;">
+              <!-- Ordinateur / freelance -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="4" width="20" height="13" rx="2" stroke="#E03E3E" stroke-width="1.5"/>
+                <path d="M8 20h8M12 17v3" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M8 10l2 2-2 2M13 14h3" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Freelance &amp; micro-services</div>
+              <div class="tip-desc">R&eacute;daction, traduction, graphisme, code, comptabilit&eacute;&hellip; Malt, Fiverr ou Upwork permettent de vendre ses comp&eacute;tences &agrave; la mission. Potentiel &eacute;lev&eacute;.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FEF0F0;">
+              <!-- Micro-formation / livre -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M4 4h7v16H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" stroke="#E03E3E" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M11 4h7a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-7V4z" stroke="#E03E3E" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M11 4v16" stroke="#E03E3E" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Cr&eacute;er et vendre une formation ou un ebook</div>
+              <div class="tip-desc">Partage une comp&eacute;tence que tu maîtrises sur Gumroad, Notion ou Teachable. Une fois cr&eacute;&eacute;e, la vente peut devenir passive.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#FEF0F0;">
+              <!-- Graphe / bourse -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <polyline points="3,17 8,11 12,14 17,7 21,10" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 20h18" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="8" cy="11" r="1.2" fill="#E03E3E"/>
+                <circle cx="17" cy="7" r="1.2" fill="#E03E3E"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Investissement (ETF, PEA&hellip;)</div>
+              <div class="tip-desc">Placer r&eacute;guli&egrave;rement m&ecirc;me de petites sommes sur un PEA ou un CTO via des ETF World peut g&eacute;n&eacute;rer des plus-values sur le long terme. N&eacute;cessite de se former un minimum.</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /tips-body -->
+    </div>
+  </div>
+  <!-- /tips revenus alternatifs -->
 </div></div>
 
 <div id="tab-budget" class="tab-panel active"><div class="container">
-  <header><h1>Mon budget mensuel</h1><p>Saisis ton salaire du mois pour voir la r&eacute;partition automatique</p></header>
+  <header><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;"><div style="width:36px;height:36px;border-radius:10px;background:#F0EFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M3 19V8l8-5 8 5v11" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="13" width="6" height="6" rx="1" stroke="#4F46E5" stroke-width="1.5"/><path d="M9 10h4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg></div><h1>Mon budget mensuel</h1></div><p>Saisis ton salaire du mois pour voir la r&eacute;partition automatique</p></header>
   <div class="period-card">
     <div class="period-title">P&eacute;riode du budget</div>
     <div class="period-stacked">
@@ -682,13 +1034,29 @@
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h8M4 14h10" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>
         <div style="font-size:0.7rem;font-family:'Poppins',sans-serif;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;">Personnaliser la r&eacute;partition</div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
         <div id="pct-total-badge" style="font-size:12px;font-weight:600;color:var(--muted);font-family:'Poppins',sans-serif;"></div>
+        <!-- Switch % / € -->
+        <div onclick="event.stopPropagation();toggleSliderMode();" style="display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:3px;gap:2px;cursor:pointer;flex-shrink:0;">
+          <div id="slider-mode-pct" style="display:flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:7px;background:#4F46E5;transition:background .2s;">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
+              <circle cx="6" cy="6" r="3" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="14" cy="14" r="3" stroke="#fff" stroke-width="1.5"/>
+              <path d="M16 4L4 16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div id="slider-mode-eur" style="display:flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:7px;background:transparent;transition:background .2s;">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
+              <path d="M14 6a5 5 0 1 0 0 8" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M4 10h8M4 12.5h6" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
         <svg id="pct-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .2s;"><path d="M5 8l5 5 5-5" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
     </div>
     <div id="pct-panel" style="display:none;margin-top:14px;">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5;">Ajuste les pourcentages selon ton mode de vie. Le total doit faire <strong style="color:var(--text);">100 %</strong>.</div>
+      <div id="pct-mode-hint" style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5;">Ajuste les pourcentages selon ton mode de vie. Le total doit faire <strong style="color:var(--text);">100 %</strong>.</div>
       <div id="pct-sliders" style="display:flex;flex-direction:column;gap:12px;"></div>
       <button id="pct-reset-btn" style="margin-top:14px;width:100%;padding:9px;border-radius:10px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">Remettre les valeurs par d&eacute;faut</button>
     </div>
@@ -788,30 +1156,36 @@
       <div style="font-size:12px;color:#2A9E72;line-height:1.5;"><strong>Conseil :</strong> Si tu n'arrives pas &agrave; &eacute;pargner, commence par 5 % seulement. L'important c'est la r&eacute;gularit&eacute;, pas le montant.</div>
     </div>
   </div>
-  <div style="text-align:center;margin:24px 0 8px;display:flex;flex-direction:column;align-items:center;gap:10px;">
-    <button id="reset-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:14px;font-weight:500;cursor:pointer;width:100%;justify-content:center;">
-      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M16 10a6 6 0 11-6-6h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 2l2 2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Nouveau mois
-    </button>
-    <div style="display:flex;gap:10px;width:100%;">
-      <button id="export-json-btn" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 3v10M10 13l-3-3M10 13l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Exporter
-      </button>
-      <label id="import-json-label" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 17V7M10 7l-3 3M10 7l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Importer
-        <input type="file" id="import-json-input" accept=".json" style="display:none;"/>
-      </label>
-    </div>
-    <p style="font-size:11px;color:var(--muted);font-weight:300;margin:0;">Exporte pour sauvegarder ou transférer sur un autre appareil</p>
   </div>
 </div></div>
 
 <!-- DEPENSES -->
 <div id="tab-depenses" class="tab-panel"><div class="container">
-  <header><h1>Mes d&eacute;penses</h1><p>Enregistre une d&eacute;pense rapidement</p></header>
+  <header><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;"><div style="width:36px;height:36px;border-radius:10px;background:#F0EFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M5 6V4a1 1 0 011-1h10a1 1 0 011 1v2" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M4 6l1 13h12l1-13" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 10v5M13 10v5" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg></div><h1>Mes d&eacute;penses</h1></div><p>Enregistre une d&eacute;pense rapidement</p></header>
   <div class="card"><div class="dep-form">
     <div class="dep-amt-wrap"><span class="dep-currency">&euro;</span><input type="number" class="dep-amt-input" id="dep-amt" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/></div>
     <input type="text" class="dep-desc-input" id="dep-desc" placeholder="Description (ex : courses Lidl)" maxlength="60"/>
-    <div><div class="section-label" style="margin-top:0;">Cat&eacute;gorie</div><div class="cat-grid" id="cat-grid"></div></div>
+    <div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <span class="section-label" style="margin:0;">Cat&eacute;gorie</span>
+        <div style="position:relative;display:inline-flex;" id="cat-info-wrap">
+          <button onclick="toggleCatTooltip()" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--muted);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="var(--muted)" stroke-width="1.5"/><path d="M10 9v6" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="6" r="1" fill="var(--muted)"/></svg>
+          </button>
+          <div id="cat-tooltip" style="display:none;position:absolute;left:0;top:28px;z-index:999;background:var(--surface);border:.5px solid var(--border);border-radius:14px;padding:14px 16px;width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.10);">
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:10px;">Dans quelle cat&eacute;gorie mettre ma d&eacute;pense ?</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;padding:8px 10px;background:#F7F5FF;border-radius:8px;"><span style="font-weight:600;color:#6B63C4;">Alimentation</span> — Courses alimentaires, supermarché, marché, boulangerie, restaurant, livraison repas.</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;padding:8px 10px;background:#FEF4F9;border-radius:8px;"><span style="font-weight:600;color:#C4638A;">Loisirs &amp; plaisirs</span> — Cinéma, jeux vidéo, sport, concerts, abonnements streaming, sorties, voyages.</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;padding:8px 10px;background:#FFF7F0;border-radius:8px;"><span style="font-weight:600;color:#C47A30;">Transport</span> — Carburant, péage, parking, transports en commun, taxi, vélo, entretien véhicule.</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;padding:8px 10px;background:#FFFDF0;border-radius:8px;"><span style="font-weight:600;color:#A08B20;">Vêtements &amp; hygiène</span> — Vêtements, chaussures, cosmétiques, coiffeur, pharmacie courante.</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5;padding:8px 10px;background:#EDFBF5;border-radius:8px;"><span style="font-weight:600;color:#2D7A5A;">Imprévus</span> — Réparation, amende, dépense médicale, achat urgent non planifié.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cat-grid" id="cat-grid"></div>
+    </div>
     <div class="dep-date-row"><span class="dep-date-label">Date</span><input type="date" class="dep-date-input" id="dep-date"/></div>
     <button class="dep-submit" id="dep-submit">Enregistrer la d&eacute;pense</button>
   </div></div>
@@ -820,23 +1194,313 @@
     <button class="sub-tab-btn" onclick="showSubTab('categories',this)">Cat&eacute;gories</button>
   </div>
   <div id="sub-details" class="sub-tab-panel active">
-    <div class="dep-list-header"><span class="section-label" style="margin:0;">D&eacute;penses du mois</span><span class="dep-total-badge" id="dep-total-badge"></span></div>
-    <div id="dep-list"></div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div onclick="toggleDepList()" style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="section-label" style="margin:0;">D&eacute;penses du mois</span>
+          <span class="dep-total-badge" id="dep-total-badge"></span>
+        </div>
+        <svg id="dep-list-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .3s;flex-shrink:0;transform:rotate(180deg);"><path d="M5 8l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div id="dep-list-body" style="border-top:.5px solid var(--border);padding:8px 0 4px;">
+        <div id="dep-list"></div>
+      </div>
+    </div>
   </div>
   <div id="sub-categories" class="sub-tab-panel"><div id="cat-summary-list"></div></div>
+
+  <!-- Séparateur -->
+  <div style="height:1px;background:var(--border);margin:8px 0;border-radius:1px;opacity:0.6;"></div>
+
+  <!-- Section tips dépenses -->
+  <div style="margin-top:8px;">
+    <div class="card" style="padding:0;overflow:hidden;">
+
+      <div id="dep-tips-header" onclick="toggleDepTips()" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;user-select:none;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:32px;height:32px;border-radius:9px;background:#FFF4E5;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <!-- Cible / optimisation -->
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#C47A30" stroke-width="1.5"/>
+              <circle cx="12" cy="12" r="5" stroke="#C47A30" stroke-width="1.5"/>
+              <circle cx="12" cy="12" r="1.5" fill="#C47A30"/>
+              <path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#C47A30;">Optimiser mes d&eacute;penses</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:1px;">Astuces &amp; r&eacute;flexes pour d&eacute;penser mieux</div>
+          </div>
+        </div>
+        <svg id="dep-tips-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .3s;flex-shrink:0;"><path d="M5 8l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div id="dep-tips-body" style="display:none;border-top:.5px solid var(--border);">
+
+        <!-- Mindset & décision -->
+        <div style="padding:14px 18px 8px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#4F46E5;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#4F46E5;text-transform:uppercase;letter-spacing:.09em;">Avant d&rsquo;acheter</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#F0EFFF;">
+              <!-- Sablier / attente 24h -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M6 3h12M6 21h12" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M8 3c0 4 4 6 4 9s-4 5-4 9" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 3c0 4-4 6-4 9s4 5 4 9" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 15h6" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">La r&egrave;gle des 24&nbsp;h</div>
+              <div class="tip-desc">Pour tout achat non essentiel au-dessus de 30&nbsp;&euro;, attends une journ&eacute;e. L&rsquo;envie d&rsquo;acheter chute de pr&egrave;s de 70&nbsp;% pass&eacute; ce d&eacute;lai.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#F0EFFF;">
+              <!-- Point d'interrogation / nécessité -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="#4F46E5" stroke-width="1.5"/>
+                <path d="M12 17v.5" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 8c0-1.1.9-2 2-2a2 2 0 0 1 .5 3.9C13.5 10.3 12 11 12 13" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Besoin ou envie&nbsp;?</div>
+              <div class="tip-desc">Demande-toi&nbsp;: &laquo;&nbsp;Est-ce que ma vie se d&eacute;grade vraiment si je ne l&rsquo;ach&egrave;te pas&nbsp;?&nbsp;&raquo;. Si non, note-le dans une liste de souhaits et reviens-y dans 30 jours.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#F0EFFF;">
+              <!-- Panier barré / achat impulsif -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke="#4F46E5" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M3 6h18" stroke="#4F46E5" stroke-width="1.5"/>
+                <path d="M9 10a3 3 0 0 0 6 0" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M5 5l14 14" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">D&eacute;sactive les notifs des apps shopping</div>
+              <div class="tip-desc">Les alertes promo cr&eacute;ent des achats impulsifs. Coupe les notifications de Vinted, Amazon, Zalando&hellip; et ne les ouvre qu&rsquo;en cas de besoin identifi&eacute;.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:.5px;background:var(--border);margin:0 18px;"></div>
+
+        <!-- Alimentation -->
+        <div style="padding:14px 18px 8px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#2A9E72;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#2A9E72;text-transform:uppercase;letter-spacing:.09em;">Alimentation</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#E8F9F2;">
+              <!-- Liste de courses -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="3" width="14" height="18" rx="2" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M9 8h6M9 12h6M9 16h3" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7 8l.5.5L9 7" stroke="#2A9E72" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">La liste, toujours la liste</div>
+              <div class="tip-desc">Faire les courses avec une liste r&eacute;duit le ticket de caisse de 20 &agrave; 30&nbsp;% en moyenne. &Eacute;cris-la juste apr&egrave;s avoir mang&eacute; — l&rsquo;estomac plein, on ach&egrave;te moins.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#E8F9F2;">
+              <!-- Marque distributeur -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M3 6h18M3 12h18M3 18h18" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="7" cy="6" r="1.5" fill="#2A9E72"/>
+                <circle cx="7" cy="18" r="1.5" fill="#2A9E72"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Marques distributeur &amp; hard-discount</div>
+              <div class="tip-desc">Les MDD (Marque Repère, Carrefour Bio&hellip;) ou Lidl/Aldi sur les produits basiques &eacute;conomisent 30 &agrave; 50&nbsp;% sans perte de qualit&eacute; perceptible pour la majorit&eacute; des produits.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#E8F9F2;">
+              <!-- Frigo / anti-gaspi -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="2" width="14" height="20" rx="2" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M5 10h14" stroke="#2A9E72" stroke-width="1.5"/>
+                <path d="M9 6v3M9 14v4" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Anti-gaspillage alimentaire</div>
+              <div class="tip-desc">Les Fran&ccedil;ais jettent en moyenne 30&nbsp;&euro;/mois de nourriture. Apps comme Phenix ou Too Good To Go, &eacute;tiquettes &laquo;&nbsp;DLC proche&nbsp;&raquo; en rayon&nbsp;: autant de bons plans &agrave; int&eacute;grer.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:.5px;background:var(--border);margin:0 18px;"></div>
+
+        <!-- Transport & énergie -->
+        <div style="padding:14px 18px 8px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#C47A30;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#C47A30;text-transform:uppercase;letter-spacing:.09em;">Transport &amp; d&eacute;placements</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FFF4E5;">
+              <!-- Vélo / mobilité douce -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <circle cx="5.5" cy="16" r="3.5" stroke="#C47A30" stroke-width="1.5"/>
+                <circle cx="18.5" cy="16" r="3.5" stroke="#C47A30" stroke-width="1.5"/>
+                <path d="M5.5 16l4-8h4l3 8" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.5 8l2 4h4" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="14" cy="6" r="1.2" fill="#C47A30"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Privil&eacute;gier la mobilit&eacute; douce</div>
+              <div class="tip-desc">V&eacute;lo, marche ou transports en commun pour les trajets courts remplacent avantageusement la voiture. L&rsquo;abonnement mensuel TER ou m&eacute;tro co&ucirc;te souvent 3 &agrave; 5&times; moins cher que la voiture sur le m&ecirc;me trajet.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FFF4E5;">
+              <!-- Ticket de caisse / budget courses -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" stroke="#C47A30" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M9 7h6M9 11h6M9 15h3" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Anticiper les d&eacute;penses inhabituelles</div>
+              <div class="tip-desc">Contr&ocirc;le technique, cadeaux, vacances, r&eacute;parations&hellip; Ces d&eacute;penses pr&eacute;visibles sur l&rsquo;ann&eacute;e deviennent des &laquo;&nbsp;surprises&nbsp;&raquo; faute de pr&eacute;paration. Divise leur co&ucirc;t estim&eacute; par 12 et mets ce montant de c&ocirc;t&eacute; chaque mois.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#FFF4E5;">
+              <!-- Carburant / covoiturage -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M5 13l1.5-4h11L19 13" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="3" y="13" width="18" height="5" rx="1.5" stroke="#C47A30" stroke-width="1.5"/>
+                <circle cx="7.5" cy="18" r="1.5" stroke="#C47A30" stroke-width="1.5"/>
+                <circle cx="16.5" cy="18" r="1.5" stroke="#C47A30" stroke-width="1.5"/>
+                <path d="M10 9h4" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Optimiser les d&eacute;placements en voiture</div>
+              <div class="tip-desc">Regrouper les courses en un seul trajet, gonfler correctement les pneus (+2&nbsp;% de consommation par pneu sous-gonfl&eacute;) et pr&eacute;f&eacute;rer les stations moins ch&egrave;res via des apps comme Gaspal ou Waze peuvent repr&eacute;senter 15 &agrave; 30&nbsp;&euro;/mois.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:.5px;background:var(--border);margin:0 18px;"></div>
+
+        <!-- Achats malins -->
+        <div style="padding:14px 18px 8px;">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#E03E3E;flex-shrink:0;"></div>
+            <span style="font-size:0.65rem;font-weight:700;color:#E03E3E;text-transform:uppercase;letter-spacing:.09em;">Achats malins</span>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FEF0F0;">
+              <!-- Étiquette prix / comparateur -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L3 13V3h10l7.59 7.59a2 2 0 0 1 0 2.82z" stroke="#E03E3E" stroke-width="1.5" stroke-linejoin="round"/>
+                <circle cx="7.5" cy="7.5" r="1.5" fill="#E03E3E"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">Comparer avant d&rsquo;acheter</div>
+              <div class="tip-desc">Google Shopping, idealo, Camelcamelcamel (historique prix Amazon) ou l&rsquo;extension Honey permettent de v&eacute;rifier en 30 secondes si tu paies le juste prix.</div>
+            </div>
+          </div>
+
+          <div class="tip-row">
+            <div class="tip-icon-wrap" style="background:#FEF0F0;">
+              <!-- Seconde main -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <path d="M4 12a8 8 0 0 1 14.93-4" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M20 12a8 8 0 0 1-14.93 4" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M19 4l-.07 4-.07.07L15 8" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 20l.07-4 .07-.07L9 16" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">R&eacute;flexe seconde main</div>
+              <div class="tip-desc">Pour les v&ecirc;tements, &eacute;lectro, livres, sport ou d&eacute;co&nbsp;: Vinted, Leboncoin, BackMarket. En moyenne 40 &agrave; 70&nbsp;% moins cher pour une qualit&eacute; souvent identique.</div>
+            </div>
+          </div>
+
+          <div class="tip-row" style="border-bottom:none;">
+            <div class="tip-icon-wrap" style="background:#FEF0F0;">
+              <!-- Enveloppe / budget cash -->
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="5" width="20" height="14" rx="2" stroke="#E03E3E" stroke-width="1.5"/>
+                <path d="M2 8l9 6a2 2 0 0 0 2 0l9-6" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M9 13l-4 4M15 13l4 4" stroke="#E03E3E" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="tip-text">
+              <div class="tip-title">M&eacute;thode des enveloppes</div>
+              <div class="tip-desc">Alloue chaque mois un montant cash par cat&eacute;gorie (courses, loisirs&hellip;). Quand l&rsquo;enveloppe est vide, tu arr&ecirc;tes. Le fait de &laquo;&nbsp;voir&nbsp;&raquo; l&rsquo;argent part rend la d&eacute;pense plus consciente.</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dep-tips-body -->
+    </div>
+  </div>
+  <!-- /tips dépenses -->
+
 </div></div>
 
 <!-- STATS -->
 <div id="tab-stats" class="tab-panel"><div class="container">
   <header>
-    <h1>Statistiques</h1>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;"><div style="width:36px;height:36px;border-radius:10px;background:#F0EFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M4 17V13M8 17V9M12 17V11M16 17V7M20 17V5" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/><path d="M2 17h18" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg></div><h1>Statistiques</h1></div>
     <p>Vue d&rsquo;ensemble de ton mois</p>
     <div class="stat-period-banner" id="stats-period-banner" style="display:none;"></div>
   </header>
+
+  <!-- Sous-onglets stats -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;">
+    <button id="stab-btn-current" onclick="showStatTab('current')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:none;background:#4F46E5;color:#fff;cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="7" width="4" height="14" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+      Mois en cours
+    </button>
+    <button id="stab-btn-snapshots" onclick="showStatTab('snapshots')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.5"/><path d="M8 4V2M16 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 13h4M7 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Historique
+    </button>
+    <button id="stab-btn-annual" onclick="showStatTab('annual')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><polyline points="3,17 8,10 13,13 19,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 5h-4M19 5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 21h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Année
+    </button>
+  </div>
+
+  <!-- Sous-onglet 1 : Mois en cours -->
+  <div id="stab-current">
   <div class="stat-grid" id="stats-metrics"></div>
   <div class="stat-print-section">
     <div class="stat-section-title">Revenus</div>
     <div class="stat-card" id="stats-revenus"></div>
+  </div>
+  <div class="stat-print-section" id="stats-alloc-section" style="display:none;">
+    <div class="stat-section-title">Placement des revenus annexes</div>
+    <div class="stat-card" id="stats-alloc-wrap"></div>
   </div>
   <div class="stat-print-section" id="stats-charges-section">
     <div class="stat-section-title">Charges fixes</div>
@@ -864,9 +1528,38 @@
     <div class="stat-section-title" id="stats-suggest-title" style="display:none;">Suggestions avec le restant</div>
     <div id="stats-suggest"></div>
   </div>
-  <div id="export-pdf-btn-wrap" style="text-align:center;margin-top:24px;margin-bottom:8px;">
-    <button class="export-btn" id="export-pdf-btn"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 6h6M7 9h6M7 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Exporter en PDF</button>
+  <!-- Bouton export snapshot -->
+  <div style="text-align:center;margin-bottom:16px;">
+    <div id="export-snap-blocked" style="display:none;font-size:12px;color:#E03E3E;margin-bottom:8px;font-weight:500;">
+      ⚠ Distribue tous tes revenus annexes avant d'exporter (onglet Revenus → "Où placer cet argent ?")
+    </div>
+    <button id="export-snap-btn" onclick="exportSnapshot()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:12px;border:none;background:#4F46E5;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v12M8 11l4 4 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 19h16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Exporter le mois
+    </button>
   </div>
+
+  <!-- Bouton effacer les données du mois -->
+  <div style="border-top:.5px solid var(--border);padding-top:20px;margin-top:4px;margin-bottom:24px;text-align:center;">
+    <button onclick="openResetModal()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/><path d="M19 6l-1 14H6L5 6" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v5M14 11v5" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Effacer les donn&eacute;es du mois
+    </button>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px;">Conserve les charges fixes et les budgets &eacute;tablis</div>
+  </div>
+</div><!-- /stab-current -->
+
+<!-- Sous-onglet 2 : Historique snapshots -->
+<div id="stab-snapshots" style="display:none;">
+  <div id="snapshots-list"></div>
+  <div id="snapshots-empty" style="text-align:center;padding:40px 0;font-size:13px;color:var(--muted);font-style:italic;">Aucun mois export&eacute; pour l&rsquo;instant.<br>Utilise le bouton &laquo;&nbsp;Exporter le mois&nbsp;&raquo; depuis le sous-onglet <em>Mois en cours</em>.</div>
+</div>
+
+<!-- Sous-onglet 3 : Année -->
+<div id="stab-annual" style="display:none;">
+  <div id="annual-content"></div>
+</div>
+
 </div></div>
 
 <script>
@@ -880,6 +1573,8 @@ var categories=[
   {key:'imprevus',svgIcon:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#2A9E72" stroke-width="1.5"/><path d="M10 6v5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.75" fill="#2A9E72"/></svg>',    label:'Impr\u00e9vus',                icon:'\ud83d\udd16',pct:0.109,palColor:'#6EE7B7',palBg:'#F0FDF8',palBorder:'#A8EDD4',palText:'#2A9E72',color:'#444441',bg:'#F1EFE8',textColor:'#444441'}
 ];
 var extraItems=[],depenses=[],selectedCat=null,catExpandState={};
+var revAllocations = {}; /* { catKey: montant alloué depuis revenus annexes } */
+var soldeAllocations = {}; /* { label: montant alloué depuis le solde libre } */
 var piePalette=["#A5B4FC","#C4B5FD","#D8B4FE","#F9A8D4","#FDBA74","#FDE68A","#6EE7B7","#67E8F9","#93C5FD","#A5B4FC"];
 var catColorMap={};
 function initCatColorMap(){
@@ -908,9 +1603,12 @@ function showMainTab(tab,btn){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('tab-'+tab).classList.add('active');
   btn.classList.add('active');
-  if(tab==='stats')renderStats();
+  if(tab==='stats'){ renderStats(); showStatTab('current'); updateExportBtn(); }
   if(tab==='revenus')renderRevList();
+  if(tab!=='revenus') toggleRevSuggestions(true);
+  if(tab!=='depenses') toggleDepTips(true);
   if(tab==='charges')renderCharges();
+  if(tab==='budget' && document.getElementById('budget-view-toggle').checked) renderBudgetPie();
   window.scrollTo({top:0,behavior:'smooth'});
   // Fermer le menu personnalisation
   var panel=document.getElementById('pct-panel');
@@ -948,6 +1646,9 @@ function updatePeriodSummary(){
 }
 document.getElementById('period-start').addEventListener('change',updatePeriodSummary);
 document.getElementById('period-end').addEventListener('change',updatePeriodSummary);
+
+function getCatAllocation(key){ return revAllocations[key] || 0; }
+function getCatBudget(cat, reste){ return reste * cat.pct + getCatAllocation(cat.key); }
 
 function rebuildGridColors(){
   for(var i=0;i<categories.length;i++){
@@ -987,10 +1688,18 @@ function update(){
   for(var i=0;i<categories.length;i++){
     var eurEl=document.getElementById('eur'+i);
     var pctEl=document.getElementById('pct'+i);
-    if(eurEl) eurEl.textContent=reste>0?fmt(reste*categories[i].pct):'—';
-    if(pctEl) pctEl.innerHTML=reste>0
-      ? Math.round(categories[i].pct*100)+' % &bull; sur <strong>'+fmt(reste)+'</strong> au total'
-      : Math.round(categories[i].pct*100)+' % du reste &agrave; vivre';
+    var alloc=getCatAllocation(categories[i].key);
+    var catBudget=getCatBudget(categories[i],reste);
+    if(eurEl) eurEl.textContent=reste>0?fmt(catBudget):'—';
+    if(pctEl){
+      var baseTxt=reste>0
+        ? Math.round(categories[i].pct*100)+' % &bull; sur <strong>'+fmt(reste)+'</strong> au total'
+        : Math.round(categories[i].pct*100)+' % du reste &agrave; vivre';
+      var allocBadge=alloc>0
+        ? ' <span style="color:#0A8F5C;font-size:11px;font-weight:600;">(+'+fmt(alloc)+' annexes)</span>'
+        : '';
+      pctEl.innerHTML=baseTxt+allocBadge;
+    }
     (function(idx,r){setTimeout(function(){var b=document.getElementById('bar'+idx);if(b){b.style.width=r>0?(categories[idx].pct*100)+'%':'0%';b.style.background=categories[idx].palColor;}var e=document.getElementById('eur'+idx);if(e)e.style.color=categories[idx].palColor;},idx*40);})(i,reste);
   }
   refreshStats();
@@ -1147,7 +1856,11 @@ function renderCatSummary(){
   items=items.filter(function(it){return it.cat.key!=='epargne-sec'&&it.cat.key!=='epargne-proj';});
   items.sort(function(a,b){return b.spent-a.spent;});
   for(var i=0;i<items.length;i++){
-    var cat=items[i].cat,budget=reste*cat.pct,spent=items[i].spent;
+    var cat=items[i].cat,budget=getCatBudget(cat,reste),spent=items[i].spent;
+    var alloc=getCatAllocation(cat.key);
+    var allocBadge=alloc>0
+      ? '<div style="font-size:11px;color:#0A8F5C;font-weight:600;margin-top:2px;">&#43;'+fmt(alloc)+' depuis revenus annexes</div>'
+      : '';
     var restant=budget-spent,pctUsed=budget>0?Math.min((spent/budget)*100,100):0,pctRestant=budget>0?Math.max(100-pctUsed,0):0;
     var barColor,amtClass;
     if(pctUsed>=100){barColor='#E24B4A';amtClass='over';}else if(pctUsed>=75){barColor='#EF9F27';amtClass='warn';}else{barColor=cat.palColor;amtClass='ok';}
@@ -1177,7 +1890,7 @@ function renderCatSummary(){
       '<div class="cat-summary-top">'+
       '<div class="cat-summary-icon" style="background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;">'+cat.svgIcon+'</div>'+
       '<div class="cat-summary-info"><div class="cat-summary-name">'+cat.label+'</div>'+
-      '<div class="cat-summary-detail">Budget\u00a0: <strong>'+fmt(budget)+'</strong> \u00b7 D\u00e9pens\u00e9\u00a0: <strong>'+fmt(spent)+'</strong></div></div>'+
+      '<div class="cat-summary-detail">Budget\u00a0: <strong>'+fmt(budget)+'</strong> \u00b7 D\u00e9pens\u00e9\u00a0: <strong>'+fmt(spent)+'</strong></div>'+allocBadge+'</div>'+
       '<div class="cat-summary-right"><div class="cat-summary-restant '+amtClass+'">'+(restant>=0?'':'\u2212')+fmt(Math.abs(restant))+'</div>'+
       '<div class="cat-summary-detail"><strong>'+fmtPct(pctRestant)+'</strong> restant</div></div></div>'+
       '<div class="cat-prog-bg"><div class="cat-prog-fill" style="width:'+pctUsed.toFixed(1)+'%;background:'+barColor+';"></div></div>'+
@@ -1194,6 +1907,72 @@ function renderCatSummary(){
       this.querySelector('.cat-detail-list').classList.toggle('open');
     });
     container.appendChild(div);
+  }
+}
+
+function renderAllocStats(){
+  var section = document.getElementById('stats-alloc-section');
+  var wrap    = document.getElementById('stats-alloc-wrap');
+  if(!section || !wrap) return;
+
+  var keys = Object.keys(revAllocations);
+  var totalRev = extraItems.reduce(function(s,e){return s+e.amt;},0);
+  var totalAlloc = keys.reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+
+  if(keys.length === 0 || totalRev === 0){ section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  wrap.innerHTML = '';
+
+  /* Barre globale */
+  var progPct = totalRev > 0 ? Math.min((totalAlloc/totalRev)*100, 100) : 0;
+  var header = document.createElement('div');
+  header.style.cssText = 'margin-bottom:14px;padding-bottom:12px;border-bottom:.5px solid var(--border);';
+  header.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'+
+      '<span style="font-size:12px;font-weight:600;color:var(--text);">'+fmt(totalAlloc)+' placés sur '+fmt(totalRev)+' gagnés</span>'+
+      '<span style="font-size:12px;font-weight:600;color:#0A8F5C;">'+Math.round(progPct)+' %</span>'+
+    '</div>'+
+    '<div style="height:5px;background:#F0F0F0;border-radius:3px;overflow:hidden;">'+
+      '<div style="width:'+progPct.toFixed(1)+'%;height:100%;background:#0A8F5C;border-radius:3px;"></div>'+
+    '</div>';
+  wrap.appendChild(header);
+
+  /* Une ligne par catégorie allouée */
+  var catMap = {};
+  categories.forEach(function(c){ catMap[c.key] = c; });
+
+  keys.forEach(function(k){
+    var cat   = catMap[k];
+    var amt   = revAllocations[k] || 0;
+    var pctOf = totalRev > 0 ? (amt/totalRev*100).toFixed(0) : 0;
+    if(!cat) return;
+
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--border);';
+    row.innerHTML =
+      '<div style="width:32px;height:32px;border-radius:9px;background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+        cat.svgIcon.replace(/width="20" height="20"/g,'width="15" height="15"')+
+      '</div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:13px;font-weight:500;color:var(--text);">'+cat.label+'</div>'+
+        '<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+pctOf+' % des revenus annexes</div>'+
+      '</div>'+
+      '<div style="text-align:right;flex-shrink:0;">'+
+        '<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:700;color:#0A8F5C;">+'+fmt(amt)+'</div>'+
+        '<div style="font-size:10px;color:var(--muted);margin-top:1px;">ajouté au budget</div>'+
+      '</div>';
+    wrap.appendChild(row);
+  });
+
+  /* Restant non placé si partiel */
+  var restant = totalRev - totalAlloc;
+  if(restant > 0.01){
+    var restRow = document.createElement('div');
+    restRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:10px 0;';
+    restRow.innerHTML =
+      '<span style="font-size:12px;color:#C47A30;font-weight:500;">⚠ Non distribué</span>'+
+      '<span style="font-size:13px;font-weight:700;color:#C47A30;">'+fmt(restant)+'</span>';
+    wrap.appendChild(restRow);
   }
 }
 
@@ -1268,6 +2047,624 @@ function renderChargesStats(){
   wrap.appendChild(totalRow);
 }
 
+/* ── Sous-onglets Stats ── */
+var SNAP_KEY = 'budget_snapshots_v1';
+
+function getSnapshots(){
+  try{ var r=localStorage.getItem(SNAP_KEY); return r?JSON.parse(r):[]; }catch(e){ return []; }
+}
+
+function saveSnapshots(snaps){
+  try{ localStorage.setItem(SNAP_KEY,JSON.stringify(snaps)); }catch(e){}
+}
+
+function showStatTab(tab){
+  ['current','snapshots','annual'].forEach(function(t){
+    var panel = document.getElementById('stab-'+t);
+    var btn   = document.getElementById('stab-btn-'+t);
+    if(!panel||!btn) return;
+    var active = t===tab;
+    panel.style.display = active ? 'block' : 'none';
+    btn.style.background   = active ? '#4F46E5' : 'var(--surface)';
+    btn.style.color        = active ? '#fff'    : 'var(--muted)';
+    btn.style.border       = active ? 'none'    : '1.5px solid var(--border)';
+  });
+  if(tab==='snapshots') renderSnapshots();
+  if(tab==='annual')    renderAnnual();
+}
+
+function exportSnapshot(){
+  var salary      = getSalary();
+  var charges     = getCharges();
+  var reste       = getReste();
+  var totalDep    = depenses.reduce(function(s,d){return s+d.amt;},0);
+  var totalRev    = extraItems.reduce(function(s,e){return s+e.amt;},0);
+  var totalAlloue = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+  var freeRev     = Math.max(0, totalRev - totalAlloue); /* annexes non bloquées dans catégories */
+
+  /* Épargne = argent libre non dépensé (hors annexes déjà bloquées) */
+  var budgetLibre = reste + freeRev;
+  var epargne     = Math.max(0, budgetLibre - totalDep);
+  var soldeBase   = Math.max(0, reste - totalDep);
+
+  /* Taux d'épargne sur le budget réellement disponible */
+  var baseRef = salary + freeRev;
+  var tauxEp  = baseRef > 0 ? Math.round(epargne / baseRef * 100) : 0;
+
+  /* Budget par catégorie avec dépenses réelles et statut */
+  var depByCat = {};
+  categories.forEach(function(c){ depByCat[c.key]=0; });
+  depenses.forEach(function(d){ if(depByCat.hasOwnProperty(d.cat)) depByCat[d.cat]+=d.amt; });
+
+  var catBudgets = categories.map(function(cat){
+    var budget  = getCatBudget(cat, reste);
+    var spent   = depByCat[cat.key]||0;
+    var alloc   = revAllocations[cat.key]||0;
+    var over    = spent > budget;
+    return {key:cat.key, label:cat.label, pct:Math.round(cat.pct*100),
+            budget:budget, spent:spent, alloc:alloc,
+            remaining:Math.max(0,budget-spent), over:over,
+            overAmt:over?spent-budget:0};
+  });
+
+  var now  = new Date();
+  var key  = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var snap = {
+    key:key,
+    label:['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'][now.getMonth()]+' '+now.getFullYear(),
+    exportedAt:now.toLocaleDateString('fr-FR'),
+    /* Résumé */
+    salary:salary, charges:charges, reste:reste,
+    totalDep:totalDep, totalRev:totalRev, totalAlloue:totalAlloue, freeRev:freeRev,
+    epargne:epargne, soldeBase:soldeBase, budgetLibre:budgetLibre, tauxEp:tauxEp,
+    /* Données complètes */
+    depByCat:depByCat,
+    catBudgets:catBudgets,
+    chargeItems:JSON.parse(JSON.stringify(chargeItems)),
+    depenses:JSON.parse(JSON.stringify(depenses)),
+    extraItems:JSON.parse(JSON.stringify(extraItems)),
+    revAllocations:JSON.parse(JSON.stringify(revAllocations)),
+    soldeAllocations:JSON.parse(JSON.stringify(soldeAllocations)),
+    period:{
+      start:document.getElementById('period-start').value,
+      end:document.getElementById('period-end').value
+    }
+  };
+
+  var snaps = getSnapshots().filter(function(s){ return s.key!==key; });
+  snaps.push(snap);
+  snaps.sort(function(a,b){ return a.key.localeCompare(b.key); });
+  saveSnapshots(snaps);
+
+  /* Modale de confirmation post-export */
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML =
+    '<div style="background:var(--surface);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.18);">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">'+
+        '<div style="width:38px;height:38px;border-radius:10px;background:#E8F9F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v12M8 11l4 4 4-4" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 19h16" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/></svg>'+
+        '</div>'+
+        '<div style="font-size:17px;font-weight:700;color:var(--text);">Mois exporté !</div>'+
+      '</div>'+
+      '<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;">'+
+        '<strong style="color:var(--text);">'+snap.label+'</strong> a bien été sauvegardé dans ton historique.<br>Veux-tu consulter l\'export maintenant ?'+
+      '</div>'+
+      '<div style="display:flex;gap:10px;">'+
+        '<button id="export-modal-yes" style="flex:1;padding:13px;border-radius:12px;border:none;background:#4F46E5;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:\'Poppins\',sans-serif;">Oui</button>'+
+        '<button id="export-modal-later" style="flex:1;padding:13px;border-radius:12px;border:none;background:#E03E3E;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:\'Poppins\',sans-serif;">Plus tard</button>'+
+      '</div>'+
+    '</div>';
+  overlay.setAttribute('data-export-overlay','1');
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#export-modal-yes').onclick = function(){
+    overlay.remove();
+    showStatTab('snapshots');
+  };
+  overlay.querySelector('#export-modal-later').onclick = function(){
+    overlay.remove();
+  };
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+}
+
+function renderSnapshots(){
+  var snaps = getSnapshots();
+  var list  = document.getElementById('snapshots-list');
+  var empty = document.getElementById('snapshots-empty');
+  if(!list||!empty) return;
+  if(snaps.length===0){ list.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  list.innerHTML='';
+
+  var statuses = {
+    ok:  {label:'Équilibré', color:'#2A9E72', bg:'#E8F9F2',
+          icon:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#2A9E72" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+    warn:{label:'Attention',  color:'#C47A30', bg:'#FFF4E5',
+          icon:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 20h20L12 3z" stroke="#C47A30" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10v5" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="17.5" r=".8" fill="#C47A30"/></svg>'},
+    bad: {label:'Serré',      color:'#E03E3E', bg:'#FEF0F0',
+          icon:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#E03E3E" stroke-width="1.5"/><path d="M8 8l8 8M16 8l-8 8" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>'}
+  };
+
+  /* Grouper par année */
+  var byYear = {};
+  snaps.forEach(function(s){
+    var yr = s.key.split('-')[0];
+    if(!byYear[yr]) byYear[yr] = [];
+    byYear[yr].push(s);
+  });
+  var years = Object.keys(byYear).sort().reverse();
+
+  years.forEach(function(yr){
+    var yearSnaps = byYear[yr].slice().reverse();
+    var yearTotal = yearSnaps.reduce(function(s,sn){ return s+sn.epargne; }, 0);
+
+    var yearWrap = document.createElement('div');
+    yearWrap.style.cssText = 'margin-bottom:0;';
+
+    var yearHeader = document.createElement('div');
+    yearHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface);border-radius:14px;cursor:pointer;user-select:none;border:1.5px solid var(--border);';
+    yearHeader.innerHTML =
+      '<div style="display:flex;align-items:center;gap:10px;">'+
+        '<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#4F46E5" stroke-width="1.5"/><path d="M3 9h18" stroke="#4F46E5" stroke-width="1.5"/><path d="M8 2v3M16 2v3" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>'+
+        '<span style="font-size:16px;font-weight:700;color:var(--text);">'+yr+'</span>'+
+        '<span style="font-size:12px;color:var(--muted);">'+yearSnaps.length+' mois · <span style="color:#2A9E72;font-weight:600;">+'+fmt(yearTotal)+' épargnés</span></span>'+
+      '</div>'+
+      '<svg class="yr-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .3s;"><path d="M5 8l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    var yearBody = document.createElement('div');
+    yearBody.style.cssText = 'display:none;background:#F8F8FA;border-radius:0 0 14px 14px;padding:10px;border:1.5px solid var(--border);border-top:.5px solid var(--border);margin-bottom:14px;';
+
+    yearHeader.addEventListener('click', function(){
+      var open = yearBody.style.display !== 'none';
+      yearBody.style.display = open ? 'none' : 'block';
+      yearHeader.style.borderRadius = open ? '14px' : '14px 14px 0 0';
+      yearHeader.style.borderBottom = open ? '1.5px solid var(--border)' : 'none';
+      yearHeader.querySelector('.yr-chevron').style.transform = open ? '' : 'rotate(180deg)';
+    });
+
+    yearSnaps.forEach(function(snap){
+      var st = snap.tauxEp>=10 ? statuses.ok : snap.tauxEp>=5 ? statuses.warn : statuses.bad;
+
+      var card = document.createElement('div');
+      card.className='card';
+      card.style.cssText='margin-bottom:8px;padding:0;overflow:hidden;';
+
+      var mHeader = document.createElement('div');
+      mHeader.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;user-select:none;';
+      mHeader.innerHTML =
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:13px;font-weight:600;color:var(--text);">'+snap.label+'</div>'+
+          '<div style="font-size:12px;font-weight:600;color:#2A9E72;margin-top:2px;">+'+fmt(snap.epargne)+' épargnés</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">'+
+          '<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;background:'+st.bg+';color:'+st.color+';padding:3px 8px;border-radius:6px;">'+st.icon+st.label+'</span>'+
+          '<svg class="snap-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" style="transition:transform .3s;"><path d="M5 8l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+        '</div>';
+
+      var mBody = document.createElement('div');
+      mBody.style.cssText='display:none;border-top:.5px solid var(--border);padding:13px 15px;';
+
+      /* Salaire affiché = salary + totalRev */
+      var salLabel = snap.totalRev > 0 ? 'Salaire + annexes' : 'Salaire';
+      var salVal   = fmt(snap.salary + (snap.totalRev || 0));
+
+      /* Ligne revenus annexes avec répartition */
+      var revLine = '';
+      if(snap.totalRev > 0){
+        var allocations = snap.revAllocations || {};
+        var allocKeys   = Object.keys(allocations);
+        var catNames    = {'loisirs':'Loisirs & plaisirs','epargne-sec':'Épargne sécurité','epargne-proj':'Épargne projets',
+                           'alim':'Alimentation','transport':'Transport','vetements':'Vêtements & hygiène','imprevus':'Imprévus'};
+        var repartition = '';
+        if(allocKeys.length > 0){
+          repartition = allocKeys.map(function(k){ return (catNames[k]||k)+' ('+fmt(allocations[k])+')'; }).join(', ');
+        }
+        var snapTotalAlloue = snap.totalAlloue !== undefined ? snap.totalAlloue : 0;
+        var snapFreeRev     = snap.freeRev     !== undefined ? snap.freeRev     : snap.totalRev;
+
+        revLine = '<div style="background:#E8F9F2;border-radius:10px;padding:10px 12px;margin-bottom:12px;">';
+        revLine += '<div style="font-size:11px;font-weight:600;color:#0A8F5C;margin-bottom:4px;">Revenus annexes : +'+fmt(snap.totalRev)+'</div>';
+        if(snapTotalAlloue > 0){
+          revLine += '<div style="font-size:10px;color:#2A9E72;line-height:1.5;margin-bottom:2px;">Alloués dans catégories : '+fmt(snapTotalAlloue)+(repartition?' ('+repartition+')':'')+'</div>';
+          if(snapFreeRev > 0.01) revLine += '<div style="font-size:10px;color:#2A9E72;">Libres (comptés dans épargne) : '+fmt(snapFreeRev)+'</div>';
+        } else {
+          revLine += '<div style="font-size:10px;color:#2A9E72;margin-top:3px;">Non distribués sur les catégories</div>';
+        }
+        revLine += '</div>';
+      }
+
+      mBody.innerHTML =
+        '<div style="font-size:10px;color:var(--muted);margin-bottom:12px;">Exporté le '+snap.exportedAt+'</div>'+
+        '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;">'+
+          snip(salLabel, salVal,'#4F46E5')+
+          snip('Charges',fmt(snap.charges),'#E03E3E')+
+          snip('Dépenses',fmt(snap.totalDep),'#C47A30')+
+          snip('Épargne',fmt(snap.epargne),'#2A9E72')+
+        '</div>'+
+        '<div style="margin-bottom:12px;">'+
+          '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'+
+            '<span style="font-size:11px;color:var(--muted);">Taux d\'épargne <span style="font-style:italic;">(épargne ÷ salaire)</span></span>'+
+            '<span style="font-size:11px;font-weight:600;color:'+st.color+';">'+snap.tauxEp+' %</span>'+
+          '</div>'+
+          '<div style="height:5px;background:#F0F0F0;border-radius:3px;overflow:hidden;">'+
+            '<div style="width:'+Math.min(snap.tauxEp,100)+'%;height:100%;background:'+st.color+';border-radius:3px;"></div>'+
+          '</div>'+
+          '<div style="font-size:10px;color:var(--muted);margin-top:4px;">'+fmt(snap.epargne)+' non dépensés sur '+fmt(snap.salary+(snap.totalRev||0))+' · objectif : 10 %</div>'+
+        '</div>'+
+        revLine+
+        '<div style="display:flex;gap:8px;">'+
+          '<button onclick="showSnapshotDetail(\''+snap.key+'\')" style="flex:2;padding:9px;border-radius:9px;border:1.5px solid #4F46E5;background:#F0EFFF;color:#4F46E5;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#4F46E5" stroke-width="1.5"/><path d="M9 7h6M9 11h6M9 15h3" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg> Voir le d\u00e9tail</button>'+
+          '<button onclick="deleteSnapshot(\''+snap.key+'\')" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;">Supprimer</button>'+
+        '</div>';
+
+      mHeader.addEventListener('click', function(){
+        var open = mBody.style.display !== 'none';
+        mBody.style.display = open ? 'none' : 'block';
+        mHeader.querySelector('.snap-chevron').style.transform = open ? '' : 'rotate(180deg)';
+      });
+
+      card.appendChild(mHeader);
+      card.appendChild(mBody);
+      yearBody.appendChild(card);
+    });
+
+    yearWrap.appendChild(yearHeader);
+    yearWrap.appendChild(yearBody);
+    list.appendChild(yearWrap);
+  });
+}
+
+function showSnapshotDetail(key){
+  var snap = getSnapshots().filter(function(s){return s.key===key;})[0];
+  if(!snap) return;
+  var status = snap.tauxEp>=10 ? {label:'Équilibré',color:'#2A9E72',bg:'#E8F9F2',icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#2A9E72" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'} :
+               snap.tauxEp>=5  ? {label:'Attention', color:'#C47A30',bg:'#FFF4E5',icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 20h20L12 3z" stroke="#C47A30" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 10v5" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="17.5" r=".8" fill="#C47A30"/></svg>'} :
+                                   {label:'Serré',     color:'#E03E3E',bg:'#FEF0F0',icon:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#E03E3E" stroke-width="1.5"/><path d="M8 8l8 8M16 8l-8 8" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>'};
+
+  var overlay = document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch;';
+
+  function isoToFr(iso){ if(!iso) return ''; var p=iso.split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:iso; }
+  var period = (snap.period&&snap.period.start&&snap.period.end)
+    ? isoToFr(snap.period.start)+' → '+isoToFr(snap.period.end) : '';
+
+  function detailSection(title, color, icon){
+    return '<div style="display:flex;align-items:center;gap:8px;margin:24px 0 12px;">'+
+      '<div style="width:32px;height:32px;border-radius:9px;background:'+(color||'#F0EFFF')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+(icon||'')+'</div>'+
+      '<span style="font-size:15px;font-weight:700;color:var(--text);">'+title+'</span>'+
+    '</div>';
+  }
+
+  function bigSnip(label, val, color, sub){
+    return '<div style="background:var(--bg);border-radius:12px;padding:12px 14px;border:.5px solid var(--border);">'+
+      '<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">'+label+'</div>'+
+      '<div style="font-family:\'Poppins\',sans-serif;font-size:18px;font-weight:700;color:'+color+';">'+val+'</div>'+
+      (sub?'<div style="font-size:10px;color:var(--muted);margin-top:3px;">'+sub+'</div>':'')+
+    '</div>';
+  }
+
+  function detailRow(label, val, color, sub){
+    return '<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:.5px solid var(--border);gap:10px;">'+
+      '<div style="min-width:0;">'+
+        '<div style="font-size:13px;color:var(--text);font-weight:500;">'+label+'</div>'+
+        (sub?'<div style="font-size:10px;color:var(--muted);margin-top:2px;">'+sub+'</div>':'')+
+      '</div>'+
+      '<span style="font-size:14px;font-weight:700;color:'+color+';white-space:nowrap;flex-shrink:0;">'+val+'</span>'+
+    '</div>';
+  }
+
+  function detailRowIcon(iconHtml, bg, label, val, color, sub){
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:.5px solid var(--border);">'+
+      '<div style="width:30px;height:30px;border-radius:8px;background:'+(bg||'#F0F0F0')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">'+
+        iconHtml.replace(/width="20" height="20"/g,'width="14" height="14"')+
+      '</div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:13px;font-weight:500;color:var(--text);">'+label+'</div>'+
+        (sub?'<div style="font-size:10px;color:var(--muted);margin-top:2px;">'+sub+'</div>':'')+
+      '</div>'+
+      '<span style="font-size:14px;font-weight:700;color:'+color+';white-space:nowrap;flex-shrink:0;">'+val+'</span>'+
+    '</div>';
+  }
+
+  function detailTotal(label, val, color){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-top:8px;background:var(--bg);border-radius:10px;">'+
+      '<span style="font-size:13px;font-weight:700;color:var(--text);">'+label+'</span>'+
+      '<span style="font-family:\'Poppins\',sans-serif;font-size:16px;font-weight:700;color:'+color+';">'+val+'</span>'+
+    '</div>';
+  }
+
+  /* Map catégories */
+  var catIconMap = {};
+  categories.forEach(function(c){ catIconMap[c.key] = {icon:c.svgIcon, bg:c.palBg, color:c.palText}; });
+
+  /* Icône générique charge fixe */
+  var chargeIcon = '<svg width="14" height="14" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="#E03E3E" stroke-width="1.5"/><path d="M2 8h16" stroke="#E03E3E" stroke-width="1.5"/><path d="M6 12h3M13 12h1" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  /* Icône revenu annexe */
+  var revIcon = '<svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 15V5M10 5L6 9M10 5l4 4" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var html = '<div style="background:var(--surface);border-radius:20px 20px 0 0;margin-top:30px;padding:0 0 60px;min-height:calc(100vh - 30px);">';
+
+  /* ── HEADER ── */
+  html += '<div style="position:sticky;top:0;z-index:10;background:var(--surface);border-radius:20px 20px 0 0;padding:20px 18px 16px;border-bottom:1px solid var(--border);">'+
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">'+
+      '<div>'+
+        '<div style="font-size:22px;font-weight:700;color:var(--text);line-height:1.2;">'+snap.label+'</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;">'+
+          '<span style="font-size:11px;color:var(--muted);">Exporté le '+snap.exportedAt+'</span>'+
+          (period?'<span style="font-size:11px;color:var(--muted);">· '+period+'</span>':'')+
+        '</div>'+
+        '<span style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:700;background:'+status.bg+';color:'+status.color+';padding:5px 10px;border-radius:8px;">'+status.icon+status.label+'</span>'+
+      '</div>'+
+      '<button onclick="this.closest(\'[data-overlay]\').remove()" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;">✕</button>'+
+    '</div>'+
+  '</div>';
+
+  html += '<div style="padding:0 18px;">';
+
+  /* ── RÉSUMÉ ── */
+  html += detailSection('Résumé financier','#F0EFFF',
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#4F46E5" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="#4F46E5" stroke-width="1.5" stroke-linejoin="round"/></svg>');
+  html += '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px;">'+
+    bigSnip(snap.totalRev>0?'Salaire + annexes':'Salaire net', fmt(snap.totalRev>0?(snap.salary+snap.totalRev):snap.salary), '#4F46E5')+
+    bigSnip('Charges fixes', fmt(snap.charges), '#E03E3E')+
+    bigSnip('Dépenses totales', fmt(snap.totalDep), '#C47A30')+
+    bigSnip('Épargne libre', fmt(snap.epargne), '#2A9E72', snap.tauxEp+'% du salaire')+
+  '</div>';
+  if(snap.totalRev>0){
+    html += '<div style="background:#E8F9F2;border-radius:12px;padding:12px 14px;margin-bottom:12px;">'+
+      '<div style="font-size:12px;font-weight:600;color:#0A8F5C;margin-bottom:8px;">Revenus annexes : +'+fmt(snap.totalRev)+'</div>';
+    var snapTotAlloc = snap.totalAlloue||0;
+    var snapFreeRev  = snap.freeRev||0;
+    if(snapTotAlloc>0){
+      html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:#2A9E72;margin-bottom:3px;"><span>Alloués dans catégories</span><span style="font-weight:600;">'+fmt(snapTotAlloc)+'</span></div>';
+      if(snapFreeRev>0.01) html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:#2A9E72;"><span>Libres (dans épargne)</span><span style="font-weight:600;">+'+fmt(snapFreeRev)+'</span></div>';
+    } else {
+      html += '<div style="font-size:11px;color:#2A9E72;">Non distribués sur les catégories</div>';
+    }
+    html += '</div>';
+  }
+  /* Barre taux épargne */
+  html += '<div style="background:'+status.bg+';border-radius:12px;padding:12px 14px;">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
+      '<span style="font-size:12px;font-weight:600;color:'+status.color+';">Taux d\'épargne <span style="font-weight:400;font-style:italic;">(épargne ÷ salaire)</span></span>'+
+      '<span style="font-size:18px;font-weight:700;color:'+status.color+';">'+snap.tauxEp+' %</span>'+
+    '</div>'+
+    '<div style="height:6px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden;">'+
+      '<div style="width:'+Math.min(snap.tauxEp,100)+'%;height:100%;background:'+status.color+';border-radius:3px;"></div>'+
+    '</div>'+
+    '<div style="font-size:10px;color:'+status.color+';opacity:.8;margin-top:5px;">Objectif recommandé : 10 %</div>'+
+  '</div>';
+
+  /* ── CHARGES FIXES ── */
+  html += detailSection('Charges fixes','#FEF0F0',
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="#E03E3E" stroke-width="1.5"/><path d="M3 9h18M9 3v6" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>');
+  if(snap.chargeItems&&snap.chargeItems.length>0){
+    snap.chargeItems.forEach(function(c){ html += detailRowIcon(chargeIcon,'#FEF0F0',c.desc, fmt(c.amt), '#E03E3E'); });
+    html += detailTotal('Total charges', fmt(snap.charges), '#E03E3E');
+  } else {
+    html += '<div style="font-size:12px;color:var(--muted);font-style:italic;padding:8px 0;">Aucune charge enregistrée</div>';
+  }
+
+  /* ── BUDGETS PAR CATÉGORIE ── */
+  html += detailSection('Budgets par catégorie','#F0F4FF',
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="12" width="4" height="9" rx="1" stroke="#4F46E5" stroke-width="1.5"/><rect x="10" y="7" width="4" height="14" rx="1" stroke="#4F46E5" stroke-width="1.5"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="#4F46E5" stroke-width="1.5"/></svg>');
+  if(snap.catBudgets&&snap.catBudgets.length>0){
+    snap.catBudgets.forEach(function(cb){
+      var fillPct  = cb.budget>0?Math.min(Math.round(cb.spent/cb.budget*100),100):0;
+      var barColor = cb.over ? '#E03E3E' : fillPct>=75 ? '#C47A30' : '#2A9E72';
+      var catInfo  = catIconMap[cb.key] || {icon:'', bg:'#F0F0F0', color:'#666'};
+      var badges   = '';
+      if(cb.over)       badges += '<span style="font-size:10px;font-weight:600;background:#FEF0F0;color:#E03E3E;padding:2px 6px;border-radius:5px;margin-left:6px;">Dépassé +'+fmt(cb.overAmt)+'</span>';
+      else if(cb.alloc) badges += '<span style="font-size:10px;font-weight:600;background:#E8F9F2;color:#0A8F5C;padding:2px 6px;border-radius:5px;margin-left:6px;">+'+fmt(cb.alloc)+' annexes</span>';
+      html += '<div style="padding:12px 0;border-bottom:.5px solid var(--border);">'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">'+
+          '<div style="width:30px;height:30px;border-radius:8px;background:'+catInfo.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+            catInfo.icon.replace(/width="20" height="20"/g,'width="14" height="14"')+
+          '</div>'+
+          '<span style="font-size:13px;font-weight:500;color:var(--text);flex:1;">'+cb.label+badges+'</span>'+
+          '<span style="font-size:13px;font-weight:700;color:'+barColor+';">'+fmt(cb.spent)+' / '+fmt(cb.budget)+'</span>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-left:40px;">'+
+          '<div style="flex:1;height:5px;background:#F0F0F0;border-radius:3px;overflow:hidden;">'+
+            '<div style="width:'+fillPct+'%;height:100%;background:'+barColor+';border-radius:3px;"></div>'+
+          '</div>'+
+          '<span style="font-size:11px;font-weight:700;color:'+barColor+';min-width:32px;text-align:right;">'+fillPct+'%</span>'+
+        '</div>'+
+        '<div style="font-size:10px;color:var(--muted);margin-top:4px;margin-left:40px;">'+
+          (cb.over?'<span style="color:#E03E3E;font-weight:600;">Budget dépassé de '+fmt(cb.overAmt)+'</span>':'Reste '+fmt(cb.remaining)+' · '+cb.pct+'% du budget')+
+        '</div>'+
+      '</div>';
+    });
+  }
+
+  /* ── REVENUS ANNEXES ── */
+  if(snap.extraItems&&snap.extraItems.length>0){
+    html += detailSection('Revenus complémentaires','#E8F9F2',
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M5 10l7-7 7 7" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    var sortedRev = snap.extraItems.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+    sortedRev.forEach(function(e){
+      var dateStr='';
+      if(e.date){ if(e.date.indexOf('-')!==-1){var dp=e.date.split('-');dateStr=dp[2]+'/'+dp[1]+'/'+dp[0];}else dateStr=e.date; }
+      html += detailRowIcon(revIcon,'#E8F9F2', e.desc||'Sans description', '+'+fmt(e.amt), '#0A8F5C', dateStr||null);
+    });
+    html += detailTotal('Total revenus annexes', '+'+fmt(snap.totalRev), '#0A8F5C');
+  }
+
+  /* ── DISTRIBUTION DU SOLDE LIBRE ── */
+  var snapSoldeAlloc = snap.soldeAllocations || {};
+  var snapRevAlloc   = snap.revAllocations   || {};
+  var soldeAllocKeys = Object.keys(snapSoldeAlloc);
+  if(soldeAllocKeys.length > 0){
+    var soldeAllocNames = {'epargne-sec':'Épargne sécurité','epargne-proj':'Épargne projets','loisirs':'Loisirs & plaisirs'};
+    var totalSoldeAllocSnap = soldeAllocKeys.reduce(function(s,k){ return s+(snapSoldeAlloc[k]||0); },0);
+    html += detailSection('Distribution du solde libre','#F0EFFF',
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 22V12M12 12L7 17M12 12l5 5" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4H4" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>');
+    soldeAllocKeys.forEach(function(k){
+      html += detailRow(soldeAllocNames[k]||k, fmt(snapSoldeAlloc[k]||0), '#4F46E5');
+    });
+    html += detailTotal('Total alloué', fmt(totalSoldeAllocSnap), '#4F46E5');
+
+    /* ── Récap combiné (solde + revenus annexes) par catégorie ── */
+    var allKeys = ['epargne-sec','epargne-proj','loisirs'];
+    var hasRevAlloc = allKeys.some(function(k){ return snapRevAlloc[k] > 0; });
+    var hasCombined = allKeys.some(function(k){ return (snapSoldeAlloc[k]||0)+(snapRevAlloc[k]||0) > 0; });
+
+    if(hasCombined){
+      html += '<div style="background:#F0EFFF;border-radius:12px;padding:12px 14px;margin-top:10px;">'+
+        '<div style="font-size:12px;font-weight:700;color:#4F46E5;margin-bottom:10px;">Total placé par catégorie'+(hasRevAlloc?' (solde + revenus annexes)':'')+'</div>';
+      allKeys.forEach(function(k){
+        var fromSolde = snapSoldeAlloc[k] || 0;
+        var fromRev   = snapRevAlloc[k]   || 0;
+        var total     = fromSolde + fromRev;
+        if(total <= 0) return;
+        var label = soldeAllocNames[k]||k;
+        html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:.5px solid rgba(79,70,229,.15);">'+
+          '<div>'+
+            '<div style="font-size:13px;font-weight:500;color:#3730A3;">'+label+'</div>'+
+            (fromSolde>0&&fromRev>0
+              ? '<div style="font-size:10px;color:#6B63C4;margin-top:2px;">Solde : '+fmt(fromSolde)+(fromRev>0?' · Annexes : +'+fmt(fromRev):'')+'</div>'
+              : fromRev>0 ? '<div style="font-size:10px;color:#6B63C4;margin-top:2px;">Depuis revenus annexes</div>' : '')+
+          '</div>'+
+          '<span style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:700;color:#4F46E5;white-space:nowrap;margin-left:12px;">'+fmt(total)+'</span>'+
+        '</div>';
+      });
+      var grandTotal = allKeys.reduce(function(s,k){ return s+(snapSoldeAlloc[k]||0)+(snapRevAlloc[k]||0); },0);
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding-top:9px;">'+
+        '<span style="font-size:13px;font-weight:700;color:#3730A3;">Total épargné &amp; alloué</span>'+
+        '<span style="font-family:\'Poppins\',sans-serif;font-size:16px;font-weight:700;color:#4F46E5;">'+fmt(grandTotal)+'</span>'+
+      '</div>'+
+      '</div>';
+    }
+  }
+
+  /* ── DÉPENSES DÉTAILLÉES ── */
+  html += detailSection('Dépenses détaillées','#FFF4E5',
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L3 13V3h10l7.59 7.59a2 2 0 0 1 0 2.82z" stroke="#C47A30" stroke-width="1.5" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.5" fill="#C47A30"/></svg>');
+  if(snap.depenses&&snap.depenses.length>0){
+    var sortedDep = snap.depenses.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+    var catMap={};
+    categories.forEach(function(c){ catMap[c.key]=c.label; });
+    sortedDep.forEach(function(d){
+      var dateStr='';
+      if(d.date){ if(d.date.indexOf('-')!==-1){var dp=d.date.split('-');dateStr=dp[2]+'/'+dp[1]+'/'+dp[0];}else dateStr=d.date; }
+      var catLabel = catMap[d.cat]||d.cat;
+      var catInfo  = catIconMap[d.cat] || {icon:'', bg:'#F0F0F0'};
+      html += detailRowIcon(catInfo.icon, catInfo.bg, d.desc||'Sans description', fmt(d.amt), '#C47A30', catLabel+(dateStr?' · '+dateStr:''));
+    });
+    html += detailTotal('Total dépenses', fmt(snap.totalDep), '#C47A30');
+  } else {
+    html += '<div style="font-size:12px;color:var(--muted);font-style:italic;padding:8px 0;">Aucune dépense enregistrée</div>';
+  }
+
+  html += '</div></div>';
+  overlay.setAttribute('data-overlay','1');
+  overlay.innerHTML = html;
+  overlay.addEventListener('click',function(e){ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+function section(title){
+  return '<div style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin:18px 0 10px;">'+title+'</div>';
+}
+function row(label,val,color){
+  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:.5px solid var(--border);">'+
+    '<span style="font-size:12px;color:var(--text);">'+label+'</span>'+
+    '<span style="font-size:13px;font-weight:600;color:'+color+';white-space:nowrap;margin-left:12px;">'+val+'</span>'+
+  '</div>';
+}
+function rowTotal(label,val,color){
+  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-top:2px;">'+
+    '<span style="font-size:12px;font-weight:600;color:var(--text);">'+label+'</span>'+
+    '<span style="font-size:14px;font-weight:700;color:'+color+';white-space:nowrap;margin-left:12px;">'+val+'</span>'+
+  '</div>';
+}
+
+function snip(label,val,color){
+  return '<div style="background:var(--bg);border-radius:10px;padding:9px 11px;border:.5px solid var(--border);">'+
+    '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">'+label+'</div>'+
+    '<div style="font-size:15px;font-weight:600;color:'+color+';font-family:\'Poppins\',sans-serif;">'+val+'</div>'+
+  '</div>';
+}
+
+function deleteSnapshot(key){
+  if(!confirm('Supprimer ce mois ?')) return;
+  var snaps = getSnapshots().filter(function(s){ return s.key!==key; });
+  saveSnapshots(snaps);
+  renderSnapshots();
+  if(document.getElementById('stab-annual').style.display!=='none') renderAnnual();
+}
+
+function renderAnnual(){
+  var snaps = getSnapshots();
+  var el    = document.getElementById('annual-content');
+  if(!el) return;
+
+  if(snaps.length===0){
+    el.innerHTML='<div style="text-align:center;padding:40px 0;font-size:13px;color:var(--muted);font-style:italic;">Exporte au moins un mois pour voir les statistiques annuelles.</div>';
+    return;
+  }
+
+  var totalEp=0,totalDep=0,totalRev=0,totalSalary=0;
+  var maxDep={label:'—',val:0}, minDep={label:'—',val:Infinity};
+  snaps.forEach(function(s){
+    totalEp+=s.epargne; totalDep+=s.totalDep; totalRev+=s.totalRev; totalSalary+=s.salary;
+    if(s.totalDep>maxDep.val){maxDep={label:s.label,val:s.totalDep};}
+    if(s.totalDep<minDep.val){minDep={label:s.label,val:s.totalDep};}
+  });
+  var avgTaux = totalSalary>0 ? Math.round(totalEp/totalSalary*100) : 0;
+  var maxBar  = Math.max.apply(null, snaps.map(function(s){return s.totalDep+s.epargne;})) || 1;
+
+  /* Résumé */
+  var html = '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px;">'+
+    snip('Épargne cumulée',fmt(totalEp),'#2A9E72')+
+    snip('Dépenses cumulées',fmt(totalDep),'#E03E3E')+
+    snip('Revenus annexes','+'+fmt(totalRev),'#4F46E5')+
+    snip('Taux moy. épargne',avgTaux+' %','#2A9E72')+
+  '</div>';
+
+  /* Graphique barres */
+  html += '<div class="card" style="margin-bottom:14px;padding:14px 16px;">'+
+    '<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Dépenses vs épargne par mois</div>'+
+    '<div style="font-size:11px;color:var(--muted);margin-bottom:12px;">'+snaps.length+' mois enregistrés</div>'+
+    '<div style="display:flex;align-items:flex-end;gap:6px;height:90px;">';
+  snaps.forEach(function(s){
+    var depH  = Math.round((s.totalDep/maxBar)*80);
+    var epH   = Math.round((s.epargne/maxBar)*80);
+    var shortL= s.label.substring(0,3);
+    html += '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">'+
+      '<div style="width:100%;border-radius:4px 4px 0 0;height:'+depH+'px;background:#E03E3E;opacity:.75;"></div>'+
+      '<div style="width:100%;border-radius:4px 4px 0 0;height:'+epH+'px;background:#2A9E72;margin-top:2px;"></div>'+
+      '<div style="font-size:9px;color:var(--muted);margin-top:2px;">'+shortL+'</div>'+
+    '</div>';
+  });
+  html += '</div>'+
+    '<div style="display:flex;gap:14px;margin-top:10px;">'+
+      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#E03E3E;opacity:.75;"></div><span style="font-size:11px;color:var(--muted);">Dépenses</span></div>'+
+      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:2px;background:#2A9E72;"></div><span style="font-size:11px;color:var(--muted);">Épargne</span></div>'+
+    '</div>'+
+  '</div>';
+
+  /* Stats clés */
+  html += '<div class="card" style="padding:14px 16px;">'+
+    '<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:12px;">Points clés</div>';
+  var rows=[
+    ['Mois le plus dépensier', maxDep.label+' — '+fmt(maxDep.val)],
+    ['Mois le plus économe',   minDep.label+' — '+fmt(minDep.val)],
+    ['Revenus annexes cumulés','+'+fmt(totalRev)],
+    ['Mois exportés',          snaps.length+' / 12'],
+  ];
+  rows.forEach(function(r,i){
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;'+(i<rows.length-1?'border-bottom:.5px solid var(--border);':'')+'">'+
+      '<span style="font-size:12px;color:var(--muted);">'+r[0]+'</span>'+
+      '<span style="font-size:12px;font-weight:600;color:var(--text);">'+r[1]+'</span>'+
+    '</div>';
+  });
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
 function renderStats(){
   /* Period banner */
   var pStart=document.getElementById('period-start').value;
@@ -1284,13 +2681,21 @@ function renderStats(){
   var extraTotalAmt=extraItems.reduce(function(s,e){return s+e.amt;},0);
   var totalRevenus=salary+extraTotalAmt,totalDep=0;
   for(var i=0;i<depenses.length;i++)totalDep+=depenses[i].amt;
-  var solde=reste-totalDep;
 
+  var totalAlloue = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+  var freeRev     = Math.max(0, extraTotalAmt - totalAlloue); /* annexes non encore allouées */
+
+  var soldeBase  = reste - totalDep;
+  var soldeTotal = salary + freeRev - charges - totalDep; /* exclut les annexes déjà placées */
   var metrics=[
     {label:'Revenus totaux',           value:fmt(totalRevenus),cls:'green',sub:'Salaire + annexes'},
     {label:'Charges fixes',            value:fmt(charges),     cls:'amber',sub:'Pr\u00e9lev\u00e9es chaque mois'},
     {label:'Total d\u00e9pens\u00e9', value:fmt(totalDep),    cls:'blue', sub:depenses.length+' d\u00e9pense'+(depenses.length>1?'s':'')},
-    {label:'Solde restant',            value:fmt(solde),       cls:solde>=0?'green':'red',sub:solde>=0?'Disponible':'D\u00e9pass\u00e9'}
+    {label:'Solde restant',            value:fmt(soldeTotal),  cls:soldeTotal>=0?'green':'red',
+     sub:(soldeTotal>=0?'Disponible':'D\u00e9pass\u00e9')+
+         (totalAlloue>0
+           ? ' &bull; <span style="color:#0A8F5C;">'+fmt(totalAlloue)+' allou\u00e9s dans les cat\u00e9gories</span>'
+           : (extraTotalAmt>0 ? ' &bull; Annexes libres\u00a0: +'+fmt(extraTotalAmt) : ''))}
   ];
   var metricsEl=document.getElementById('stats-metrics');metricsEl.innerHTML='';
   for(var i=0;i<metrics.length;i++){
@@ -1326,6 +2731,7 @@ function renderStats(){
   }
 
   renderChargesStats();
+  renderAllocStats();
   rebuildGridColors();
   var catsEl=document.getElementById('stats-cats');catsEl.innerHTML='';
   var catData=categories.map(function(cat){
@@ -1342,7 +2748,8 @@ function renderStats(){
     var maxSpent=catData[0].spent;
     for(var i=0;i<catData.length;i++){
       var c=catData[i];if(c.spent===0)continue;
-      var budget=reste*c.cat.pct;
+      var budget=getCatBudget(c.cat,reste);
+      var alloc=getCatAllocation(c.cat.key);
       var pctOfDep=totalDep>0?((c.spent/totalDep)*100).toFixed(0):0;
       var pctOfBudget=budget>0?Math.min((c.spent/budget)*100,100):0;
       var baseColor=c.cat.palColor;var barColor=pctOfBudget>=100?'#E24B4A':pctOfBudget>=75?'#EF9F27':baseColor;
@@ -1354,7 +2761,8 @@ function renderStats(){
       var badge=!isOver
         ?'<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="flex-shrink:0;margin-left:6px;"><circle cx="14" cy="14" r="10" stroke="#E8F9F2" stroke-width="2.5"/><circle cx="14" cy="14" r="10" stroke="#2A9E72" stroke-width="2.5" stroke-dasharray="'+arc.toFixed(2)+' '+full.toFixed(2)+'" stroke-linecap="round" transform="rotate(-90 14 14)"/><path d="M10 14l3 3 5-5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         :'<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="flex-shrink:0;margin-left:6px;"><circle cx="14" cy="14" r="10" stroke="#FDECEC" stroke-width="2.5"/><circle cx="14" cy="14" r="10" stroke="#E03E3E" stroke-width="2.5" stroke-dasharray="'+full.toFixed(2)+' '+full.toFixed(2)+'" stroke-linecap="round" transform="rotate(-90 14 14)"/><path d="M10.5 10.5l7 7M17.5 10.5l-7 7" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>';
-      var detailLine='<span style="font-size:11px;color:var(--muted);">Budget : '+fmt(budget)+'</span>';
+      var allocNote=alloc>0?' &bull; <span style="color:#0A8F5C;font-weight:600;">+'+fmt(alloc)+' annexes</span>':'';
+      var detailLine='<span style="font-size:11px;color:var(--muted);">Budget : '+fmt(budget)+allocNote+'</span>';
       var bigLine=isOver
         ?'<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:500;color:#E24B4A;margin-top:2px;">+'+fmt(Math.abs(restantCat))+' d\u00e9pass\u00e9 ('+overPct+' %)</div>'
         :'<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:500;color:#2D6A4F;margin-top:2px;">'+fmt(Math.abs(restantCat))+' restant</div>';
@@ -1375,12 +2783,18 @@ function renderStats(){
   }
 
   var soldeEl=document.getElementById('stats-solde');soldeEl.innerHTML='';
-  var pctDep=reste>0?Math.min((totalDep/reste)*100,100):0,pctLeft=Math.max(100-pctDep,0);
-  var soldeColor=solde<0?'#E24B4A':solde<reste*0.1?'#EF9F27':'#2D6A4F';
+  var totalAlloueLocal = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+  var freeRevLocal = Math.max(0, extraTotalAmt - totalAlloueLocal);
+  var budgetTotal = reste + freeRevLocal; /* exclut les annexes déjà bloquées */
+  var solde = budgetTotal - totalDep;
+  var pctDep=budgetTotal>0?Math.min((totalDep/budgetTotal)*100,100):0,pctLeft=Math.max(100-pctDep,0);
+  var soldeColor=solde<0?'#E24B4A':solde<budgetTotal*0.1?'#EF9F27':'#2D6A4F';
+  var budgetLabel = 'Budget disponible'+(freeRevLocal>0?' (dont +'+fmt(freeRevLocal)+' annexes)':'');
+  if(totalAlloueLocal>0) budgetLabel += ' &bull; <span style="color:#0A8F5C;font-size:10px;">'+fmt(totalAlloueLocal)+' alloués dans catégories</span>';
   var srows=[
-    {label:'Budget disponible',amt:fmt(reste),color:'#2D6A4F',bold:false},
+    {label:budgetLabel,amt:fmt(budgetTotal),color:'#2D6A4F',bold:false},
     {label:'D\u00e9pens\u00e9',amt:fmt(totalDep),color:'#4F46E5',bold:false},
-    {label:'Restant',amt:fmt(solde),color:soldeColor,bold:true}
+    {label:'Restant libre',amt:fmt(solde),color:soldeColor,bold:true}
   ];
   for(var i=0;i<srows.length;i++){
     var r2=srows[i],row=document.createElement('div');row.className='stat-solde-row';
@@ -1407,21 +2821,148 @@ function renderStats(){
   }else{
     suggestTitle.style.display='block';
     var suggs=[
-      {label:'\u00c9pargne s\u00e9curit\u00e9',desc:'Garder en r\u00e9serve pour les impr\u00e9vus et la tranquillit\u00e9 d\'esprit',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>',pct:0.40,bg:'#F7F5FF',color:'#3730A3'},
-      {label:'\u00c9pargne projets',desc:'Voyage, achat on\u00e9reux, console\u2026',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',pct:0.35,bg:'#F7F5FF',color:'#3730A3'},
-      {label:'Loisirs & plaisirs',desc:'Sortie, resto, divertissement, jeux',icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4A2D8B" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#4A2D8B" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#4A2D8B"/><circle cx="12.5" cy="8" r="1" fill="#4A2D8B"/></svg>',pct:0.25,bg:'#FEF4F9',color:'#4A2D8B'}
+      {key:'epargne-sec', label:'Épargne sécurité',  desc:'Garder en réserve pour les imprévus et la tranquillité d\'esprit', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>', pct:0.40, bg:'#F7F5FF', color:'#3730A3'},
+      {key:'epargne-proj', label:'Épargne projets',  desc:'Voyage, achat onéreux, console…', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>', pct:0.35, bg:'#F7F5FF', color:'#3730A3'},
+      {key:'loisirs',     label:'Loisirs & plaisirs', desc:'Sortie, resto, divertissement, jeux', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4A2D8B" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#4A2D8B" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#4A2D8B"/><circle cx="12.5" cy="8" r="1" fill="#4A2D8B"/></svg>', pct:0.25, bg:'#FEF4F9', color:'#4A2D8B'}
     ];
+
+    /* Barre de progression globale */
+    var totalSoldeAlloc = suggs.reduce(function(s,sg){ return s+(soldeAllocations[sg.key]||0); },0);
+    var soldeRestant    = Math.max(0, solde - totalSoldeAlloc);
+    var progPct         = solde>0 ? Math.min((totalSoldeAlloc/solde)*100,100) : 0;
+    var progColor       = progPct>=100 ? '#2A9E72' : progPct>=50 ? '#4F46E5' : '#C47A30';
+
+    var progEl = document.createElement('div');
+    progEl.className = 'card';
+    progEl.style.cssText = 'padding:0;overflow:hidden;margin-bottom:0;border-radius:14px 14px 0 0;';
+
+    /* Header barre de progression */
+    var progHeader = document.createElement('div');
+    progHeader.style.cssText = 'padding:14px 16px;border-bottom:.5px solid var(--border);';
+    progHeader.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">'+
+        '<span style="font-size:13px;font-weight:600;color:var(--text);">Distribution du solde libre</span>'+
+        '<span style="font-size:13px;font-weight:600;color:'+progColor+';">'+fmt(soldeRestant)+' restant</span>'+
+      '</div>'+
+      '<div style="height:5px;background:#F0F0F0;border-radius:3px;overflow:hidden;margin-bottom:6px;">'+
+        '<div style="width:'+progPct.toFixed(1)+'%;height:100%;background:'+progColor+';border-radius:3px;transition:width .4s;"></div>'+
+      '</div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">'+
+        '<span>'+fmt(totalSoldeAlloc)+' distribués</span>'+
+        '<span>sur '+fmt(solde)+' libres</span>'+
+      '</div>';
+    progEl.appendChild(progHeader);
+    suggestEl.appendChild(progEl);
+
+    /* Fond légèrement teinté pour les lignes */
+    var rowsWrap = document.createElement('div');
+    rowsWrap.style.cssText = 'background:#F8F8FA;border-radius:0 0 14px 14px;border:.5px solid var(--border);border-top:none;padding:8px 12px 12px;margin-bottom:0;';
+    suggestEl.appendChild(rowsWrap);
+
     for(var si=0;si<suggs.length;si++){
-      var sg=suggs[si],amt2=solde*sg.pct;
-      var sdiv=document.createElement('div');sdiv.className='suggest-card';
-      sdiv.style.background=sg.bg;
-      sdiv.style.border='1.5px solid '+sg.color+'33';
-      sdiv.style.boxShadow='0 2px 8px '+sg.color+'18';
-      sdiv.innerHTML='<div class="suggest-icon">'+sg.icon+'</div>'+
-        '<div class="suggest-info"><div class="suggest-label" style="color:'+sg.color+';">'+sg.label+'</div>'+
-        '<div class="suggest-desc">'+sg.desc+'</div></div>'+
-        '<div class="suggest-amt" style="color:'+sg.color+';">'+fmt(amt2)+'</div>';
-      suggestEl.appendChild(sdiv);
+      (function(sg){
+        var isAlloc   = soldeAllocations.hasOwnProperty(sg.key);
+        var allocAmt  = isAlloc ? soldeAllocations[sg.key] : 0;
+        var suggested = isAlloc ? allocAmt : Math.round(solde * sg.pct * 100)/100;
+        var canSend   = !isAlloc && soldeRestant > 0;
+
+        var sdiv = document.createElement('div');
+        sdiv.style.cssText = 'background:var(--surface);border-radius:11px;padding:12px 14px;margin-top:8px;border:.5px solid var(--border);';
+
+        /* Ligne principale : icône + nom + badge + montant + bouton — tous alignés */
+        sdiv.innerHTML =
+          '<div style="display:flex;align-items:center;gap:10px;margin-bottom:'+(canSend||isAlloc?'10px':'0')+';">'+
+            '<div style="width:34px;height:34px;border-radius:9px;background:'+sg.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+sg.icon+'</div>'+
+            '<div style="flex:1;min-width:0;">'+
+              '<div style="font-size:13px;font-weight:600;color:'+sg.color+';">'+sg.label+
+                (isAlloc
+                  ? ' <span style="font-size:10px;font-weight:600;background:#E8F9F2;color:#0A8F5C;border-radius:5px;padding:2px 7px;vertical-align:middle;">✓ Alloué</span>'
+                  : ' <span style="font-size:10px;font-weight:600;background:'+sg.bg+';color:'+sg.color+';border-radius:5px;padding:2px 7px;border:1px solid '+sg.color+'33;vertical-align:middle;">Requis</span>')+
+              '</div>'+
+              '<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+sg.desc+'</div>'+
+            '</div>'+
+            '<div style="text-align:right;flex-shrink:0;min-width:80px;">'+
+              '<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:700;color:'+(isAlloc?'#0A8F5C':sg.color)+';">'+fmt(isAlloc?allocAmt:suggested)+'</div>'+
+              '<div style="font-size:10px;color:var(--muted);">'+(isAlloc?'alloué':'conseillé')+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div id="solde-btn-wrap-'+sg.key+'"></div>';
+
+        rowsWrap.appendChild(sdiv);
+
+        /* Boutons */
+        var bw = sdiv.querySelector('#solde-btn-wrap-'+sg.key);
+        var btnStyle = 'flex:1;padding:9px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;';
+
+        if(isAlloc){
+          bw.innerHTML=
+            '<div style="display:flex;gap:8px;">'+
+              '<button id="solde-edit-'+sg.key+'" style="'+btnStyle+'border:1.5px solid '+sg.color+';background:'+sg.bg+';color:'+sg.color+';">✎ Modifier le montant</button>'+
+              '<button id="solde-undo-'+sg.key+'" style="padding:9px 13px;border-radius:9px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;flex-shrink:0;">↩</button>'+
+            '</div>'+
+            '<div id="solde-input-'+sg.key+'" style="display:none;margin-top:8px;">'+
+              '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Modifier (max '+fmt(soldeRestant+allocAmt)+') :</div>'+
+              '<div style="display:flex;gap:8px;">'+
+                '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+sg.color+';border-radius:9px;padding:0 12px;">'+
+                  '<span style="color:var(--muted);">€</span>'+
+                  '<input id="solde-amt-'+sg.key+'" type="number" min="0.01" step="0.01" max="'+(soldeRestant+allocAmt).toFixed(2)+'" value="'+allocAmt.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
+                '</div>'+
+                '<button id="solde-confirm-'+sg.key+'" style="padding:9px 14px;border-radius:9px;background:'+sg.bg+';color:'+sg.color+';font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid '+sg.color+';font-family:\'Poppins\',sans-serif;">✓</button>'+
+                '<button id="solde-cancel-'+sg.key+'" style="padding:9px 12px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:\'Poppins\',sans-serif;">✕</button>'+
+              '</div>'+
+            '</div>';
+
+          sdiv.querySelector('#solde-edit-'+sg.key).onclick = function(k){ return function(){
+            var z=document.getElementById('solde-input-'+k); z.style.display=z.style.display==='none'?'block':'none';
+          };}(sg.key);
+          sdiv.querySelector('#solde-undo-'+sg.key).onclick = function(k){ return function(){
+            delete soldeAllocations[k]; saveData(); renderStats(); updateExportBtn();
+          };}(sg.key);
+          sdiv.querySelector('#solde-confirm-'+sg.key).onclick = function(k,max){ return function(){
+            var val=parseFloat(document.getElementById('solde-amt-'+k).value);
+            if(isNaN(val)||val<=0) return;
+            if(val>max+0.01){alert('Montant supérieur au disponible ('+fmt(max)+')');return;}
+            soldeAllocations[k]=Math.round(val*100)/100; saveData(); renderStats(); updateExportBtn();
+          };}(sg.key, soldeRestant+allocAmt);
+          sdiv.querySelector('#solde-cancel-'+sg.key).onclick = function(k){ return function(){
+            document.getElementById('solde-input-'+k).style.display='none';
+          };}(sg.key);
+
+        } else {
+          bw.innerHTML=
+            '<button id="solde-send-'+sg.key+'" '+(canSend?'':'disabled')+' style="width:100%;padding:9px;border-radius:9px;background:'+(canSend?sg.bg:'#F5F5F5')+';color:'+(canSend?sg.color:'#BBBBBB')+';font-size:12px;font-weight:600;cursor:'+(canSend?'pointer':'not-allowed')+';border:1.5px solid '+(canSend?sg.color+'44':'#E8E8E8')+';font-family:\'Poppins\',sans-serif;">'+
+              (canSend?'→ Allouer '+fmt(suggested)+' à ce poste':'Plus de solde disponible')+
+            '</button>'+
+            (canSend?
+              '<div id="solde-input-'+sg.key+'" style="display:none;margin-top:8px;">'+
+                '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Choisir le montant (conseillé : '+fmt(suggested)+', max : '+fmt(soldeRestant)+') :</div>'+
+                '<div style="display:flex;gap:8px;">'+
+                  '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+sg.color+';border-radius:9px;padding:0 12px;">'+
+                    '<span style="color:var(--muted);">€</span>'+
+                    '<input id="solde-amt-'+sg.key+'" type="number" min="0.01" step="0.01" max="'+soldeRestant.toFixed(2)+'" value="'+suggested.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
+                  '</div>'+
+                  '<button id="solde-confirm-'+sg.key+'" style="padding:9px 14px;border-radius:9px;background:'+sg.bg+';color:'+sg.color+';font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid '+sg.color+';font-family:\'Poppins\',sans-serif;">✓</button>'+
+                  '<button id="solde-cancel-'+sg.key+'" style="padding:9px 12px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:\'Poppins\',sans-serif;">✕</button>'+
+                '</div>'+
+              '</div>'
+            :'');
+
+          if(canSend){
+            sdiv.querySelector('#solde-send-'+sg.key).onclick = function(k){ return function(){
+              var z=document.getElementById('solde-input-'+k); if(z) z.style.display=z.style.display==='none'?'block':'none';
+            };}(sg.key);
+            sdiv.querySelector('#solde-confirm-'+sg.key).onclick = function(k,max){ return function(){
+              var val=parseFloat(document.getElementById('solde-amt-'+k).value);
+              if(isNaN(val)||val<=0) return;
+              if(val>max+0.01){alert('Montant supérieur au disponible ('+fmt(max)+')');return;}
+              soldeAllocations[k]=Math.round(val*100)/100; saveData(); renderStats(); updateExportBtn();
+            };}(sg.key, soldeRestant);
+            sdiv.querySelector('#solde-cancel-'+sg.key).onclick = function(k){ return function(){
+              document.getElementById('solde-input-'+k).style.display='none';
+            };}(sg.key);
+          }
+        }
+      })(suggs[si]);
     }
   }
   renderPie();
@@ -1556,7 +3097,9 @@ document.getElementById('dep-submit').addEventListener('click',function(){
   renderDetails();
   if(document.getElementById('sub-categories').classList.contains('active'))renderCatSummary();
   refreshStats();saveData();
-  document.getElementById('dep-amt').focus();
+  /* Ferme le clavier sur mobile */
+  document.activeElement && document.activeElement.blur();
+  document.getElementById('dep-amt').blur();
 });
 document.getElementById('dep-list').addEventListener('click',function(e){
   var btn=e.target.closest('[data-dep]');if(!btn)return;
@@ -1652,6 +3195,8 @@ function saveData(){
       charges: chargeItems,
       extras: extraItems,
       depenses: depenses,
+      revAllocations: revAllocations,
+      soldeAllocations: soldeAllocations,
       periodStart: document.getElementById('period-start').value,
       periodEnd: document.getElementById('period-end').value
     };
@@ -1668,6 +3213,8 @@ function loadData(){
     if(data.charges && Array.isArray(data.charges)) chargeItems = data.charges;
     if(data.extras && Array.isArray(data.extras)) extraItems = data.extras;
     if(data.depenses && Array.isArray(data.depenses)) depenses = data.depenses;
+    if(data.revAllocations && typeof data.revAllocations === 'object') revAllocations = data.revAllocations;
+    if(data.soldeAllocations && typeof data.soldeAllocations === 'object') soldeAllocations = data.soldeAllocations;
     if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
     if(data.periodEnd) document.getElementById('period-end').value = data.periodEnd;
     return true;
@@ -1680,6 +3227,8 @@ function exportJSON(){
     charges: chargeItems,
     extras: extraItems,
     depenses: depenses,
+    revAllocations: revAllocations,
+    soldeAllocations: soldeAllocations,
     periodStart: document.getElementById('period-start').value,
     periodEnd: document.getElementById('period-end').value,
     exportDate: new Date().toISOString()
@@ -1703,6 +3252,7 @@ function importJSON(file){
       if(data.charges && Array.isArray(data.charges)) chargeItems = data.charges;
       if(data.extras) extraItems = data.extras;
       if(data.depenses) depenses = data.depenses;
+      if(data.revAllocations && typeof data.revAllocations === 'object') revAllocations = data.revAllocations;
       if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
       if(data.periodEnd) document.getElementById('period-end').value = data.periodEnd;
       renderCharges();
@@ -1744,18 +3294,45 @@ document.getElementById('period-start').addEventListener('change', saveData);
 document.getElementById('period-end').addEventListener('change', saveData);
 
 
-document.getElementById('reset-btn').addEventListener('click',function(){
-  if(!confirm('Nouveau mois ? Les revenus compl\u00e9mentaires, les d\u00e9penses et la p\u00e9riode seront effac\u00e9s. Le salaire et les charges sont conserv\u00e9s.')) return;
+function openResetModal(){
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML =
+    '<div style="background:var(--surface);border-radius:20px;padding:28px 24px;max-width:360px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.18);">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">'+
+        '<div style="width:38px;height:38px;border-radius:10px;background:#FEF0F0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/><path d="M19 6l-1 14H6L5 6" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v5M14 11v5" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>'+
+        '</div>'+
+        '<div style="font-size:17px;font-weight:700;color:var(--text);">Effacer les données du mois ?</div>'+
+      '</div>'+
+      '<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:8px;">Cette action va supprimer :</div>'+
+      '<ul style="font-size:13px;color:var(--text);line-height:1.9;margin:0 0 8px 18px;">'+
+        '<li>Le salaire du mois en cours</li>'+
+        '<li>Tous les revenus complémentaires</li>'+
+        '<li>Toutes les dépenses enregistrées</li>'+
+        '<li>Les allocations de revenus et de solde</li>'+
+      '</ul>'+
+      '<div style="font-size:12px;color:#2A9E72;font-weight:600;margin-bottom:24px;padding:10px 12px;background:#E8F9F2;border-radius:9px;">'+
+        '✓ Tes charges fixes et tes budgets établis seront conservés.'+
+      '</div>'+
+      '<div style="display:flex;gap:10px;">'+
+        '<button onclick="confirmResetMonth();this.closest(\'[data-reset-overlay]\').remove();" style="flex:1;padding:13px;border-radius:12px;border:none;background:#4F46E5;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:\'Poppins\',sans-serif;">Oui, effacer</button>'+
+        '<button onclick="this.closest(\'[data-reset-overlay]\').remove();" style="flex:1;padding:13px;border-radius:12px;border:none;background:#E03E3E;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:\'Poppins\',sans-serif;">Annuler</button>'+
+      '</div>'+
+    '</div>';
+  overlay.setAttribute('data-reset-overlay','1');
+  overlay.addEventListener('click',function(e){ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
 
-  /* Reset salary */
+function confirmResetMonth(){
   document.getElementById('salary').value = '';
-
-  /* Reset extra income */
   extraItems = [];
   renderExtra();
-
-  /* Reset depenses */
+  renderRevList();
   depenses = [];
+  revAllocations = {};
+  soldeAllocations = {};
   selectedCat = null;
   document.querySelectorAll('.cat-btn').forEach(function(b){
     b.classList.remove('selected');
@@ -1765,65 +3342,21 @@ document.getElementById('reset-btn').addEventListener('click',function(){
   });
   renderDetails();
   if(document.getElementById('sub-categories').classList.contains('active')) renderCatSummary();
-
-  /* Reset period to next month */
   var d = new Date();
   var nextMonth = new Date(d.getFullYear(), d.getMonth()+1, 1);
-  function toISO(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+  function toISO2(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
   var start = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 28);
   var end   = new Date(nextMonth.getFullYear(), nextMonth.getMonth()+1, 27);
-  document.getElementById('period-start').value = toISO(start);
-  document.getElementById('period-end').value   = toISO(end);
+  document.getElementById('period-start').value = toISO2(start);
+  document.getElementById('period-end').value   = toISO2(end);
   updatePeriodSummary();
-
-  /* Reset dep date to today */
   document.getElementById('dep-date').value = todayISO();
-
-  /* Recalculate */
   update();
   refreshStats();
-
-  /* Go back to budget tab */
-  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('tab-budget').classList.add('active');
-  document.querySelectorAll('.tab-btn')[1].classList.add('active');
-});
-
-document.getElementById('export-json-btn').addEventListener('click', exportJSON);
-document.getElementById('import-json-input').addEventListener('change', function(e){
-  if(e.target.files[0]) importJSON(e.target.files[0]);
-  e.target.value = '';
-});
-
-document.getElementById('export-pdf-btn').addEventListener('click',function(){
-  var statsPanel = document.getElementById('tab-stats');
-  var allPanels = document.querySelectorAll('.tab-panel');
-  var allBtns = document.querySelectorAll('.tab-btn');
-  allPanels.forEach(function(p){ p.classList.remove('active'); });
-  allBtns.forEach(function(b){ b.classList.remove('active'); });
-  statsPanel.classList.add('active');
-  allBtns[3] && allBtns[3].classList.add('active');
-  renderStats();
-  setTimeout(function(){
-    /* Convert canvas to image for print */
-    var canvas = document.getElementById('stats-pie');
-    var img = document.getElementById('stats-pie-img');
-    if(canvas && img && canvas.width > 0){
-      img.src = canvas.toDataURL('image/png');
-      img.style.display = 'block';
-    }
-    var pieWrap = document.getElementById('stats-pie-wrap');
-    if(pieWrap) pieWrap.style.display = 'block';
-    setTimeout(function(){
-      window.print();
-      /* Restore after print */
-      setTimeout(function(){
-        if(img) img.style.display = 'none';
-      }, 1000);
-    }, 200);
-  }, 400);
-});
+  saveData();
+  updateExportBtn();
+  showMainTab('budget', document.querySelectorAll('.tab-btn')[1]);
+}
 
 function renderBudgetPie(){
   var canvas=document.getElementById('budget-pie');
@@ -1831,6 +3364,10 @@ function renderBudgetPie(){
   if(!canvas) return;
   var reste=getReste();
   if(reste<=0){legendEl.innerHTML='<span style="font-size:13px;color:var(--muted);">Saisis ton salaire pour voir la répartition.</span>';return;}
+
+  /* Calcul des budgets réels (pct + allocations annexes) */
+  var budgets=categories.map(function(cat){ return getCatBudget(cat,reste); });
+  var totalBudget=budgets.reduce(function(s,b){return s+b;},0)||1;
 
   var dpr=window.devicePixelRatio||1;
   var containerW=canvas.parentElement.clientWidth-40;
@@ -1847,7 +3384,7 @@ function renderBudgetPie(){
   var budgetAngles=[];
   for(var i=0;i<categories.length;i++){
     var cat=categories[i];
-    var slice=cat.pct*2*Math.PI;
+    var slice=(budgets[i]/totalBudget)*2*Math.PI;
     ctx.beginPath();ctx.moveTo(cx,cy);
     ctx.arc(cx,cy,radius,startAngle,startAngle+slice);
     ctx.closePath();
@@ -1879,14 +3416,20 @@ function renderBudgetPie(){
   legendEl.innerHTML='';
   for(var i=0;i<categories.length;i++){
     var cat=categories[i];
+    var alloc=getCatAllocation(cat.key);
+    var catBudget=budgets[i];
+    var realPct=Math.round((catBudget/totalBudget)*100);
+    var allocBadge=alloc>0
+      ? '<span style="font-size:10px;color:#0A8F5C;font-weight:600;margin-left:4px;">+'+fmt(alloc)+'</span>'
+      : '';
     var item=document.createElement('div');
     item.style.cssText='display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:6px;';
     item.innerHTML='<div style="display:flex;align-items:center;gap:8px;">'+
       '<div style="width:18px;height:18px;border-radius:5px;background:'+cat.palColor+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;">'+(i+1)+'</div>'+
       '<span style="color:var(--text);">'+cat.label+'</span></div>'+
-      '<div style="display:flex;gap:12px;align-items:center;">'+
-      '<span style="color:var(--muted);font-size:12px;">'+Math.round(cat.pct*100)+' %</span>'+
-      '<span style="color:'+cat.palColor+';font-weight:600;">'+fmt(reste*cat.pct)+'</span></div>';
+      '<div style="display:flex;gap:8px;align-items:center;">'+
+      '<span style="color:var(--muted);font-size:12px;">'+realPct+' %</span>'+
+      '<span style="color:'+cat.palColor+';font-weight:600;">'+fmt(catBudget)+allocBadge+'</span></div>';
     legendEl.appendChild(item);
   }
 }
@@ -1909,44 +3452,145 @@ var defaultPcts = {
   'loisirs': 19.8, 'transport': 9.9, 'vetements': 9.9, 'imprevus': 10.9
 };
 
+var sliderMode = 'pct'; /* 'pct' | 'eur' */
+
+function toggleSliderMode(){
+  sliderMode = sliderMode === 'pct' ? 'eur' : 'pct';
+  var pctBtn = document.getElementById('slider-mode-pct');
+  var eurBtn = document.getElementById('slider-mode-eur');
+  var hint   = document.getElementById('pct-mode-hint');
+  if(pctBtn) pctBtn.style.background = sliderMode==='pct' ? '#4F46E5' : 'transparent';
+  if(eurBtn) eurBtn.style.background = sliderMode==='eur' ? '#4F46E5' : 'transparent';
+  if(pctBtn) pctBtn.querySelectorAll('circle,path').forEach(function(el){ el.setAttribute('stroke', sliderMode==='pct'?'#fff':'var(--muted)'); });
+  if(eurBtn) eurBtn.querySelectorAll('path').forEach(function(el){ el.setAttribute('stroke', sliderMode==='eur'?'#fff':'var(--muted)'); });
+  if(hint){
+    hint.innerHTML = sliderMode==='pct'
+      ? 'Ajuste les pourcentages selon ton mode de vie. Le total doit faire <strong style="color:var(--text);">100&nbsp;%</strong>. <span style="color:#4F46E5;font-weight:500;">Tape sur la valeur pour saisir précisément.</span>'
+      : 'Ajuste les montants en euros selon ton reste à vivre. Les pourcentages se calculent automatiquement. <span style="color:#4F46E5;font-weight:500;">Tape sur la valeur pour saisir précisément.</span>';
+  }
+  buildPctSliders();
+}
+
+function applySliderValue(key, rawVal){
+  var reste2 = getReste();
+  var val = parseFloat(rawVal);
+  if(isNaN(val) || val < 0) return;
+  var isEur = sliderMode === 'eur';
+  /* Clamp */
+  if(isEur) val = Math.min(val, reste2);
+  else       val = Math.min(Math.max(val, 0.1), 100);
+  /* Update pct */
+  for(var i=0;i<categories.length;i++){
+    if(categories[i].key === key){
+      categories[i].pct = isEur ? (reste2>0 ? val/reste2 : 0) : val/100;
+      break;
+    }
+  }
+  updatePctBadge();
+  buildGrid(); update();
+  buildPctSliders(); /* redraw to sync slider thumb */
+}
+
+function openInlineEdit(key, currentDisplay, color){
+  var span = document.getElementById('pct-val-'+key);
+  if(!span || span.querySelector('input')) return; /* already editing */
+  var isEur = sliderMode === 'eur';
+  var reste2 = getReste();
+  /* Get raw numeric value */
+  var rawNum = isEur
+    ? Math.round(getReste() * (function(){ for(var i=0;i<categories.length;i++) if(categories[i].key===key) return categories[i].pct; return 0; }()) * 100) / 100
+    : Math.round((function(){ for(var i=0;i<categories.length;i++) if(categories[i].key===key) return categories[i].pct; return 0; }()) * 1000) / 10;
+
+  span.innerHTML = '';
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;align-items:center;gap:4px;';
+
+  var inp = document.createElement('input');
+  inp.type = 'number';
+  inp.value = rawNum;
+  inp.min   = isEur ? '0' : '0.1';
+  inp.max   = isEur ? reste2 : '100';
+  inp.step  = isEur ? '0.01' : '0.1';
+  inp.style.cssText = 'width:70px;border:.5px solid '+color+';border-radius:6px;padding:2px 5px;font-size:12px;font-weight:600;color:'+color+';font-family:\'Poppins\',sans-serif;background:transparent;outline:none;text-align:right;';
+
+  var unit = document.createElement('span');
+  unit.style.cssText = 'font-size:12px;font-weight:600;color:'+color+';';
+  unit.textContent   = isEur ? '€' : '%';
+
+  var confirm = function(){
+    applySliderValue(key, parseFloat(inp.value));
+  };
+
+  inp.addEventListener('keydown', function(e){
+    if(e.key === 'Enter')  confirm();
+    if(e.key === 'Escape') buildPctSliders();
+  });
+  inp.addEventListener('blur', confirm);
+
+  wrap.appendChild(inp);
+  wrap.appendChild(unit);
+  span.appendChild(wrap);
+  setTimeout(function(){ inp.focus(); inp.select(); }, 30);
+}
+
 function buildPctSliders(){
   var container = document.getElementById('pct-sliders');
   if(!container) return;
   container.innerHTML = '';
+  var reste = getReste();
+  var isEur = sliderMode === 'eur';
+
   for(var i=0; i<categories.length; i++){
-    var cat = categories[i];
+    var cat    = categories[i];
     var pctVal = Math.round(cat.pct * 1000) / 10;
+    var eurVal = Math.round(reste * cat.pct * 100) / 100;
+    var sliderVal  = isEur ? eurVal   : pctVal;
+    var sliderMin  = isEur ? 0        : 1;
+    var sliderMax  = isEur ? Math.max(Math.round(reste), 100) : 60;
+    var sliderStep = isEur ? 5        : 0.5;
+    var displayStr = isEur ? fmt(eurVal) : pctVal.toFixed(1)+' %';
+
     var row = document.createElement('div');
     row.style.cssText = 'display:flex;align-items:center;gap:10px;';
     row.innerHTML =
-      '<div style="width:28px;height:28px;border-radius:8px;background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+(cat.svgIcon?cat.svgIcon.replace(/width="20" height="20"/g, 'width="14" height="14"'):'')+'</div>'+
+      '<div style="width:28px;height:28px;border-radius:8px;background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+(cat.svgIcon?cat.svgIcon.replace(/width="20" height="20"/g,'width="14" height="14"'):'')+'</div>'+
       '<div style="flex:1;min-width:0;">'+
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'+
           '<span style="font-size:12px;font-weight:500;color:var(--text);">'+cat.label+'</span>'+
-          '<span style="font-size:12px;font-weight:600;color:'+cat.palText+';" id="pct-val-'+cat.key+'">'+pctVal.toFixed(1)+' %</span>'+
+          '<span style="font-size:12px;font-weight:600;color:'+cat.palText+';cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;" id="pct-val-'+cat.key+'" title="Taper pour modifier précisément">'+displayStr+'</span>'+
         '</div>'+
-        '<input type="range" min="1" max="60" step="0.5" value="'+pctVal+'" data-key="'+cat.key+'" class="pct-slider" '+
-          'style="width:100%;height:5px;border-radius:3px;-webkit-appearance:none;background:'+cat.palBg+';outline:none;cursor:pointer;accent-color:'+cat.palColor+';">'+
+        '<input type="range" min="'+sliderMin+'" max="'+sliderMax+'" step="'+sliderStep+'" value="'+sliderVal+'" data-key="'+cat.key+'" class="pct-slider" '+
+          'style="background:'+cat.palBg+';--thumb-color:'+cat.palColor+';">'+
       '</div>';
     container.appendChild(row);
   }
   updatePctBadge();
-  // Add listeners
+
+  /* Listeners slider */
   document.querySelectorAll('.pct-slider').forEach(function(sl){
     sl.addEventListener('input', function(){
       var key = this.dataset.key;
       var val = parseFloat(this.value);
-      // Update category pct
+      var reste2 = getReste();
       for(var i=0;i<categories.length;i++){
         if(categories[i].key === key){
-          categories[i].pct = val / 100;
+          categories[i].pct = isEur ? (reste2>0 ? val/reste2 : 0) : val/100;
           break;
         }
       }
       var span = document.getElementById('pct-val-'+key);
-      if(span) span.textContent = val.toFixed(1)+' %';
+      if(span && !span.querySelector('input')) span.textContent = isEur ? fmt(val) : val.toFixed(1)+' %';
       updatePctBadge();
       buildGrid(); update();
+    });
+  });
+
+  /* Listeners clic sur valeur → saisie précise */
+  categories.forEach(function(cat){
+    var span = document.getElementById('pct-val-'+cat.key);
+    if(span) span.addEventListener('click', function(e){
+      e.stopPropagation();
+      openInlineEdit(cat.key, span.textContent, cat.palText);
     });
   });
 }
@@ -1980,6 +3624,124 @@ buildPctSliders();
 
 // ── Revenus tab ──
 var revExpanded = false;
+function toggleDepList(){
+  var body    = document.getElementById('dep-list-body');
+  var chevron = document.getElementById('dep-list-chevron');
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display      = open ? 'none' : 'block';
+  chevron.style.transform = open ? '' : 'rotate(180deg)';
+}
+
+function toggleCatTooltip(){
+  var tt = document.getElementById('cat-tooltip');
+  if(!tt) return;
+  tt.style.display = tt.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('click', function(e){
+  var wrap = document.getElementById('cat-info-wrap');
+  var tt   = document.getElementById('cat-tooltip');
+  if(wrap && tt && !wrap.contains(e.target)) tt.style.display = 'none';
+});
+
+function toggleDepTips(forceClose){
+  var body    = document.getElementById('dep-tips-body');
+  var chevron = document.getElementById('dep-tips-chevron');
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  if(forceClose || open){
+    body.style.display      = 'none';
+    chevron.style.transform = '';
+  } else {
+    body.style.display      = 'block';
+    chevron.style.transform = 'rotate(180deg)';
+  }
+}
+
+function updateExportBtn(){
+  var btn     = document.getElementById('export-snap-btn');
+  var blocked = document.getElementById('export-snap-blocked');
+  var badge   = document.getElementById('rev-sugg-required-badge');
+  if(!btn) return;
+
+  /* Check 1 : revenus annexes tous distribués */
+  var totalRev    = extraItems.reduce(function(s,e){return s+e.amt;},0);
+  var totalAlloue = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+  var revUnalloc  = totalRev > 0 && Math.abs(totalRev - totalAlloue) > 0.01;
+
+  /* Check 2 : solde libre tous distribués sur les 3 catégories */
+  var totalRevAlloc   = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+  var freeRev         = Math.max(0, totalRev - totalRevAlloc);
+  var solde           = Math.max(0, getReste() + freeRev - depenses.reduce(function(s,d){return s+d.amt;},0));
+  var totalSoldeAlloc = ['epargne-sec','epargne-proj','loisirs'].reduce(function(s,k){return s+(soldeAllocations[k]||0);},0);
+  var soldeUnalloc    = solde > 0 && Math.abs(solde - totalSoldeAlloc) > 0.01;
+
+  var blocked_reason = revUnalloc
+    ? '⚠ Distribue tous tes revenus annexes avant d\'exporter (onglet Revenus → "Où placer cet argent ?")'
+    : soldeUnalloc
+      ? '⚠ Alloue tout ton solde libre aux suggestions avant d\'exporter (onglet Stats → "Suggestions avec le restant")'
+      : '';
+
+  if(revUnalloc || soldeUnalloc){
+    btn.style.background = '#BBBBBB';
+    btn.style.cursor     = 'not-allowed';
+    btn.onclick          = function(){ return false; };
+    if(blocked){ blocked.textContent = blocked_reason; blocked.style.display = 'block'; }
+    if(badge)   badge.style.display  = 'inline-flex';
+  } else {
+    btn.style.background = '#4F46E5';
+    btn.style.cursor     = 'pointer';
+    btn.onclick          = exportSnapshot;
+    if(blocked) blocked.style.display = 'none';
+    if(badge)   badge.style.display   = 'none';
+  }
+}
+
+function toggleRevSuggestions(forceClose){
+  var body    = document.getElementById('rev-sugg-body');
+  var chevron = document.getElementById('rev-sugg-chevron');
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  if(forceClose || open){
+    body.style.display    = 'none';
+    chevron.style.transform = '';
+  } else {
+    body.style.display    = 'block';
+    chevron.style.transform = 'rotate(180deg)';
+  }
+}
+
+function toggleTipsSection(){
+  var body    = document.getElementById('tips-body');
+  var chevron = document.getElementById('tips-chevron');
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display    = open ? 'none' : 'block';
+  chevron.style.transform = open ? '' : 'rotate(180deg)';
+}
+
+var REV_SUGG_THRESHOLD = 0.70; /* afficher une catégorie si dépenses >= 70% du budget alloué */
+var REV_ALWAYS_SHOW    = ['epargne-sec','epargne-proj','loisirs'];
+
+function allocateToCategory(key, amount){
+  revAllocations[key] = amount;
+  saveData();
+  update();
+  renderRevList();
+  updateExportBtn();
+  if(document.getElementById('tab-stats').classList.contains('active')) renderStats();
+}
+
+function deallocateFromCategory(key){
+  delete revAllocations[key];
+  saveData();
+  update();
+  renderRevList();
+  updateExportBtn();
+  if(document.getElementById('tab-stats').classList.contains('active')) renderStats();
+}
+
 function renderRevSuggestions(total){
   var wrap = document.getElementById('rev-suggestions-wrap');
   var list = document.getElementById('rev-suggestions-list');
@@ -1988,33 +3750,195 @@ function renderRevSuggestions(total){
   wrap.style.display = 'block';
   list.innerHTML = '';
 
-  /* Répartition basée sur les pourcentages configurés dans l'onglet Budget */
-  var totalPct = categories.reduce(function(s,c){ return s + c.pct; }, 0) || 1;
+  var reste = getReste();
 
+  /* Calcul du total déjà alloué et du restant à distribuer */
+  var totalAlloue = Object.keys(revAllocations).reduce(function(s, k){ return s + (revAllocations[k] || 0); }, 0);
+  var totalRestant = Math.max(0, total - totalAlloue);
+
+  /* Barre de progression globale */
+  var progPct = total > 0 ? Math.min((totalAlloue / total) * 100, 100) : 0;
+  var progColor = progPct >= 100 ? '#2A9E72' : progPct >= 50 ? '#4F46E5' : '#C47A30';
+
+  var header = document.createElement('div');
+  header.style.cssText = 'margin-bottom:16px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--border);';
+  header.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
+      '<span style="font-size:12px;font-weight:600;color:var(--text);">Distribution des gains annexes</span>'+
+      '<span style="font-size:12px;font-weight:600;color:'+progColor+';">'+fmt(totalRestant)+' restant</span>'+
+    '</div>'+
+    '<div style="height:6px;background:#F0F0F0;border-radius:3px;overflow:hidden;margin-bottom:6px;">'+
+      '<div style="width:'+progPct.toFixed(1)+'%;height:100%;background:'+progColor+';border-radius:3px;transition:width .5s;"></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">'+
+      '<span>'+fmt(totalAlloue)+' distribu\u00e9s</span>'+
+      '<span>sur '+fmt(total)+' gagnés</span>'+
+    '</div>';
+  list.appendChild(header);
+
+  /* Calcul des dépenses par catégorie */
+  var catData = [];
   for(var i = 0; i < categories.length; i++){
     var cat = categories[i];
-    var suggested = total * (cat.pct / totalPct);
-    var pctDisplay = Math.round(cat.pct / totalPct * 100);
+    var budget = reste * cat.pct;
+    var spent = 0;
+    for(var j = 0; j < depenses.length; j++){
+      if(depenses[j].cat === cat.key) spent += depenses[j].amt;
+    }
+    var fillRate = budget > 0 ? spent / budget : 0;
+    var alwaysShow = REV_ALWAYS_SHOW.indexOf(cat.key) !== -1;
+    var nearBudget = !alwaysShow && fillRate >= REV_SUGG_THRESHOLD;
+    var isAllocated = revAllocations.hasOwnProperty(cat.key);
+    if(alwaysShow || nearBudget || isAllocated){
+      catData.push({cat: cat, budget: budget, spent: spent, fillRate: fillRate, alwaysShow: alwaysShow, nearBudget: nearBudget, isAllocated: isAllocated});
+    }
+  }
 
-    var row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--border);';
-    if(i === categories.length - 1) row.style.borderBottom = 'none';
+  catData.sort(function(a, b){
+    if(a.isAllocated !== b.isAllocated) return a.isAllocated ? -1 : 1;
+    if(a.alwaysShow !== b.alwaysShow) return a.alwaysShow ? -1 : 1;
+    return b.fillRate - a.fillRate;
+  });
 
-    row.innerHTML =
-      '<div style="width:34px;height:34px;border-radius:9px;background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
-        cat.svgIcon.replace(/width="20" height="20"/g,'width="16" height="16"')+
-      '</div>'+
-      '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:13px;font-weight:500;color:var(--text);">'+cat.label+'</div>'+
-        '<div style="margin-top:4px;height:4px;background:#F0F0F0;border-radius:2px;overflow:hidden;">'+
-          '<div style="width:'+pctDisplay+'%;height:100%;background:'+cat.palColor+';border-radius:2px;"></div>'+
+  /* Répartition du restant non alloué entre catégories non encore allouées */
+  var unallocCats = catData.filter(function(d){ return !d.isAllocated; });
+  var unallocPct = unallocCats.reduce(function(s, d){ return s + d.cat.pct; }, 0) || 1;
+
+  if(catData.length === 0){
+    var msg = document.createElement('div');
+    msg.style.cssText = 'font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:6px 0;';
+    msg.textContent = 'Toutes tes catégories sont bien en dessous de leur budget 🎉';
+    list.appendChild(msg);
+    return;
+  }
+
+  for(var i = 0; i < catData.length; i++){
+    (function(d){
+      var cat = d.cat;
+      var isAllocated = d.isAllocated;
+      var allocatedAmt = isAllocated ? revAllocations[cat.key] : 0;
+
+      /* Montant suggéré = portion du restant OU montant déjà alloué */
+      var suggested = isAllocated ? allocatedAmt : (totalRestant > 0 ? totalRestant * (cat.pct / unallocPct) : 0);
+
+      var fillPct = Math.min(Math.round(d.fillRate * 100), 100);
+      var barColor = fillPct < 50 ? '#2A9E72' : fillPct < 75 ? '#C47A30' : '#E03E3E';
+
+      var badge = isAllocated
+        ? '<span style="font-size:10px;font-weight:600;background:#E8F9F2;color:#0A8F5C;border-radius:5px;padding:2px 7px;flex-shrink:0;">✓ Alloué</span>'
+        : d.alwaysShow
+          ? '<span style="font-size:10px;font-weight:600;background:#F0EFFF;color:#4F46E5;border-radius:5px;padding:2px 7px;flex-shrink:0;">✦ Recommandé</span>'
+          : '<span style="font-size:10px;font-weight:600;background:#FFF4E5;color:#C47A30;border-radius:5px;padding:2px 7px;flex-shrink:0;">⚠ Proche du budget</span>';
+
+      var row = document.createElement('div');
+      row.style.cssText = 'padding:14px;margin-bottom:10px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border);';
+
+      row.innerHTML =
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'+
+          '<div style="width:34px;height:34px;border-radius:9px;background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+            cat.svgIcon.replace(/width="20" height="20"/g,'width="16" height="16"')+
+          '</div>'+
+          '<div style="flex:1;min-width:0;">'+
+            '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'+
+              '<span style="font-size:13px;font-weight:500;color:var(--text);">'+cat.label+'</span>'+
+              badge+
+            '</div>'+
+          '</div>'+
+          '<div style="text-align:right;flex-shrink:0;">'+
+            '<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:700;color:'+(isAllocated?'#0A8F5C':cat.palText)+';">'+fmt(suggested)+'</div>'+
+            '<div style="font-size:10px;color:var(--muted);">'+(isAllocated?'ajout\u00e9 au budget':'conseill\u00e9')+'</div>'+
+          '</div>'+
         '</div>'+
-      '</div>'+
-      '<div style="text-align:right;flex-shrink:0;">'+
-        '<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:600;color:'+cat.palText+';">'+fmt(suggested)+'</div>'+
-        '<div style="font-size:11px;color:var(--muted);margin-top:1px;">'+pctDisplay+' %</div>'+
-      '</div>';
-    list.appendChild(row);
+        (d.budget > 0 ?
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'+
+            '<div style="flex:1;height:4px;background:#F0F0F0;border-radius:2px;overflow:hidden;">'+
+              '<div style="width:'+fillPct+'%;height:100%;background:'+barColor+';border-radius:2px;"></div>'+
+            '</div>'+
+            '<div style="display:flex;gap:10px;flex-shrink:0;">'+
+              '<span style="font-size:10px;color:var(--muted);white-space:nowrap;">'+fmt(d.spent)+' / '+fmt(getCatBudget(cat,reste))+'</span>'+
+              '<span style="font-size:10px;font-weight:600;color:'+barColor+';white-space:nowrap;">'+fillPct+'%</span>'+
+            '</div>'+
+          '</div>'
+        : '<div style="margin-bottom:10px;"></div>');
+
+      /* Bouton / zone de saisie */
+      var btnWrap = document.createElement('div');
+
+      if(isAllocated){
+        /* Déjà alloué → affichage du montant + bouton modifier + bouton remettre */
+        btnWrap.innerHTML =
+          '<div style="display:flex;gap:8px;">'+
+            '<button id="edit-btn-'+cat.key+'" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid '+cat.palBorder+';background:'+cat.palBg+';color:'+cat.palText+';font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;">✎ Modifier le montant</button>'+
+            '<button id="undo-btn-'+cat.key+'" style="padding:9px 14px;border-radius:9px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;">↩</button>'+
+          '</div>'+
+          '<div id="input-zone-'+cat.key+'" style="display:none;margin-top:8px;">'+
+            '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Modifier le montant alloué (max '+fmt(totalRestant + allocatedAmt)+') :</div>'+
+            '<div style="display:flex;gap:8px;">'+
+              '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+cat.palBorder+';border-radius:9px;padding:0 12px;">'+
+                '<span style="color:var(--muted);font-size:14px;">€</span>'+
+                '<input id="custom-amt-'+cat.key+'" type="number" min="0.01" step="0.01" max="'+(totalRestant+allocatedAmt).toFixed(2)+'" value="'+allocatedAmt.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
+              '</div>'+
+              '<button id="confirm-btn-'+cat.key+'" style="padding:9px 16px;border-radius:9px;border:none;background:'+cat.palBg+';color:'+cat.palText+';font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;border:1.5px solid '+cat.palBorder+';">✓</button>'+
+              '<button id="cancel-btn-'+cat.key+'" style="padding:9px 14px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;">✕</button>'+
+            '</div>'+
+          '</div>';
+
+        (function(k, allAmt, maxAmt){
+          btnWrap.querySelector('#edit-btn-'+k).onclick = function(){
+            var z = document.getElementById('input-zone-'+k);
+            z.style.display = z.style.display === 'none' ? 'block' : 'none';
+          };
+          btnWrap.querySelector('#undo-btn-'+k).onclick = function(){ deallocateFromCategory(k); };
+          btnWrap.querySelector('#confirm-btn-'+k).onclick = function(){
+            var val = parseFloat(document.getElementById('custom-amt-'+k).value);
+            if(isNaN(val) || val <= 0){ alert('Montant invalide'); return; }
+            if(val > maxAmt + 0.01){ alert('Montant supérieur au disponible ('+fmt(maxAmt)+')'); return; }
+            allocateToCategory(k, Math.round(val*100)/100);
+          };
+          btnWrap.querySelector('#cancel-btn-'+k).onclick = function(){
+            document.getElementById('input-zone-'+k).style.display = 'none';
+          };
+        })(cat.key, allocatedAmt, totalRestant + allocatedAmt);
+
+      } else {
+        /* Pas encore alloué → bouton qui ouvre la saisie */
+        var canSend = totalRestant > 0 && suggested > 0;
+        btnWrap.innerHTML =
+          '<button id="send-btn-'+cat.key+'" '+(canSend?'':'disabled')+' style="width:100%;padding:9px;border-radius:9px;background:'+(canSend?cat.palBg:'#F5F5F5')+';color:'+(canSend?cat.palText:'#BBBBBB')+';font-size:12px;font-weight:600;cursor:'+(canSend?'pointer':'not-allowed')+';font-family:\'Poppins\',sans-serif;border:1.5px solid '+(canSend?cat.palBorder:'#E8E8E8')+';">'+(canSend?'→ Envoyer dans ce budget':'Plus de budget disponible')+'</button>'+
+          (canSend ?
+            '<div id="input-zone-'+cat.key+'" style="display:none;margin-top:8px;">'+
+              '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Choisir le montant à allouer (suggéré : '+fmt(suggested)+', max : '+fmt(totalRestant)+') :</div>'+
+              '<div style="display:flex;gap:8px;">'+
+                '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+cat.palBorder+';border-radius:9px;padding:0 12px;">'+
+                  '<span style="color:var(--muted);font-size:14px;">€</span>'+
+                  '<input id="custom-amt-'+cat.key+'" type="number" min="0.01" step="0.01" max="'+totalRestant.toFixed(2)+'" value="'+suggested.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
+                '</div>'+
+                '<button id="confirm-btn-'+cat.key+'" style="padding:9px 16px;border-radius:9px;border:none;background:'+cat.palBg+';color:'+cat.palText+';font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;border:1.5px solid '+cat.palBorder+';">✓</button>'+
+                '<button id="cancel-btn-'+cat.key+'" style="padding:9px 14px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;">✕</button>'+
+              '</div>'+
+            '</div>'
+          : '');
+
+        if(canSend)(function(k, sugg, maxAmt){
+          btnWrap.querySelector('#send-btn-'+k).onclick = function(){
+            var z = document.getElementById('input-zone-'+k);
+            z.style.display = z.style.display === 'none' ? 'block' : 'none';
+          };
+          btnWrap.querySelector('#confirm-btn-'+k).onclick = function(){
+            var val = parseFloat(document.getElementById('custom-amt-'+k).value);
+            if(isNaN(val) || val <= 0){ alert('Montant invalide'); return; }
+            if(val > maxAmt + 0.01){ alert('Montant supérieur au disponible ('+fmt(maxAmt)+')'); return; }
+            allocateToCategory(k, Math.round(val*100)/100);
+          };
+          btnWrap.querySelector('#cancel-btn-'+k).onclick = function(){
+            document.getElementById('input-zone-'+k).style.display = 'none';
+          };
+        })(cat.key, suggested, totalRestant);
+      }
+
+      row.appendChild(btnWrap);
+      list.appendChild(row);
+    })(catData[i]);
   }
 }
 
@@ -2062,10 +3986,10 @@ function renderRevList(){
       list.appendChild(div);
     }
     if(totalBadge) totalBadge.textContent = fmt(total);
-    if(totalDisplay) totalDisplay.textContent = '+'+fmt(total);
     renderRevSuggestions(total);
   }
   if(extraItems.length === 0) renderRevSuggestions(0);
+  updateExportBtn();
 }
 
 document.getElementById('rev-add-btn').addEventListener('click', function(){
