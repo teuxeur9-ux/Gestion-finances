@@ -270,15 +270,16 @@
 
     /* période: already stacked, no changes needed */
 
-    /* Salaire / charges: stack label above field */
-    .input-row{flex-direction:column;align-items:stretch;gap:6px;}
-    .input-label{font-size:12px;}
-    .field-wrap{padding:0 12px;}
-    input[type="number"]{font-size:22px;}
-    .charges-row{flex-wrap:wrap;gap:8px;}
-    .charges-label{width:100%;}
-    .field-wrap-sm{width:100%;}
-    .field-wrap-sm input[type="number"]{font-size:17px;}
+    /* Salaire / charges: keep side by side, value on the right */
+    .input-row{flex-direction:row;align-items:center;justify-content:space-between;gap:10px;}
+    .input-label{flex:1;font-size:12px;}
+    .field-wrap{flex:0 0 auto;width:150px;padding:0 10px;text-align:right;}
+    .field-wrap input[type="number"]{text-align:right;direction:ltr;font-size:20px;}
+    .charges-row{flex-wrap:nowrap;gap:6px;justify-content:space-between;}
+    .charges-label{flex-shrink:1;}
+    #charges-display{white-space:nowrap;}
+    .field-wrap-sm{width:150px;flex-shrink:0;}
+    .field-wrap-sm input[type="number"]{font-size:17px;text-align:right;direction:ltr;}
 
     /* Revenus complémentaires */
     .extra-amt-big{font-size:30px;}
@@ -1016,7 +1017,7 @@
         </div>
         Salaire net ce mois
       </span>
-      <div class="field-wrap" style="flex:0 0 auto;width:160px;"><span class="currency">&euro;</span><input type="number" id="salary" value="2050" min="0" step="10"/></div>
+      <div class="field-wrap" style="flex:0 0 auto;width:160px;text-align:right;direction:ltr;"><span class="currency">&euro;</span><input type="number" id="salary" value="2050" min="0" step="10" style="text-align:right;direction:ltr;"/></div>
     </div>
     <div class="charges-row"><span class="charges-label">Charges fixes</span>
       <div style="display:flex;align-items:center;gap:2px;font-family:'Poppins',sans-serif;font-size:15px;"><span id="charges-display" style="color:var(--accent);font-weight:500;"></span></div>
@@ -2859,15 +2860,22 @@ function renderStats(){
     rowsWrap.style.cssText = 'background:#F8F8FA;border-radius:0 0 14px 14px;border:.5px solid var(--border);border-top:none;padding:8px 12px 12px;margin-bottom:0;';
     suggestEl.appendChild(rowsWrap);
 
+    /* Poids total des catégories pas encore allouées (pour répartition proportionnelle du restant) */
+    var unallocSuggs     = suggs.filter(function(sg){ return !soldeAllocations.hasOwnProperty(sg.key); });
+    var unallocTotalPct  = unallocSuggs.reduce(function(s,sg){ return s+sg.pct; }, 0) || 1;
+
     for(var si=0;si<suggs.length;si++){
       (function(sg){
         var isAlloc   = soldeAllocations.hasOwnProperty(sg.key);
         var allocAmt  = isAlloc ? soldeAllocations[sg.key] : 0;
-        var suggested = isAlloc ? allocAmt : Math.round(solde * sg.pct * 100)/100;
+        /* Montant conseillé = part proportionnelle du solde restant (pas du solde total) */
+        var suggested = isAlloc ? allocAmt : Math.round(soldeRestant * (sg.pct / unallocTotalPct) * 100) / 100;
         var canSend   = !isAlloc && soldeRestant > 0;
 
         var sdiv = document.createElement('div');
-        sdiv.style.cssText = 'background:var(--surface);border-radius:11px;padding:12px 14px;margin-top:8px;border:.5px solid var(--border);';
+        sdiv.style.cssText = isAlloc
+          ? 'background:#E8F9F2;border-radius:11px;padding:12px 14px;margin-top:8px;border:1.5px solid #2A9E72;'
+          : 'background:var(--surface);border-radius:11px;padding:12px 14px;margin-top:8px;border:.5px solid var(--border);';
 
         /* Ligne principale : icône + nom + badge + montant + bouton — tous alignés */
         sdiv.innerHTML =
@@ -2898,7 +2906,7 @@ function renderStats(){
           bw.innerHTML=
             '<div style="display:flex;gap:8px;">'+
               '<button id="solde-edit-'+sg.key+'" style="'+btnStyle+'border:1.5px solid '+sg.color+';background:'+sg.bg+';color:'+sg.color+';">✎ Modifier le montant</button>'+
-              '<button id="solde-undo-'+sg.key+'" style="padding:9px 13px;border-radius:9px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;flex-shrink:0;">↩</button>'+
+              '<button id="solde-undo-'+sg.key+'" style="padding:9px 13px;border-radius:9px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 14H4V9" stroke="#E03E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 14c2-5 7-8 12-6s7 7 4 12" stroke="#E03E3E" stroke-width="2" stroke-linecap="round"/></svg></button>'+
             '</div>'+
             '<div id="solde-input-'+sg.key+'" style="display:none;margin-top:8px;">'+
               '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Modifier (max '+fmt(soldeRestant+allocAmt)+') :</div>'+
@@ -2916,13 +2924,13 @@ function renderStats(){
             var z=document.getElementById('solde-input-'+k); z.style.display=z.style.display==='none'?'block':'none';
           };}(sg.key);
           sdiv.querySelector('#solde-undo-'+sg.key).onclick = function(k){ return function(){
-            delete soldeAllocations[k]; saveData(); renderStats(); updateExportBtn();
+            delete soldeAllocations[k]; saveData(); renderStats(); updateExportBtn(); renderRevList();
           };}(sg.key);
           sdiv.querySelector('#solde-confirm-'+sg.key).onclick = function(k,max){ return function(){
             var val=parseFloat(document.getElementById('solde-amt-'+k).value);
             if(isNaN(val)||val<=0) return;
             if(val>max+0.01){alert('Montant supérieur au disponible ('+fmt(max)+')');return;}
-            soldeAllocations[k]=Math.round(val*100)/100; saveData(); renderStats(); updateExportBtn();
+            soldeAllocations[k]=Math.round(val*100)/100; saveData(); renderStats(); updateExportBtn(); renderRevList();
           };}(sg.key, soldeRestant+allocAmt);
           sdiv.querySelector('#solde-cancel-'+sg.key).onclick = function(k){ return function(){
             document.getElementById('solde-input-'+k).style.display='none';
@@ -2931,7 +2939,7 @@ function renderStats(){
         } else {
           bw.innerHTML=
             '<button id="solde-send-'+sg.key+'" '+(canSend?'':'disabled')+' style="width:100%;padding:9px;border-radius:9px;background:'+(canSend?sg.bg:'#F5F5F5')+';color:'+(canSend?sg.color:'#BBBBBB')+';font-size:12px;font-weight:600;cursor:'+(canSend?'pointer':'not-allowed')+';border:1.5px solid '+(canSend?sg.color+'44':'#E8E8E8')+';font-family:\'Poppins\',sans-serif;">'+
-              (canSend?'→ Allouer '+fmt(suggested)+' à ce poste':'Plus de solde disponible')+
+              (canSend?'→ Envoyer dans ce budget':'Plus de solde disponible')+
             '</button>'+
             (canSend?
               '<div id="solde-input-'+sg.key+'" style="display:none;margin-top:8px;">'+
@@ -2955,7 +2963,7 @@ function renderStats(){
               var val=parseFloat(document.getElementById('solde-amt-'+k).value);
               if(isNaN(val)||val<=0) return;
               if(val>max+0.01){alert('Montant supérieur au disponible ('+fmt(max)+')');return;}
-              soldeAllocations[k]=Math.round(val*100)/100; saveData(); renderStats(); updateExportBtn();
+              soldeAllocations[k]=Math.round(val*100)/100; saveData(); renderStats(); updateExportBtn(); renderRevList();
             };}(sg.key, soldeRestant);
             sdiv.querySelector('#solde-cancel-'+sg.key).onclick = function(k){ return function(){
               document.getElementById('solde-input-'+k).style.display='none';
@@ -3665,36 +3673,41 @@ function updateExportBtn(){
   var badge   = document.getElementById('rev-sugg-required-badge');
   if(!btn) return;
 
-  /* Check 1 : revenus annexes tous distribués */
-  var totalRev    = extraItems.reduce(function(s,e){return s+e.amt;},0);
-  var totalAlloue = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
-  var revUnalloc  = totalRev > 0 && Math.abs(totalRev - totalAlloue) > 0.01;
-
-  /* Check 2 : solde libre tous distribués sur les 3 catégories */
-  var totalRevAlloc   = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
-  var freeRev         = Math.max(0, totalRev - totalRevAlloc);
+  var totalRev        = extraItems.reduce(function(s,e){return s+e.amt;},0);
+  var totalAlloue     = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+  var freeRev         = Math.max(0, totalRev - totalAlloue);
   var solde           = Math.max(0, getReste() + freeRev - depenses.reduce(function(s,d){return s+d.amt;},0));
   var totalSoldeAlloc = ['epargne-sec','epargne-proj','loisirs'].reduce(function(s,k){return s+(soldeAllocations[k]||0);},0);
-  var soldeUnalloc    = solde > 0 && Math.abs(solde - totalSoldeAlloc) > 0.01;
 
-  var blocked_reason = revUnalloc
-    ? '⚠ Distribue tous tes revenus annexes avant d\'exporter (onglet Revenus → "Où placer cet argent ?")'
-    : soldeUnalloc
-      ? '⚠ Alloue tout ton solde libre aux suggestions avant d\'exporter (onglet Stats → "Suggestions avec le restant")'
-      : '';
+  var revUnalloc   = totalRev > 0 && Math.abs(totalRev - totalAlloue) > 0.01;
+  var soldeUnalloc = solde > 0 && Math.abs(solde - totalSoldeAlloc) > 0.01;
 
-  if(revUnalloc || soldeUnalloc){
-    btn.style.background = '#BBBBBB';
-    btn.style.cursor     = 'not-allowed';
-    btn.onclick          = function(){ return false; };
-    if(blocked){ blocked.textContent = blocked_reason; blocked.style.display = 'block'; }
-    if(badge)   badge.style.display  = 'inline-flex';
-  } else {
+  /* Les revenus annexes sont couverts si :
+     - revAllocations les couvre directement, OU
+     - le solde (qui inclut le freeRev) est entièrement distribué via soldeAllocations */
+  var revCoveredByStats = revUnalloc && !soldeUnalloc;
+  var allGood = (!revUnalloc || revCoveredByStats) && !soldeUnalloc;
+
+  var blocked_reason = '';
+  if(!allGood){
+    if(revUnalloc && soldeUnalloc)
+      blocked_reason = '⚠ Distribue tes revenus annexes (onglet Revenus) ou alloue tout le solde dans les suggestions (onglet Stats)';
+    else if(soldeUnalloc)
+      blocked_reason = '⚠ Alloue tout ton solde libre aux suggestions avant d\'exporter (onglet Stats → "Suggestions avec le restant")';
+  }
+
+  if(allGood){
     btn.style.background = '#4F46E5';
     btn.style.cursor     = 'pointer';
     btn.onclick          = exportSnapshot;
     if(blocked) blocked.style.display = 'none';
     if(badge)   badge.style.display   = 'none';
+  } else {
+    btn.style.background = '#BBBBBB';
+    btn.style.cursor     = 'not-allowed';
+    btn.onclick          = function(){ return false; };
+    if(blocked){ blocked.textContent = blocked_reason; blocked.style.display = 'block'; }
+    if(badge)   badge.style.display  = 'inline-flex';
   }
 }
 
@@ -3751,17 +3764,49 @@ function renderRevSuggestions(total){
   list.innerHTML = '';
 
   var reste = getReste();
-
-  /* Calcul du total déjà alloué et du restant à distribuer */
-  var totalAlloue = Object.keys(revAllocations).reduce(function(s, k){ return s + (revAllocations[k] || 0); }, 0);
+  var totalAlloue  = Object.keys(revAllocations).reduce(function(s,k){ return s+(revAllocations[k]||0); },0);
   var totalRestant = Math.max(0, total - totalAlloue);
+  var freeRev      = Math.max(0, total - totalAlloue);
+  var solde        = Math.max(0, reste + freeRev - depenses.reduce(function(s,d){return s+d.amt;},0));
+  var totalSoldeAlloc = ['epargne-sec','epargne-proj','loisirs'].reduce(function(s,k){return s+(soldeAllocations[k]||0);},0);
+  var coveredByStats = totalRestant > 0.01 && solde > 0 && Math.abs(solde - totalSoldeAlloc) < 0.01;
+
+  /* Si les annexes sont couvertes par les suggestions Stats → bannière verte */
+  if(coveredByStats){
+    var banner = document.createElement('div');
+    banner.style.cssText = 'background:#E8F9F2;border-radius:12px;padding:14px 16px;margin-bottom:12px;';
+    banner.innerHTML =
+      '<div style="display:flex;align-items:center;gap:10px;">'+
+        '<div style="width:32px;height:32px;border-radius:9px;background:#2A9E72;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+        '</div>'+
+        '<div>'+
+          '<div style="font-size:13px;font-weight:700;color:#0A8F5C;margin-bottom:2px;">Revenus annexes couverts via Stats</div>'+
+          '<div style="font-size:11px;color:#2A9E72;line-height:1.5;">Tes <strong>'+fmt(total)+'</strong> de revenus annexes sont inclus dans le solde que tu as enti\u00e8rement distribu\u00e9 dans les suggestions de l\'onglet Stats. Tu peux exporter le mois.</div>'+
+        '</div>'+
+      '</div>';
+    list.appendChild(banner);
+    return;
+  }
+
+  /* Calcul du montant couvert par les suggestions Stats */
+  var totalDep      = depenses.reduce(function(s,d){return s+d.amt;},0);
+  var soldeBase     = Math.max(0, reste - totalDep); /* solde sans les annexes */
+  var revCoveredByStats = Math.max(0, totalSoldeAlloc - soldeBase); /* part de stats alloc qui vient des annexes */
+  var totalEffectif = Math.max(0, totalAlloue + revCoveredByStats); /* total réellement distribué */
+  totalRestant      = Math.max(0, total - totalEffectif); /* restant à distribuer dans Revenus */
 
   /* Barre de progression globale */
-  var progPct = total > 0 ? Math.min((totalAlloue / total) * 100, 100) : 0;
+  var progPct   = total > 0 ? Math.min((totalEffectif / total) * 100, 100) : 0;
   var progColor = progPct >= 100 ? '#2A9E72' : progPct >= 50 ? '#4F46E5' : '#C47A30';
 
   var header = document.createElement('div');
   header.style.cssText = 'margin-bottom:16px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--border);';
+
+  var statsCoverNote = revCoveredByStats > 0.01
+    ? '<div style="font-size:10px;color:#4F46E5;margin-top:5px;font-style:italic;">dont '+fmt(revCoveredByStats)+' couverts via les suggestions Stats</div>'
+    : '';
+
   header.innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
       '<span style="font-size:12px;font-weight:600;color:var(--text);">Distribution des gains annexes</span>'+
@@ -3771,9 +3816,10 @@ function renderRevSuggestions(total){
       '<div style="width:'+progPct.toFixed(1)+'%;height:100%;background:'+progColor+';border-radius:3px;transition:width .5s;"></div>'+
     '</div>'+
     '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">'+
-      '<span>'+fmt(totalAlloue)+' distribu\u00e9s</span>'+
+      '<span>'+fmt(totalEffectif)+' distribu\u00e9s</span>'+
       '<span>sur '+fmt(total)+' gagnés</span>'+
-    '</div>';
+    '</div>'+
+    statsCoverNote;
   list.appendChild(header);
 
   /* Calcul des dépenses par catégorie */
@@ -3831,7 +3877,9 @@ function renderRevSuggestions(total){
           : '<span style="font-size:10px;font-weight:600;background:#FFF4E5;color:#C47A30;border-radius:5px;padding:2px 7px;flex-shrink:0;">⚠ Proche du budget</span>';
 
       var row = document.createElement('div');
-      row.style.cssText = 'padding:14px;margin-bottom:10px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border);';
+      row.style.cssText = isAllocated
+        ? 'padding:14px;margin-bottom:10px;background:#E8F9F2;border-radius:14px;border:1.5px solid #2A9E72;'
+        : 'padding:14px;margin-bottom:10px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border);';
 
       row.innerHTML =
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'+
@@ -3869,7 +3917,7 @@ function renderRevSuggestions(total){
         btnWrap.innerHTML =
           '<div style="display:flex;gap:8px;">'+
             '<button id="edit-btn-'+cat.key+'" style="flex:1;padding:9px;border-radius:9px;border:1.5px solid '+cat.palBorder+';background:'+cat.palBg+';color:'+cat.palText+';font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;">✎ Modifier le montant</button>'+
-            '<button id="undo-btn-'+cat.key+'" style="padding:9px 14px;border-radius:9px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;">↩</button>'+
+            '<button id="undo-btn-'+cat.key+'" style="padding:9px 14px;border-radius:9px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Poppins\',sans-serif;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 14H4V9" stroke="#E03E3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 14c2-5 7-8 12-6s7 7 4 12" stroke="#E03E3E" stroke-width="2" stroke-linecap="round"/></svg></button>'+
           '</div>'+
           '<div id="input-zone-'+cat.key+'" style="display:none;margin-top:8px;">'+
             '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Modifier le montant alloué (max '+fmt(totalRestant + allocatedAmt)+') :</div>'+
