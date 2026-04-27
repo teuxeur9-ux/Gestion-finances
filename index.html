@@ -15,20 +15,26 @@
   :root {
     --bg:#F2F4F7;--surface:#FFFFFF;--text:#1C1C1E;--muted:#8E8E93;
     --accent:#4F46E5;--accent-light:#F8F7FF;
-    --border:rgba(0,0,0,0.06);--shadow:0 2px 12px rgba(0,0,0,0.06);
+    --border:rgba(0,0,0,0.06);--shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
     --red:#E03E3E;--green:#0A8F5C;--green-light:#E6F7F1;
   }
   body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 90px;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-  .tab-bar{display:flex;flex-wrap:nowrap;flex-direction:row;background:var(--surface);border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;z-index:10;box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding:8px 4px calc(8px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0;}
+  .accueil-icon-btn{transition:transform .15s,background .15s;}
+  .accueil-icon-btn:active{transform:scale(0.88);}
+  @media(hover:hover){.accueil-icon-btn:hover{background:#E0DFF0 !important;}}
+  .tab-bar{display:flex;flex-wrap:nowrap;flex-direction:row;background:var(--surface);border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;z-index:1000;box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding:8px 4px calc(8px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0;transform:translateZ(0);-webkit-transform:translateZ(0);}
+  button:not(:disabled){transition:transform .12s ease,filter .12s ease;}
+  @media(hover:hover){button:not(:disabled):hover{filter:brightness(0.96);transform:translateY(-1px);}}
+  button:not(:disabled):active{transform:scale(0.93);}
   .tab-btn{flex:1;min-width:0;padding:8px 2px;font-family:'Poppins',sans-serif;font-size:10px;font-weight:500;color:var(--muted);background:none;border:none;border-radius:12px;cursor:pointer;transition:color .2s,background .2s;-webkit-tap-highlight-color:transparent;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;overflow:hidden;}
   .tab-btn svg{flex-shrink:0;overflow:hidden;display:block;}
-  .tab-btn.active{color:#fff;background:var(--accent);}
+  .tab-btn.active{color:#fff;background:var(--accent);box-shadow:inset 0 3px 10px rgba(0,0,0,0.28),inset 0 1px 4px rgba(0,0,0,0.18);}
   .tab-panel{display:none;padding:20px 16px 0;}
   .tab-panel.active{display:block;}
   .container{max-width:640px;margin:0 auto;}
   header{text-align:center;margin-bottom:24px;padding-top:4px;}
-  header h1{font-family:'Poppins',sans-serif;font-size:28px;font-weight:400;letter-spacing:-.5px;margin-bottom:4px;}
+  header h1{font-family:'Poppins',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px;}
   header p{font-size:13px;color:var(--muted);font-weight:300;}
   .card{background:var(--surface);border-radius:20px;padding:20px 18px;box-shadow:var(--shadow);margin-bottom:14px;border:none;}
   .section-label{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
@@ -40,21 +46,21 @@
   .period-stacked{display:flex;flex-direction:column;gap:10px;}
   .period-stacked-field{display:flex;flex-direction:column;gap:4px;}
   .period-label{font-size:12px;color:var(--accent);font-weight:600;}
-  .period-input{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Poppins',sans-serif;font-size:15px;color:var(--text);background:#F8F8FA;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s;display:block;-webkit-appearance:none;appearance:none;}
+  .period-input{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Poppins',sans-serif;font-size:15px;color:var(--text);background:#F8F8FA;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s;display:block;-webkit-appearance:none;appearance:none;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .period-input:focus{border-color:var(--accent);}
   .period-summary{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:13px;}
   .period-summary-label{color:var(--muted);}
   .period-summary-value{font-weight:500;color:var(--text);font-size:13px;}
   .input-row{display:flex;align-items:center;gap:14px;}
   .input-label{font-size:13px;color:var(--muted);font-weight:500;white-space:nowrap;}
-  .field-wrap{display:flex;align-items:center;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:0 14px;flex:1;transition:border-color .2s;}
+  .field-wrap{display:flex;align-items:center;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:0 14px;flex:1;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .field-wrap:focus-within{border-color:var(--accent);}
   .currency{font-size:16px;color:var(--muted);font-weight:300;margin-right:4px;}
   input[type="number"]{border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:26px;color:var(--text);width:100%;padding:10px 0;outline:none;-moz-appearance:textfield;}
   input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;}
   .charges-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:13px;gap:12px;}
   .charges-label{color:var(--muted);white-space:nowrap;}
-  .field-wrap-sm{display:flex;align-items:center;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;width:160px;flex-shrink:0;transition:border-color .2s;}
+  .field-wrap-sm{display:flex;align-items:center;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:0 12px;width:160px;flex-shrink:0;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .field-wrap-sm:focus-within{border-color:var(--accent);}
   .field-wrap-sm input[type="number"]{font-size:17px;padding:8px 0;}
   .reste-banner{background:var(--accent-light);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
@@ -62,19 +68,19 @@
   .reste-value{font-family:'Poppins',sans-serif;font-size:20px;color:var(--accent);}
   .warning{background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:11px 14px;font-size:13px;color:#7A4F10;margin-bottom:14px;display:none;}
   .extra-title{font-size:13px;font-weight:500;color:var(--muted);margin-bottom:12px;}
-  .extra-amt-wrap{display:flex;align-items:center;background:#F8F8FA;border:2px solid var(--border);border-radius:14px;padding:0 18px;margin-bottom:10px;transition:border-color .2s;}
+  .extra-amt-wrap{display:flex;align-items:center;background:#F8F8FA;border:2px solid var(--border);border-radius:14px;padding:0 18px;margin-bottom:10px;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .extra-amt-wrap:focus-within{border-color:var(--green);}
   .extra-currency{font-size:22px;color:var(--muted);font-weight:300;margin-right:6px;}
   .extra-amt-big{border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:36px;color:var(--text);width:100%;padding:14px 0;outline:none;-moz-appearance:textfield;}
   .extra-amt-big::-webkit-inner-spin-button,.extra-amt-big::-webkit-outer-spin-button{-webkit-appearance:none;}
   .extra-add-row{display:flex;gap:7px;margin-bottom:10px;}
-  .extra-input-desc{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:0 11px;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);background:#F8F8FA;outline:none;height:42px;transition:border-color .2s;}
+  .extra-input-desc{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:0 11px;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);background:#F8F8FA;outline:none;height:42px;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .extra-input-desc:focus{border-color:var(--green);}
   .extra-input-desc::placeholder{color:var(--muted);}
   .extra-input-amt{width:100px;border:1.5px solid var(--border);border-radius:10px;padding:0 11px;font-family:'Poppins',sans-serif;font-size:16px;color:var(--text);background:#F8F8FA;outline:none;height:42px;-moz-appearance:textfield;transition:border-color .2s;}
   .extra-input-amt::-webkit-inner-spin-button,.extra-input-amt::-webkit-outer-spin-button{-webkit-appearance:none;}
   .extra-input-amt:focus{border-color:var(--green);}
-  .add-btn{width:42px;height:42px;border-radius:10px;border:1.5px solid var(--green);background:var(--green-light);color:var(--green);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;}
+  .add-btn{width:42px;height:42px;border-radius:10px;border:1.5px solid #A8EDD4;background:#E8F9F2;color:#0A8F5C;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;box-shadow:0 3px 10px rgba(10,143,92,0.20),0 1px 3px rgba(10,143,92,0.12);}
   .add-btn:hover{background:#d4eddf;}
   .extra-list{display:flex;flex-direction:column;gap:6px;}
   .extra-toggle{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;border:none;background:none;font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;color:var(--green);cursor:pointer;border-radius:8px;transition:background .15s;}
@@ -100,7 +106,7 @@
   .view-toggle-label{font-size:12px;color:var(--muted);font-family:'Poppins',sans-serif;}
   .toggle-switch{position:relative;width:50px;height:28px;cursor:pointer;flex-shrink:0;}
   .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
-  .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:14px;transition:background .2s;}
+  .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:14px;transition:background .2s;box-shadow:inset 0 2px 5px rgba(0,0,0,0.10);}
   .toggle-thumb{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.15);}
   .toggle-switch input:checked ~ .toggle-track{background:var(--accent);}
   .toggle-switch input:checked ~ .toggle-thumb{transform:translateX(22px);}
@@ -126,12 +132,12 @@
   .footer-note{text-align:center;font-size:12px;color:var(--muted);margin-top:24px;font-weight:300;}
   /* Depenses */
   .dep-form{display:flex;flex-direction:column;gap:12px;}
-  .dep-amt-wrap{display:flex;align-items:center;background:#F8F8FA;border:2px solid var(--border);border-radius:14px;padding:0 18px;transition:border-color .2s;}
+  .dep-amt-wrap{display:flex;align-items:center;background:#F8F8FA;border:2px solid var(--border);border-radius:14px;padding:0 18px;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .dep-amt-wrap:focus-within{border-color:var(--accent);}
   .dep-currency{font-size:22px;color:var(--muted);font-weight:300;margin-right:6px;}
   .dep-amt-input{border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:36px;color:var(--text);width:100%;padding:14px 0;outline:none;-moz-appearance:textfield;}
   .dep-amt-input::-webkit-inner-spin-button,.dep-amt-input::-webkit-outer-spin-button{-webkit-appearance:none;}
-  .dep-desc-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;font-family:'Poppins',sans-serif;font-size:15px;color:var(--text);background:var(--surface);outline:none;transition:border-color .2s;}
+  .dep-desc-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;font-family:'Poppins',sans-serif;font-size:15px;color:var(--text);background:#F8F8FA;outline:none;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .dep-desc-input:focus{border-color:var(--accent);}
   .dep-desc-input::placeholder{color:var(--muted);}
   .cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
@@ -139,7 +145,7 @@
   .cat-btn.selected{border-width:2px;}
   .cat-btn-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
   .cat-btn-label{font-size:15px;font-weight:500;color:var(--text);line-height:1.2;}
-  .dep-date-row{display:flex;align-items:center;gap:10px;background:#F8F8FA;border:1.5px solid var(--border);border-radius:12px;padding:11px 16px;transition:border-color .2s;}
+  .dep-date-row{display:flex;align-items:center;gap:10px;background:#F8F8FA;border:1.5px solid var(--border);border-radius:12px;padding:11px 16px;transition:border-color .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);}
   .dep-date-row:focus-within{border-color:var(--accent);}
   .dep-date-label{font-size:13px;color:var(--muted);white-space:nowrap;}
   .dep-date-input{border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:15px;color:var(--text);outline:none;flex:1;}
@@ -147,7 +153,7 @@
   .dep-submit:active{opacity:.82;}
   .sub-tab-bar{display:flex;background:rgba(255,255,255,0.6);border-radius:14px;padding:4px;margin-bottom:14px;gap:4px;}
   .sub-tab-btn{flex:1;padding:9px 10px;border-radius:10px;border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:background .18s,color .18s;-webkit-tap-highlight-color:transparent;}
-  .sub-tab-btn.active{background:var(--surface);color:var(--accent);box-shadow:0 1px 6px rgba(0,0,0,0.08);}
+  .sub-tab-btn.active{background:var(--surface);color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);}
   .sub-tab-panel{display:none;}
   .sub-tab-panel.active{display:block;}
   .dep-list-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
@@ -232,13 +238,13 @@
   .stat-solde-bar{display:flex;border-radius:8px;overflow:hidden;height:10px;margin-top:12px;background:#EBEBEB;}
   .stat-solde-seg{height:100%;transition:width .5s;}
   .stat-solde-legend{display:flex;justify-content:space-between;font-size:11px;margin-top:5px;font-weight:500;}
-  .suggest-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid transparent;}
+  .suggest-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid transparent;box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);}
   .suggest-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:rgba(255,255,255,0.6);}
   .suggest-info{flex:1;}
   .suggest-label{font-size:14px;font-weight:500;margin-bottom:2px;}
   .suggest-desc{font-size:12px;color:var(--muted);}
   .suggest-amt{font-family:'Poppins',sans-serif;font-size:18px;text-align:right;flex-shrink:0;}
-  .export-btn{display:flex;align-items:center;gap:8px;margin:0 auto 0;padding:12px 24px;border-radius:12px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;}
+  .export-btn{display:flex;align-items:center;gap:8px;margin:0 auto 0;padding:12px 24px;border-radius:12px;border:1.5px solid rgba(79,70,229,0.15);background:var(--accent-light);color:var(--accent);font-family:'Poppins',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;box-shadow:0 4px 16px rgba(79,70,229,0.15),0 1px 4px rgba(79,70,229,0.08);}
   .export-btn:hover{background:#dce7fd;}
   .export-btn:active{opacity:.8;}
   .export-overlay{position:fixed;inset:0;background:rgba(247,245,240,0.92);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
@@ -687,14 +693,14 @@
       <input type="number" class="extra-amt-big" id="rev-amt" placeholder="0,00" min="0" step="0.01" inputmode="decimal"/>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <input type="text" id="rev-desc" placeholder="Source (ex : freelance, vente...)" style="flex:1;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);outline:none;"/>
+      <input type="text" id="rev-desc" placeholder="Source (ex : freelance, vente...)" style="flex:1;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);outline:none;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);"/>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
       <div style="flex:1;display:flex;align-items:center;gap:8px;background:#F8F8FA;border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;">
         <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><rect x="3" y="5" width="14" height="12" rx="2" stroke="#0A8F5C" stroke-width="1.5"/><path d="M3 9h14" stroke="#0A8F5C" stroke-width="1.5"/><path d="M7 3v3M13 3v3" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round"/></svg>
         <input type="date" id="rev-date" style="flex:1;border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);outline:none;"/>
       </div>
-      <button class="add-btn" id="rev-add-btn" style="background:#E8F9F2;border:1.5px solid #A8EDD4;color:#0A8F5C;border-radius:10px;width:44px;height:44px;font-size:22px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">+</button>
+      <button class="add-btn" id="rev-add-btn">+</button>
     </div>
   </div>
   <div id="rev-list-wrap" style="display:none;">
@@ -1025,7 +1031,7 @@
       <div style="display:flex;align-items:center;gap:10px;">
         <div id="pct-total-badge" style="font-size:12px;font-weight:600;color:var(--muted);font-family:'Poppins',sans-serif;"></div>
         <!-- Switch % / € -->
-        <div onclick="event.stopPropagation();toggleSliderMode();" style="display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:3px;gap:2px;cursor:pointer;flex-shrink:0;">
+        <div onclick="event.stopPropagation();toggleSliderMode();" style="display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:3px;gap:2px;cursor:pointer;flex-shrink:0;box-shadow:inset 0 2px 5px rgba(0,0,0,0.07);">
           <div id="slider-mode-pct" style="display:flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:7px;background:#4F46E5;transition:background .2s;">
             <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
               <circle cx="6" cy="6" r="3" stroke="#fff" stroke-width="1.5"/>
@@ -1190,7 +1196,7 @@
         </div>
         <svg id="dep-list-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .3s;flex-shrink:0;transform:rotate(180deg);"><path d="M5 8l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <div id="dep-list-body" style="border-top:.5px solid var(--border);padding:8px 0 4px;">
+      <div id="dep-list-body" style="border-top:.5px solid var(--border);padding:10px 10px 6px;background:#F8F8FA;border-radius:0 0 14px 14px;">
         <div id="dep-list"></div>
       </div>
     </div>
@@ -1465,15 +1471,15 @@
 
   <!-- Sous-onglets stats -->
   <div style="display:flex;gap:8px;margin-bottom:20px;">
-    <button id="stab-btn-current" onclick="showStatTab('current')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:none;background:#4F46E5;color:#fff;cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;">
+    <button id="stab-btn-current" onclick="showStatTab('current')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:none;background:#4F46E5;color:#fff;cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="7" width="4" height="14" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
       Mois en cours
     </button>
-    <button id="stab-btn-snapshots" onclick="showStatTab('snapshots')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;">
+    <button id="stab-btn-snapshots" onclick="showStatTab('snapshots')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.5"/><path d="M8 4V2M16 4V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 13h4M7 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       Historique
     </button>
-    <button id="stab-btn-annual" onclick="showStatTab('annual')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;">
+    <button id="stab-btn-annual" onclick="showStatTab('annual')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:600;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;line-height:1.3;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><polyline points="3,17 8,10 13,13 19,5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 5h-4M19 5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 21h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       Année
     </button>
@@ -1529,7 +1535,7 @@
 
   <!-- Bouton effacer les données du mois -->
   <div style="border-top:.5px solid var(--border);padding-top:20px;margin-top:4px;margin-bottom:24px;text-align:center;">
-    <button onclick="openResetModal()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">
+    <button onclick="openResetModal()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;border:1.5px solid #E03E3E;background:#FEF0F0;color:#E03E3E;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(224,62,62,0.15),0 1px 4px rgba(224,62,62,0.08);">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/><path d="M19 6l-1 14H6L5 6" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v5M14 11v5" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>
       Effacer les donn&eacute;es du mois
     </button>
@@ -1596,6 +1602,7 @@ function showMvtTab(tab){
     btn.style.background = active ? '#4F46E5' : 'var(--surface)';
     btn.style.color      = active ? '#fff'    : 'var(--muted)';
     btn.style.border     = active ? 'none'    : '1.5px solid var(--border)';
+    btn.style.boxShadow  = active ? 'inset 0 3px 10px rgba(0,0,0,0.28),inset 0 1px 4px rgba(0,0,0,0.18)' : '0 4px 16px rgba(0,0,0,0.08),0 1px 3px rgba(0,0,0,0.04)';
     panel.style.display  = active ? 'block'   : 'none';
   });
 
@@ -1652,7 +1659,7 @@ function renderRevListMvt(){
     total+=it.amt;
     var dateStr='';
     if(it.date){var p=it.date.split('-');dateStr=p.length===3?p[2]+'/'+p[1]+'/'+p[0]:it.date;}
-    var card=document.createElement('div'); card.className='card'; card.style.cssText='margin-bottom:8px;padding:13px 16px;display:flex;align-items:center;gap:12px;';
+    var card=document.createElement('div'); card.className='card'; card.style.cssText='margin-bottom:8px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,0.05);';
     card.innerHTML='<div style="width:34px;height:34px;border-radius:9px;background:#E8F9F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 15V5M10 5L6 9M10 5l4 4" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
       '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;color:var(--text);">'+(it.desc||'Sans description')+'</div>'+
       (dateStr?'<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+dateStr+'</div>':'')+
@@ -1681,6 +1688,167 @@ function addRevFromMvt(){
   refreshStats(); saveData(); updateExportBtn();
 }
 
+var burstEnabled   = localStorage.getItem('burst_disabled')   !== '1';
+var flowersEnabled = localStorage.getItem('flowers_disabled') !== '1';
+
+function toggleProfileModal(){
+  var existing = document.getElementById('profile-modal');
+  if(existing){ existing.remove(); return; }
+  var modal = document.createElement('div');
+  modal.id = 'profile-modal';
+  modal.style.cssText = 'position:fixed;right:16px;top:108px;z-index:200;background:var(--surface);border-radius:16px;border:.5px solid var(--border);overflow:hidden;width:240px;box-shadow:0 4px 20px rgba(0,0,0,0.12);';
+  modal.innerHTML =
+    /* En-tête -->*/
+    '<div style="padding:14px 16px;border-bottom:.5px solid var(--border);background:#F7F7FA;">'+
+      '<div style="font-size:13px;font-weight:600;color:var(--text);">Samuel</div>'+
+      '<div style="font-size:11px;color:var(--muted);margin-top:1px;">Mon profil</div>'+
+    '</div>'+
+    /* Option explosion */
+    '<div style="padding:4px 0;">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:.5px solid var(--border);">'+
+        '<div>'+
+          '<div style="font-size:13px;color:var(--text);font-weight:500;">Animation explosion 🎉</div>'+
+          '<div style="font-size:11px;color:var(--muted);margin-top:2px;">À l\'arrivée de l\'argent dispo</div>'+
+        '</div>'+
+        '<div id="burst-toggle" onclick="toggleBurst()" style="width:44px;height:26px;border-radius:13px;background:'+(burstEnabled?'#4F46E5':'#D1D5DB')+';cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;">'+
+          '<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;left:'+(burstEnabled?'21':'3')+'px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,0.15);"></div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;">'+
+        '<div>'+
+          '<div style="font-size:13px;color:var(--text);font-weight:500;">Pluie de fleurs 🌸</div>'+
+          '<div style="font-size:11px;color:var(--muted);margin-top:2px;">Fleurs roses qui tombent</div>'+
+        '</div>'+
+        '<div id="flowers-toggle" onclick="toggleFlowers()" style="width:44px;height:26px;border-radius:13px;background:'+(flowersEnabled?'#4F46E5':'#D1D5DB')+';cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;">'+
+          '<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;left:'+(flowersEnabled?'21':'3')+'px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,0.15);"></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(modal);
+  /* Fermer en cliquant ailleurs */
+  setTimeout(function(){
+    document.addEventListener('click', function handler(e){
+      if(!modal.contains(e.target) && e.target.id !== 'profile-btn'){
+        modal.remove();
+        document.removeEventListener('click', handler);
+      }
+    });
+  }, 50);
+}
+
+function toggleBurst(){
+  burstEnabled = !burstEnabled;
+  if(burstEnabled) { flowersEnabled = false; localStorage.setItem('flowers_disabled','1'); }
+  localStorage.setItem('burst_disabled', burstEnabled ? '0' : '1');
+  var bt = document.getElementById('burst-toggle');
+  var ft = document.getElementById('flowers-toggle');
+  if(bt){ bt.style.background = burstEnabled ? '#4F46E5' : '#D1D5DB'; bt.children[0].style.left = burstEnabled ? '21px' : '3px'; }
+  if(ft){ ft.style.background = flowersEnabled ? '#4F46E5' : '#D1D5DB'; ft.children[0].style.left = flowersEnabled ? '21px' : '3px'; }
+}
+
+function toggleFlowers(){
+  flowersEnabled = !flowersEnabled;
+  if(flowersEnabled) { burstEnabled = false; localStorage.setItem('burst_disabled','1'); }
+  localStorage.setItem('flowers_disabled', flowersEnabled ? '0' : '1');
+  var bt = document.getElementById('burst-toggle');
+  var ft = document.getElementById('flowers-toggle');
+  if(bt){ bt.style.background = burstEnabled ? '#4F46E5' : '#D1D5DB'; bt.children[0].style.left = burstEnabled ? '21px' : '3px'; }
+  if(ft){ ft.style.background = flowersEnabled ? '#4F46E5' : '#D1D5DB'; ft.children[0].style.left = flowersEnabled ? '21px' : '3px'; }
+}
+
+function fallFlowers(el){
+  var rect   = el.getBoundingClientRect();
+  var card   = el.closest('[style*="linear-gradient"]') || el.parentElement.parentElement;
+  var cRect  = card ? card.getBoundingClientRect() : rect;
+  var left   = cRect.left;
+  var right  = cRect.right;
+  var top    = cRect.top;
+  var bottom = cRect.bottom;
+  var petals = ['🌸','🌺','🌷','🌹','💮','🏵️'];
+  var count  = 28;
+  for(var i = 0; i < count; i++){
+    (function(i){
+      var flower = document.createElement('div');
+      var petal  = petals[Math.floor(Math.random() * petals.length)];
+      var size   = 14 + Math.random() * 14;
+      var startX = left + Math.random() * (right - left);
+      var delay  = i * 80 + Math.random() * 60;
+      var dur    = 900 + Math.random() * 600;
+      var swayAmp= 30 + Math.random() * 40;
+      var swayDir= Math.random() > 0.5 ? 1 : -1;
+      flower.textContent = petal;
+      flower.style.cssText =
+        'position:fixed;z-index:99998;pointer-events:none;font-size:'+size+'px;'+
+        'left:'+startX+'px;top:'+(top - size)+'px;opacity:0;line-height:1;';
+      document.body.appendChild(flower);
+      var startTime = null;
+      function anim(ts){
+        if(!startTime){ startTime = ts - delay; if(startTime > ts){ requestAnimationFrame(anim); return; } }
+        var t = Math.min((ts - startTime) / dur, 1);
+        if(t < 0){ requestAnimationFrame(anim); return; }
+        var fadeIn  = Math.min(t * 8, 1);
+        var fadeOut = t > 0.7 ? 1 - (t - 0.7) / 0.3 : 1;
+        var y = t * (bottom - top + size * 2);
+        var x = swayDir * swayAmp * Math.sin(t * Math.PI * 3);
+        var rot = t * 360 * swayDir;
+        flower.style.transform = 'translate('+x+'px,'+y+'px) rotate('+rot+'deg)';
+        flower.style.opacity   = (fadeIn * fadeOut).toFixed(2);
+        if(t < 1) requestAnimationFrame(anim);
+        else flower.remove();
+      }
+      setTimeout(function(){ requestAnimationFrame(anim); }, delay);
+    })(i);
+  }
+}
+
+function toggleHelpdeskModal(){
+  var modal = document.getElementById('helpdesk-modal');
+  if(!modal) return;
+  modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+}
+
+function openHelpdeskItem(type){
+  document.getElementById('helpdesk-modal').style.display = 'none';
+  var titles = {
+    feature: 'Proposer une nouvelle feature',
+    feedback: 'Feedback',
+    bug: 'Remonter un bug'
+  };
+  var icons = {
+    feature: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    feedback: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#4F46E5" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+    bug: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#E03E3E" stroke-width="1.5"/><path d="M12 8v5" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r=".8" fill="#E03E3E"/></svg>'
+  };
+  var color = type === 'bug' ? '#E03E3E' : '#4F46E5';
+
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML =
+    '<div style="background:var(--surface);border-radius:20px;padding:28px 24px;max-width:340px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.18);">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">'+
+        '<div style="width:38px;height:38px;border-radius:50%;background:#EDEDF0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+icons[type]+'</div>'+
+        '<div style="font-size:16px;font-weight:700;color:var(--text);">'+titles[type]+'</div>'+
+      '</div>'+
+      '<textarea id="helpdesk-text" placeholder="Décris en quelques mots..." style="width:100%;min-height:110px;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-family:\'Poppins\',sans-serif;font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:none;margin-bottom:16px;"></textarea>'+
+      '<div style="display:flex;gap:10px;">'+
+        '<button onclick="this.closest(\'[data-hd-overlay]\').remove();" style="flex:1;padding:13px;border-radius:12px;border:none;background:#4F46E5;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:\'Poppins\',sans-serif;">Envoyer</button>'+
+        '<button onclick="this.closest(\'[data-hd-overlay]\').remove();" style="flex:1;padding:13px;border-radius:12px;border:none;background:#E03E3E;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:\'Poppins\',sans-serif;">Annuler</button>'+
+      '</div>'+
+    '</div>';
+  overlay.setAttribute('data-hd-overlay','1');
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+/* Fermer la modale helpdesk en cliquant ailleurs */
+document.addEventListener('click', function(e){
+  var modal = document.getElementById('helpdesk-modal');
+  var btn   = document.getElementById('helpdesk-btn');
+  if(modal && btn && !modal.contains(e.target) && !btn.contains(e.target)){
+    modal.style.display = 'none';
+  }
+});
+
 function renderAccueil(){
   var salary   = getSalary();
   var charges  = getCharges();
@@ -1689,13 +1857,76 @@ function renderAccueil(){
   var totalRev = extraItems.reduce(function(s,e){return s+e.amt;},0);
   var totalAlloue = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
   var freeRev  = Math.max(0, totalRev - totalAlloue);
-  var dispo    = Math.max(0, reste + freeRev - totalDep);
+  /* Argent disponible = reste à vivre - budgets épargne sécurité & projets - dépenses réelles */
+  var epargneKeys = ['epargne-sec', 'epargne-proj'];
+  var epargneReserve = categories.reduce(function(s,cat){
+    return epargneKeys.indexOf(cat.key) !== -1 ? s + getCatBudget(cat, reste) : s;
+  }, 0);
+  var dispo = Math.max(0, reste + freeRev - totalDep - epargneReserve);
   var depByCat = {}; categories.forEach(function(c){depByCat[c.key]=0;});
   depenses.forEach(function(d){if(depByCat.hasOwnProperty(d.cat))depByCat[d.cat]+=d.amt;});
 
-  /* Argent disponible */
+  /* Argent disponible — animation count-up + explosion finale */
   var dispoEl = document.getElementById('accueil-dispo');
-  if(dispoEl) dispoEl.textContent = fmt(dispo);
+  if(dispoEl){
+    var start = 0, end = dispo, duration = 600, startTime = null;
+    function countUp(ts){
+      if(!startTime) startTime = ts;
+      var progress = Math.min((ts - startTime) / duration, 1);
+      var ease = 1 - Math.pow(1 - progress, 3);
+      var current = start + (end - start) * ease;
+      dispoEl.textContent = fmt(Math.round(current * 100) / 100);
+      if(progress < 1){
+        requestAnimationFrame(countUp);
+      } else {
+        dispoEl.textContent = fmt(end);
+        if(burstEnabled)   burstParticles(dispoEl);
+        if(flowersEnabled) fallFlowers(dispoEl);
+      }
+    }
+    dispoEl.textContent = fmt(0);
+    requestAnimationFrame(countUp);
+  }
+
+function burstParticles(el){
+  /* Utilise getBoundingClientRect pour le centre exact de l'élément à l'écran */
+  var rect = el.getBoundingClientRect();
+  var cx = rect.left + rect.width  / 2;
+  var cy = rect.top  + rect.height / 2;
+  var colors = ['#FCD34D','#A5B4FC','#6EE7B7','#F9A8D4','#fff','#FDE68A','#C7D2FE'];
+  for(var i = 0; i < 22; i++){
+    (function(i){
+      var p = document.createElement('div');
+      var angle  = (i / 22) * 2 * Math.PI + (Math.random() - 0.5) * 0.4;
+      var speed  = 55 + Math.random() * 70;
+      var size   = 5 + Math.random() * 6;
+      var color  = colors[Math.floor(Math.random() * colors.length)];
+      var shape  = Math.random() > 0.5 ? '50%' : '2px';
+      p.style.cssText =
+        'position:fixed;z-index:99999;pointer-events:none;'+
+        'width:'+size+'px;height:'+size+'px;border-radius:'+shape+';'+
+        'background:'+color+';'+
+        'left:'+(cx - size/2)+'px;top:'+(cy - size/2)+'px;'+
+        'transform-origin:center center;'+
+        'opacity:1;';
+      document.body.appendChild(p);
+      var dx = Math.cos(angle) * speed;
+      var dy = Math.sin(angle) * speed;
+      var start = null;
+      var dur = 550 + Math.random() * 200;
+      function anim(ts){
+        if(!start) start = ts;
+        var t = Math.min((ts - start) / dur, 1);
+        var ease = 1 - Math.pow(t, 2);
+        p.style.transform = 'translate('+( dx * t )+'px,'+(dy * t - 40 * t * (1-t) )+'px) rotate('+(t*360)+'deg)';
+        p.style.opacity   = (1 - t).toFixed(2);
+        if(t < 1) requestAnimationFrame(anim);
+        else p.remove();
+      }
+      requestAnimationFrame(anim);
+    })(i);
+  }
+}
   var salEl = document.getElementById('accueil-salary');
   if(salEl) salEl.textContent = salary ? fmt(salary) : '—';
   var chEl = document.getElementById('accueil-charges');
@@ -1719,7 +1950,9 @@ function renderAccueil(){
   var catsEl = document.getElementById('accueil-cats');
   if(!catsEl) return;
   catsEl.innerHTML='';
+  var excludeCats = ['epargne-sec','epargne-proj'];
   categories.forEach(function(cat){
+    if(excludeCats.indexOf(cat.key) !== -1) return; /* exclure épargne */
     var budget  = getCatBudget(cat, reste);
     var spent   = depByCat[cat.key]||0;
     var restant = Math.max(0, budget - spent);
@@ -1729,7 +1962,7 @@ function renderAccueil(){
     var sub     = pct>=100?'Dépassé':'Disponible';
 
     var cell = document.createElement('div');
-    cell.style.cssText = 'background:'+cat.palBg+';border-radius:12px;padding:12px 12px 10px;border:1px solid '+cat.palBorder+';';
+    cell.style.cssText = 'background:'+cat.palBg+';border-radius:12px;padding:12px 12px 10px;border:1px solid '+cat.palBorder+';box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);';
     cell.innerHTML =
       '<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">'+
         '<div style="width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
@@ -1738,6 +1971,7 @@ function renderAccueil(){
         '<span style="font-size:11px;font-weight:500;color:'+cat.palText+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+cat.label+'</span>'+
       '</div>'+
       '<div style="font-family:\'Poppins\',sans-serif;font-size:17px;font-weight:700;color:'+(pct>=100?'#E03E3E':cat.palText)+';">'+fmt(restant)+'</div>'+
+      '<div style="font-size:10px;color:var(--muted);margin-top:2px;">sur '+fmt(budget)+'</div>'+
       '<div style="font-size:10px;color:'+cat.palText+';opacity:.7;margin-top:1px;">'+sub+'</div>'+
       '<div style="height:3px;background:rgba(0,0,0,.08);border-radius:2px;overflow:hidden;margin-top:7px;">'+
         '<div style="width:'+pct+'%;height:100%;background:'+(pct>=100?'#E03E3E':cat.palColor)+';border-radius:2px;"></div>'+
@@ -2213,15 +2447,17 @@ function saveSnapshots(snaps){
 }
 
 function showStatTab(tab){
+  var shadow = '0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)';
   ['current','snapshots','annual'].forEach(function(t){
     var panel = document.getElementById('stab-'+t);
     var btn   = document.getElementById('stab-btn-'+t);
     if(!panel||!btn) return;
     var active = t===tab;
-    panel.style.display = active ? 'block' : 'none';
-    btn.style.background   = active ? '#4F46E5' : 'var(--surface)';
-    btn.style.color        = active ? '#fff'    : 'var(--muted)';
-    btn.style.border       = active ? 'none'    : '1.5px solid var(--border)';
+    panel.style.display   = active ? 'block' : 'none';
+    btn.style.background = active ? '#4F46E5' : 'var(--surface)';
+    btn.style.color      = active ? '#fff'    : 'var(--muted)';
+    btn.style.border     = active ? 'none'    : '1.5px solid var(--border)';
+    btn.style.boxShadow  = active ? 'inset 0 3px 10px rgba(0,0,0,0.28),inset 0 1px 4px rgba(0,0,0,0.18)' : shadow;
   });
   if(tab==='snapshots') renderSnapshots();
   if(tab==='annual')    renderAnnual();
@@ -2363,7 +2599,7 @@ function renderSnapshots(){
     yearWrap.style.cssText = 'margin-bottom:0;';
 
     var yearHeader = document.createElement('div');
-    yearHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface);border-radius:14px;cursor:pointer;user-select:none;border:1.5px solid var(--border);';
+    yearHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface);border-radius:14px;cursor:pointer;user-select:none;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);';
     yearHeader.innerHTML =
       '<div style="display:flex;align-items:center;gap:10px;">'+
         '<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="#4F46E5" stroke-width="1.5"/><path d="M3 9h18" stroke="#4F46E5" stroke-width="1.5"/><path d="M8 2v3M16 2v3" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>'+
@@ -2373,7 +2609,7 @@ function renderSnapshots(){
       '<svg class="yr-chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" style="transition:transform .3s;"><path d="M5 8l5 5 5-5" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
     var yearBody = document.createElement('div');
-    yearBody.style.cssText = 'display:none;background:#F8F8FA;border-radius:0 0 14px 14px;padding:10px;border:1.5px solid var(--border);border-top:.5px solid var(--border);margin-bottom:14px;';
+    yearBody.style.cssText = 'display:none;background:#F8F8FA;border-radius:0 0 14px 14px;padding:10px;border:1.5px solid var(--border);border-top:.5px solid var(--border);margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03);';
 
     yearHeader.addEventListener('click', function(){
       var open = yearBody.style.display !== 'none';
@@ -2388,7 +2624,7 @@ function renderSnapshots(){
 
       var card = document.createElement('div');
       card.className='card';
-      card.style.cssText='margin-bottom:8px;padding:0;overflow:hidden;';
+      card.style.cssText='margin-bottom:8px;padding:0;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);';
 
       var mHeader = document.createElement('div');
       mHeader.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;user-select:none;';
@@ -2403,7 +2639,7 @@ function renderSnapshots(){
         '</div>';
 
       var mBody = document.createElement('div');
-      mBody.style.cssText='display:none;border-top:.5px solid var(--border);padding:13px 15px;';
+      mBody.style.cssText='display:none;border-top:.5px solid var(--border);padding:13px 15px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.03);';
 
       /* Salaire affiché = salary + totalRev */
       var salLabel = snap.totalRev > 0 ? 'Salaire + annexes' : 'Salaire';
@@ -2745,7 +2981,7 @@ function rowTotal(label,val,color){
 }
 
 function snip(label,val,color){
-  return '<div style="background:var(--bg);border-radius:10px;padding:9px 11px;border:.5px solid var(--border);">'+
+  return '<div style="background:var(--bg);border-radius:10px;padding:9px 11px;border:.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);">'+
     '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">'+label+'</div>'+
     '<div style="font-size:15px;font-weight:600;color:'+color+';font-family:\'Poppins\',sans-serif;">'+val+'</div>'+
   '</div>';
@@ -3012,9 +3248,9 @@ function renderStats(){
   }else{
     suggestTitle.style.display='block';
     var suggs=[
-      {key:'epargne-sec', label:'Épargne sécurité',  desc:'Garder en réserve pour les imprévus et la tranquillité d\'esprit', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>', pct:0.40, bg:'#F7F5FF', color:'#3730A3'},
-      {key:'epargne-proj', label:'Épargne projets',  desc:'Voyage, achat onéreux, console…', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>', pct:0.35, bg:'#F7F5FF', color:'#3730A3'},
-      {key:'loisirs',     label:'Loisirs & plaisirs', desc:'Sortie, resto, divertissement, jeux', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#4A2D8B" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#4A2D8B" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#4A2D8B"/><circle cx="12.5" cy="8" r="1" fill="#4A2D8B"/></svg>', pct:0.25, bg:'#FEF4F9', color:'#4A2D8B'}
+      {key:'epargne-sec', label:'Épargne sécurité',  desc:'Garder en réserve pour les imprévus et la tranquillité d\'esprit', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M2 9h16" stroke="#6B63C4" stroke-width="1.5"/><circle cx="14" cy="13" r="2" stroke="#6B63C4" stroke-width="1.5"/><path d="M6 12h4" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round"/></svg>', pct:0.40, bg:'#F7F5FF', color:'#6B63C4'},
+      {key:'epargne-proj', label:'Épargne projets',  desc:'Voyage, achat onéreux, console…', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.8 3.6 4 .6-2.9 2.8.7 4L10 12l-3.6 1.9.7-4L4.2 7.2l4-.6L10 3z" stroke="#6B63C4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>', pct:0.35, bg:'#F7F5FF', color:'#6B63C4'},
+      {key:'loisirs',     label:'Loisirs & plaisirs', desc:'Sortie, resto, divertissement, jeux', icon:'<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="#7C6BBF" stroke-width="1.5"/><path d="M7 10a3 3 0 006 0" stroke="#7C6BBF" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="8" r="1" fill="#7C6BBF"/><circle cx="12.5" cy="8" r="1" fill="#7C6BBF"/></svg>', pct:0.25, bg:'#FEF4F9', color:'#9C6BAB'}
     ];
 
     /* Barre de progression globale */
@@ -3064,15 +3300,15 @@ function renderStats(){
 
         var sdiv = document.createElement('div');
         sdiv.style.cssText = isAlloc
-          ? 'background:#E8F9F2;border-radius:11px;padding:12px 14px;margin-top:8px;border:1.5px solid #2A9E72;'
-          : 'background:var(--surface);border-radius:11px;padding:12px 14px;margin-top:8px;border:.5px solid var(--border);';
+          ? 'background:#E8F9F2;border-radius:11px;padding:12px 14px;margin-top:8px;border:1.5px solid #2A9E72;box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);'
+          : 'background:var(--surface);border-radius:11px;padding:12px 14px;margin-top:8px;border:.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);';
 
         /* Ligne principale : icône + nom + badge + montant + bouton — tous alignés */
         sdiv.innerHTML =
           '<div style="display:flex;align-items:center;gap:10px;margin-bottom:'+(canSend||isAlloc?'10px':'0')+';">'+
             '<div style="width:34px;height:34px;border-radius:9px;background:'+sg.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+sg.icon+'</div>'+
             '<div style="flex:1;min-width:0;">'+
-              '<div style="font-size:13px;font-weight:600;color:'+sg.color+';">'+sg.label+
+              '<div style="font-size:13px;font-weight:600;color:var(--text);">'+sg.label+
                 (isAlloc
                   ? ' <span style="font-size:10px;font-weight:600;background:#E8F9F2;color:#0A8F5C;border-radius:5px;padding:2px 7px;vertical-align:middle;">✓ Alloué</span>'
                   : ' <span style="font-size:10px;font-weight:600;background:'+sg.bg+';color:'+sg.color+';border-radius:5px;padding:2px 7px;border:1px solid '+sg.color+'33;vertical-align:middle;">Requis</span>')+
@@ -3101,7 +3337,7 @@ function renderStats(){
             '<div id="solde-input-'+sg.key+'" style="display:none;margin-top:8px;">'+
               '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Modifier (max '+fmt(soldeRestant+allocAmt)+') :</div>'+
               '<div style="display:flex;gap:8px;">'+
-                '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+sg.color+';border-radius:9px;padding:0 12px;">'+
+                '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+sg.color+';border-radius:9px;padding:0 12px;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);">'+
                   '<span style="color:var(--muted);">€</span>'+
                   '<input id="solde-amt-'+sg.key+'" type="number" min="0.01" step="0.01" max="'+(soldeRestant+allocAmt).toFixed(2)+'" value="'+allocAmt.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
                 '</div>'+
@@ -3135,7 +3371,7 @@ function renderStats(){
               '<div id="solde-input-'+sg.key+'" style="display:none;margin-top:8px;">'+
                 '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Choisir le montant (conseillé : '+fmt(suggested)+', max : '+fmt(soldeRestant)+') :</div>'+
                 '<div style="display:flex;gap:8px;">'+
-                  '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+sg.color+';border-radius:9px;padding:0 12px;">'+
+                  '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+sg.color+';border-radius:9px;padding:0 12px;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);">'+
                     '<span style="color:var(--muted);">€</span>'+
                     '<input id="solde-amt-'+sg.key+'" type="number" min="0.01" step="0.01" max="'+soldeRestant.toFixed(2)+'" value="'+suggested.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
                   '</div>'+
@@ -3691,10 +3927,9 @@ function applySliderValue(key, rawVal){
 
 function openInlineEdit(key, currentDisplay, color){
   var span = document.getElementById('pct-val-'+key);
-  if(!span || span.querySelector('input')) return; /* already editing */
-  var isEur = sliderMode === 'eur';
+  if(!span || span.querySelector('input[type="number"]:not([readonly])')) return;
+  var isEur  = sliderMode === 'eur';
   var reste2 = getReste();
-  /* Get raw numeric value */
   var rawNum = isEur
     ? Math.round(getReste() * (function(){ for(var i=0;i<categories.length;i++) if(categories[i].key===key) return categories[i].pct; return 0; }()) * 100) / 100
     : Math.round((function(){ for(var i=0;i<categories.length;i++) if(categories[i].key===key) return categories[i].pct; return 0; }()) * 1000) / 10;
@@ -3704,23 +3939,26 @@ function openInlineEdit(key, currentDisplay, color){
   wrap.style.cssText = 'display:flex;align-items:center;gap:4px;';
 
   var inp = document.createElement('input');
-  inp.type = 'number';
-  inp.value = rawNum;
-  inp.min   = isEur ? '0' : '0.1';
-  inp.max   = isEur ? reste2 : '100';
-  inp.step  = isEur ? '0.01' : '0.1';
-  inp.style.cssText = 'width:70px;border:.5px solid '+color+';border-radius:6px;padding:2px 5px;font-size:12px;font-weight:600;color:'+color+';font-family:\'Poppins\',sans-serif;background:transparent;outline:none;text-align:right;';
+  inp.type        = 'number';
+  inp.inputMode   = 'decimal';
+  inp.value       = rawNum;
+  inp.min         = isEur ? '0' : '0.1';
+  inp.max         = isEur ? reste2 : '100';
+  inp.step        = isEur ? '0.01' : '0.1';
+  inp.autocomplete= 'off';
+  inp.style.cssText = 'width:70px;border:.5px solid '+color+';border-radius:6px;padding:4px 5px;font-size:13px;font-weight:600;color:'+color+';font-family:\'Poppins\',sans-serif;background:var(--surface);outline:none;text-align:right;-webkit-appearance:none;';
 
   var unit = document.createElement('span');
   unit.style.cssText = 'font-size:12px;font-weight:600;color:'+color+';';
   unit.textContent   = isEur ? '€' : '%';
 
   var confirm = function(){
-    applySliderValue(key, parseFloat(inp.value));
+    var v = parseFloat(inp.value);
+    if(!isNaN(v)) applySliderValue(key, v);
   };
 
   inp.addEventListener('keydown', function(e){
-    if(e.key === 'Enter')  confirm();
+    if(e.key === 'Enter')  { inp.blur(); confirm(); }
     if(e.key === 'Escape') buildPctSliders();
   });
   inp.addEventListener('blur', confirm);
@@ -3728,7 +3966,10 @@ function openInlineEdit(key, currentDisplay, color){
   wrap.appendChild(inp);
   wrap.appendChild(unit);
   span.appendChild(wrap);
-  setTimeout(function(){ inp.focus(); inp.select(); }, 30);
+
+  /* iOS : focus dans le même tick d'interaction utilisateur */
+  inp.focus();
+  inp.select();
 }
 
 function buildPctSliders(){
@@ -3783,13 +4024,17 @@ function buildPctSliders(){
     });
   });
 
-  /* Listeners clic sur valeur → saisie précise */
+  /* Listeners clic sur valeur → saisie précise (+ touchend pour iOS) */
   categories.forEach(function(cat){
     var span = document.getElementById('pct-val-'+cat.key);
-    if(span) span.addEventListener('click', function(e){
+    if(!span) return;
+    var handler = function(e){
+      e.preventDefault();
       e.stopPropagation();
       openInlineEdit(cat.key, span.textContent, cat.palText);
-    });
+    };
+    span.addEventListener('click',    handler);
+    span.addEventListener('touchend', handler, {passive:false});
   });
 }
 
@@ -4076,7 +4321,7 @@ function renderRevSuggestions(total){
 
       var row = document.createElement('div');
       row.style.cssText = isAllocated
-        ? 'padding:14px;margin-bottom:10px;background:#E8F9F2;border-radius:14px;border:1.5px solid #2A9E72;'
+        ? 'padding:14px;margin-bottom:10px;background:#E8F9F2;border-radius:14px;border:1.5px solid #2A9E72;box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);'
         : 'padding:14px;margin-bottom:10px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--border);';
 
       row.innerHTML =
@@ -4120,7 +4365,7 @@ function renderRevSuggestions(total){
           '<div id="input-zone-'+cat.key+'" style="display:none;margin-top:8px;">'+
             '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Modifier le montant alloué (max '+fmt(totalRestant + allocatedAmt)+') :</div>'+
             '<div style="display:flex;gap:8px;">'+
-              '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+cat.palBorder+';border-radius:9px;padding:0 12px;">'+
+              '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+cat.palBorder+';border-radius:9px;padding:0 12px;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);">'+
                 '<span style="color:var(--muted);font-size:14px;">€</span>'+
                 '<input id="custom-amt-'+cat.key+'" type="number" min="0.01" step="0.01" max="'+(totalRestant+allocatedAmt).toFixed(2)+'" value="'+allocatedAmt.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
               '</div>'+
@@ -4155,7 +4400,7 @@ function renderRevSuggestions(total){
             '<div id="input-zone-'+cat.key+'" style="display:none;margin-top:8px;">'+
               '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Choisir le montant à allouer (suggéré : '+fmt(suggested)+', max : '+fmt(totalRestant)+') :</div>'+
               '<div style="display:flex;gap:8px;">'+
-                '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+cat.palBorder+';border-radius:9px;padding:0 12px;">'+
+                '<div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid '+cat.palBorder+';border-radius:9px;padding:0 12px;box-shadow:inset 0 2px 6px rgba(0,0,0,0.06);">'+
                   '<span style="color:var(--muted);font-size:14px;">€</span>'+
                   '<input id="custom-amt-'+cat.key+'" type="number" min="0.01" step="0.01" max="'+totalRestant.toFixed(2)+'" value="'+suggested.toFixed(2)+'" style="flex:1;border:none;background:transparent;font-family:\'Poppins\',sans-serif;font-size:14px;color:var(--text);outline:none;padding:9px 0;">'+
                 '</div>'+
@@ -4272,15 +4517,43 @@ renderRevList();
 
   <!-- Greeting -->
   <div style="padding:24px 0 8px;">
-    <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
-      <svg width="26" height="26" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="7" fill="#FCD34D" stroke="#F59E0B" stroke-width="1.5"/><path d="M18 3 Q19 5 18 7" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M18 29 Q17 31 18 33" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M3 18 Q5 17 7 18" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M29 18 Q31 19 33 18" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M8 8 Q9.5 9 10.5 10.5" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><path d="M25.5 25.5 Q27 26.5 28 28" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><path d="M28 8 Q26.5 9.5 25.5 10.5" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><path d="M10.5 25.5 Q9 27 8 28" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/></svg>
-      <span style="font-size:13px;color:var(--muted);font-weight:500;">Bonjour,</span>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+      <div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
+          <svg width="26" height="26" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="7" fill="#FCD34D" stroke="#F59E0B" stroke-width="1.5"/><path d="M18 3 Q19 5 18 7" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M18 29 Q17 31 18 33" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M3 18 Q5 17 7 18" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M29 18 Q31 19 33 18" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"/><path d="M8 8 Q9.5 9 10.5 10.5" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><path d="M25.5 25.5 Q27 26.5 28 28" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><path d="M28 8 Q26.5 9.5 25.5 10.5" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><path d="M10.5 25.5 Q9 27 8 28" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span style="font-size:13px;color:var(--muted);font-weight:500;">Bonjour,</span>
+        </div>
+        <div id="accueil-name" style="font-size:28px;font-weight:700;color:var(--text);line-height:1.2;">Samuel !</div>
+      </div>
+      <!-- Icônes profil + helpdesk -->
+      <div style="display:flex;gap:8px;margin-top:4px;align-items:flex-end;">
+        <button id="helpdesk-btn" class="accueil-icon-btn" onclick="toggleHelpdeskModal()" style="width:40px;height:40px;border-radius:50%;background:#4F46E5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px rgba(79,70,229,0.35),0 2px 6px rgba(79,70,229,0.20);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11a9 9 0 0118 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><rect x="2" y="11" width="3.5" height="5.5" rx="1.5" fill="#fff"/><rect x="18.5" y="11" width="3.5" height="5.5" rx="1.5" fill="#fff"/><path d="M5.5 16.5 C5.5 19 7 20 9 20" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="20.5" r="1.2" fill="#fff"/></svg>
+        </button>
+        <button class="accueil-icon-btn" onclick="toggleProfileModal()" style="width:48px;height:48px;border-radius:50%;background:#4F46E5;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px rgba(79,70,229,0.35),0 2px 6px rgba(79,70,229,0.20);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#fff" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
     </div>
-    <div id="accueil-name" style="font-size:28px;font-weight:700;color:var(--text);line-height:1.2;">Samuel !</div>
+    <!-- Modale helpdesk -->
+    <div id="helpdesk-modal" style="display:none;position:fixed;right:16px;top:100px;z-index:200;background:var(--surface);border-radius:16px;border:.5px solid var(--border);overflow:hidden;width:240px;box-shadow:0 4px 20px rgba(0,0,0,0.12);">
+      <button onclick="openHelpdeskItem('feature')" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;border:none;background:transparent;cursor:pointer;font-family:'Poppins',sans-serif;font-size:13px;color:var(--text);font-weight:500;border-bottom:.5px solid var(--border);text-align:left;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#4F46E5" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Proposer une nouvelle feature
+      </button>
+      <button onclick="openHelpdeskItem('feedback')" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;border:none;background:transparent;cursor:pointer;font-family:'Poppins',sans-serif;font-size:13px;color:var(--text);font-weight:500;border-bottom:.5px solid var(--border);text-align:left;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#4F46E5" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        Feedback
+      </button>
+      <button onclick="openHelpdeskItem('bug')" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;border:none;background:transparent;cursor:pointer;font-family:'Poppins',sans-serif;font-size:13px;color:#E03E3E;font-weight:500;text-align:left;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#E03E3E" stroke-width="1.5"/><path d="M12 8v5" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r=".8" fill="#E03E3E"/></svg>
+        Remonter un bug
+      </button>
+    </div>
   </div>
 
   <!-- Carte principale : argent disponible -->
-  <div style="background:linear-gradient(135deg,#4F46E5 0%,#6D66F0 100%);border-radius:20px;padding:22px 22px 20px;margin-bottom:14px;position:relative;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#4F46E5 0%,#6D66F0 100%);border-radius:20px;padding:22px 22px 20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(79,70,229,0.25), 0 2px 6px rgba(79,70,229,0.12);">
     <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.07);"></div>
     <div style="position:absolute;bottom:-30px;right:20px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.05);"></div>
     <div style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.7);margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;">Argent disponible</div>
@@ -4303,7 +4576,7 @@ renderRevList();
 
   <!-- Grille 2 cartes : budget restant + dépensé -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-    <div style="background:var(--surface);border-radius:16px;padding:16px 14px;border:.5px solid var(--border);">
+    <div style="background:var(--surface);border-radius:16px;padding:16px 14px;border:.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);">
       <div style="width:32px;height:32px;border-radius:9px;background:#E8F9F2;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 22V12M12 12L7 17M12 12l5 5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4H4" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
@@ -4313,7 +4586,7 @@ renderRevList();
         <div id="accueil-budget-fill" style="height:100%;background:#2A9E72;border-radius:2px;width:0%;transition:width .5s;"></div>
       </div>
     </div>
-    <div style="background:var(--surface);border-radius:16px;padding:16px 14px;border:.5px solid var(--border);">
+    <div style="background:var(--surface);border-radius:16px;padding:16px 14px;border:.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);">
       <div style="width:32px;height:32px;border-radius:9px;background:#FFF4E5;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round"/><path d="M19 6l-1 14H6L5 6" stroke="#C47A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
@@ -4324,10 +4597,10 @@ renderRevList();
   </div>
 
   <!-- Section actions rapides -->
-  <div style="background:var(--surface);border-radius:16px;padding:16px;border:.5px solid var(--border);margin-bottom:14px;">
+  <div style="background:var(--surface);border-radius:16px;padding:16px;border:.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);margin-bottom:14px;">
     <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:12px;font-weight:500;">Enregistre rapidement une entrée</div>
     <div style="display:flex;gap:10px;">
-      <button onclick="showMainTab('mouvement', document.querySelectorAll('.tab-btn')[3]); setTimeout(function(){showMvtTab('revenus');},50);" style="flex:1;padding:18px 10px;border-radius:16px;border:1.5px solid #A8EDD4;background:#E8F9F2;color:#0A8F5C;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <button onclick="showMainTab('mouvement', document.querySelectorAll('.tab-btn')[3]); setTimeout(function(){showMvtTab('revenus');},50);" style="flex:1;padding:18px 10px;border-radius:16px;border:1.5px solid #A8EDD4;background:#E8F9F2;color:#0A8F5C;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(10,143,92,0.18),0 2px 6px rgba(10,143,92,0.10);">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
           <path d="M12 20V8" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round"/>
           <path d="M7 13l5-5 5 5" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4335,7 +4608,7 @@ renderRevList();
         </svg>
         Revenu
       </button>
-      <button onclick="showMainTab('mouvement', document.querySelectorAll('.tab-btn')[3]); setTimeout(function(){showMvtTab('depenses');},50);" style="flex:1;padding:18px 10px;border-radius:16px;border:1.5px solid rgba(79,70,229,0.2);background:#F0EFFF;color:#4F46E5;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <button onclick="showMainTab('mouvement', document.querySelectorAll('.tab-btn')[3]); setTimeout(function(){showMvtTab('depenses');},50);" style="flex:1;padding:18px 10px;border-radius:16px;border:1.5px solid rgba(79,70,229,0.2);background:#F0EFFF;color:#4F46E5;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(79,70,229,0.15),0 2px 6px rgba(79,70,229,0.09);">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
           <rect x="3" y="5" width="18" height="15" rx="2" stroke="#4F46E5" stroke-width="1.5"/>
           <path d="M3 9h18" stroke="#4F46E5" stroke-width="1.5"/>
@@ -4348,8 +4621,8 @@ renderRevList();
   </div>
 
   <!-- Budgets catégories en grille 2 colonnes -->
-  <div style="background:var(--surface);border-radius:16px;padding:16px;border:.5px solid var(--border);margin-bottom:30px;">
-    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:12px;">Budgets par catégorie</div>
+  <div style="background:var(--surface);border-radius:16px;padding:16px;border:.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);margin-bottom:30px;">
+    <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:12px;">Argent disponible par catégorie</div>
     <div id="accueil-cats" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
   </div>
 
