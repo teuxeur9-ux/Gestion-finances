@@ -1788,8 +1788,6 @@ function openProfilePage(){
   page.id = 'profile-page';
   page.style.cssText = 'position:fixed;inset:0;z-index:5000;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom);transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);';
   document.body.style.overflow = 'hidden';
-  document.body.style.position = 'fixed';
-  document.body.style.width    = '100%';
 
   page.innerHTML =
     /* Header */
@@ -1913,9 +1911,8 @@ function closeProfilePage(){
   var page = document.getElementById('profile-page');
   if(!page) return;
   page.style.transform = 'translateY(100%)';
+  document.body.style.overflow = 'auto';
   document.body.style.overflow = '';
-  document.body.style.position = '';
-  document.body.style.width    = '';
   setTimeout(function(){ page.remove(); }, 320);
 }
 
@@ -2255,7 +2252,7 @@ function renderAccueil(){
       } else {
         dispoEl.textContent = fmt(end);
         var animFns = {burst:burstParticles,flowers:fallFlowers,stars:fallStars,fireworks:launchFireworks,confetti:fallConfetti,balloons:riseBalloons,hearts:popHearts};
-        if(animFns[activeAnimation]) animFns[activeAnimation](dispoEl);
+        if(animFns[activeAnimation] && document.getElementById('auth-screen').style.display==='none') animFns[activeAnimation](dispoEl);
       }
     }
     dispoEl.textContent = fmt(0);
@@ -2369,6 +2366,9 @@ try {
   });
 } catch(e) {
   console.warn('Firebase non disponible (mode aperçu)');
+  /* Montrer le bouton dev uniquement si Firebase n\'est pas disponible */
+  var devBtn = document.getElementById('dev-toggle');
+  if(devBtn) devBtn.style.display = 'block';
 }
 
 /* ── Firestore helpers ── */
@@ -2398,8 +2398,7 @@ function showAuthScreen(){
 
 function hideAuthScreen(){
   document.getElementById('auth-screen').style.display = 'none';
-  document.body.style.overflow = '';
-  document.body.style.setProperty('overflow','',null);
+  document.body.style.removeProperty('overflow');
 }
 
 function switchAuthMode(mode){
@@ -2473,7 +2472,7 @@ function doLogout(){
   auth.signOut().then(function(){
     showAuthScreen();
     var profilePage = document.getElementById('profile-page');
-    if(profilePage){ profilePage.remove(); document.body.style.overflow='hidden'; document.body.style.position=''; document.body.style.width=''; }
+    if(profilePage){ profilePage.remove(); }
   });
 }
 
@@ -5197,7 +5196,7 @@ renderRevList();
   <button class="tab-btn" onclick="showMainTab('stats',this)"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M4 17V13M8 17V9M12 17V11M16 17V7M20 17V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 17h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Stats</button>
 </div>
 <!-- Bouton dev : switcher entre connexion et app -->
-<div id="dev-toggle" style="position:fixed;bottom:80px;right:16px;z-index:9999;">
+<div id="dev-toggle" style="position:fixed;bottom:80px;right:16px;z-index:9999;display:none;">
   <button onclick="toggleDevMode()" style="background:#1a1a2e;color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;box-shadow:0 2px 10px rgba(0,0,0,0.3);">
     🛠 Dev
   </button>
