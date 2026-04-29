@@ -2322,9 +2322,10 @@ function burstParticles(el){
   if(!catsEl) return;
   catsEl.innerHTML='';
   var excludeCats = ['epargne-sec','epargne-proj'];
+  var overflowData = computeOverflow(reste);
   categories.forEach(function(cat){
-    if(excludeCats.indexOf(cat.key) !== -1) return; /* exclure épargne */
-    var budget  = getCatBudget(cat, reste);
+    if(excludeCats.indexOf(cat.key) !== -1) return;
+    var budget  = overflowData.adjustedBudget[cat.key] !== undefined ? overflowData.adjustedBudget[cat.key] : getCatBudget(cat, reste);
     var spent   = depByCat[cat.key]||0;
     var restant = Math.max(0, budget - spent);
     if(budget <= 0) return;
@@ -2365,10 +2366,9 @@ try {
     if(user){ onAuthSuccess(user); } else { showAuthScreen(); }
   });
 } catch(e) {
-  console.warn('Firebase non disponible (mode aperçu)');
-  /* Montrer le bouton dev uniquement si Firebase n\'est pas disponible */
-  var devBtn = document.getElementById('dev-toggle');
-  if(devBtn) devBtn.style.display = 'block';
+  /* Firebase non disponible (aperçu) → afficher l'app directement */
+  console.warn('Firebase non disponible, mode aperçu');
+  hideAuthScreen();
 }
 
 /* ── Firestore helpers ── */
@@ -2534,6 +2534,64 @@ document.getElementById('period-start').addEventListener('change',updatePeriodSu
 document.getElementById('period-end').addEventListener('change',updatePeriodSummary);
 
 function getCatAllocation(key){ return revAllocations[key] || 0; }
+/* ── Calcul des dépassements et redistribution ── */
+function computeOverflow(reste){
+  var epargneKeys = ['epargne-sec','epargne-proj'];
+  var depByCat = {}; categories.forEach(function(c){ depByCat[c.key]=0; });
+  depenses.forEach(function(d){ if(depByCat.hasOwnProperty(d.cat)) depByCat[d.cat]+=d.amt; });
+
+  /* Budget original par catégorie */
+  var origBudget = {};
+  categories.forEach(function(cat){
+    origBudget[cat.key] = getCatBudget(cat, reste);
+  });
+
+  /* Calculer l'excédent total des catégories non-épargne */
+  var totalExcess = 0;
+  categories.forEach(function(cat){
+    if(epargneKeys.indexOf(cat.key) !== -1) return;
+    var over = depByCat[cat.key] - origBudget[cat.key];
+    if(over > 0) totalExcess += over;
+  });
+
+  /* Répartir l'excédent proportionnellement sur les catégories non-épargne non-dépassées */
+  var adjustedBudget = {}; categories.forEach(function(c){ adjustedBudget[c.key] = origBudget[c.key]; });
+  var impactInfo = {}; /* {catKey: {reducedBy, reducedByPct, overflowFrom}} */
+
+  if(totalExcess > 0){
+    /* Poids total des catégories réceptrices */
+    var recipientWeight = 0;
+    categories.forEach(function(cat){
+      if(epargneKeys.indexOf(cat.key) !== -1) return;
+      if(depByCat[cat.key] <= origBudget[cat.key]) recipientWeight += origBudget[cat.key];
+    });
+
+    var overflowSources = [];
+    categories.forEach(function(cat){
+      if(epargneKeys.indexOf(cat.key) !== -1) return;
+      var over = depByCat[cat.key] - origBudget[cat.key];
+      if(over > 0) overflowSources.push(cat.label);
+    });
+
+    categories.forEach(function(cat){
+      if(epargneKeys.indexOf(cat.key) !== -1) return;
+      if(depByCat[cat.key] <= origBudget[cat.key] && origBudget[cat.key] > 0 && recipientWeight > 0){
+        var share = (origBudget[cat.key] / recipientWeight) * totalExcess;
+        var newBudget = Math.max(0, origBudget[cat.key] - share);
+        adjustedBudget[cat.key] = newBudget;
+        var reducedByPct = Math.round((share / origBudget[cat.key]) * 100);
+        impactInfo[cat.key] = {
+          reducedBy: Math.round(share * 100) / 100,
+          reducedByPct: reducedByPct,
+          overflowFrom: overflowSources.join(', ')
+        };
+      }
+    });
+  }
+
+  return { adjustedBudget: adjustedBudget, origBudget: origBudget, impactInfo: impactInfo, depByCat: depByCat };
+}
+
 function getCatBudget(cat, reste){ return reste * cat.pct + getCatAllocation(cat.key); }
 
 function rebuildGridColors(){
@@ -2742,11 +2800,19 @@ function renderCatSummary(){
   items=items.filter(function(it){return it.cat.key!=='epargne-sec'&&it.cat.key!=='epargne-proj';});
   items.sort(function(a,b){return b.spent-a.spent;});
   for(var i=0;i<items.length;i++){
-    var cat=items[i].cat,budget=getCatBudget(cat,reste),spent=items[i].spent;
+    var cat=items[i].cat;
+    var origBudgetCat=getCatBudget(cat,reste);
+    var overflowCat=computeOverflow(reste);
+    var budget=overflowCat.adjustedBudget[cat.key]!==undefined?overflowCat.adjustedBudget[cat.key]:origBudgetCat;
+    var spent=items[i].spent;
+    var impact=overflowCat.impactInfo[cat.key];
     var alloc=getCatAllocation(cat.key);
     var allocBadge=alloc>0
       ? '<div style="font-size:11px;color:#0A8F5C;font-weight:600;margin-top:2px;">&#43;'+fmt(alloc)+' depuis revenus annexes</div>'
       : '';
+    var budgetDisplay=impact
+      ? '<strong>'+fmt(budget)+'</strong> <span style="font-size:10px;color:var(--muted);">(initial\u00a0: '+fmt(origBudgetCat)+')</span>'
+      : '<strong>'+fmt(budget)+'</strong>';
     var restant=budget-spent,pctUsed=budget>0?Math.min((spent/budget)*100,100):0,pctRestant=budget>0?Math.max(100-pctUsed,0):0;
     var barColor,amtClass;
     if(pctUsed>=100){barColor='#E24B4A';amtClass='over';}else if(pctUsed>=75){barColor='#EF9F27';amtClass='warn';}else{barColor=cat.palColor;amtClass='ok';}
@@ -2771,16 +2837,23 @@ function renderCatSummary(){
           '</div>';
       }
     }
+    var impactTagCat=impact
+      ?'<div style="display:flex;align-items:center;gap:5px;margin-top:6px;padding:5px 8px;background:#FFF7ED;border-radius:6px;border:0.5px solid #FCD34D;">'+
+        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="#D97706" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#D97706" stroke-width="1.5"/></svg>'+
+        '<span style="font-size:10px;color:#92400E;">Budget réduit de <strong>'+fmt(impact.reducedBy)+'</strong> (−'+impact.reducedByPct+'%) suite au dépassement '+impact.overflowFrom+'</span>'+
+        '</div>'
+      :'';
     var div=document.createElement('div');div.className='cat-summary-item';div.dataset.catkey=cat.key;
     div.innerHTML=
       '<div class="cat-summary-top">'+
       '<div class="cat-summary-icon" style="background:'+cat.palBg+';display:flex;align-items:center;justify-content:center;">'+cat.svgIcon+'</div>'+
       '<div class="cat-summary-info"><div class="cat-summary-name">'+cat.label+'</div>'+
-      '<div class="cat-summary-detail">Budget\u00a0: <strong>'+fmt(budget)+'</strong> \u00b7 D\u00e9pens\u00e9\u00a0: <strong>'+fmt(spent)+'</strong></div>'+allocBadge+'</div>'+
+      '<div class="cat-summary-detail">Budget\u00a0: '+budgetDisplay+' \u00b7 D\u00e9pens\u00e9\u00a0: <strong>'+fmt(spent)+'</strong></div>'+allocBadge+'</div>'+
       '<div class="cat-summary-right"><div class="cat-summary-restant '+amtClass+'">'+(restant>=0?'':'\u2212')+fmt(Math.abs(restant))+'</div>'+
       '<div class="cat-summary-detail"><strong>'+fmtPct(pctRestant)+'</strong> restant</div></div></div>'+
       '<div class="cat-prog-bg"><div class="cat-prog-fill" style="width:'+pctUsed.toFixed(1)+'%;background:'+barColor+';"></div></div>'+
-      '<div class="cat-pct-row"><span>'+fmtPct(pctUsed)+' utilis\u00e9</span><span>'+fmtPct(pctRestant)+' restant</span></div>'+
+      '<div class="cat-pct-row"><span>'+fmtPct(pctUsed)+' utilisé</span><span>'+fmtPct(pctRestant)+' restant</span></div>'+
+      impactTagCat+
       '<div class="cat-expand-btn">'+
         '<span>'+expandLabel+'</span>'+
         '<span class="cat-expand-arrow'+(isOpen?' open':'')+'">\u25bc</span>'+
@@ -2990,15 +3063,21 @@ function exportSnapshot(){
   categories.forEach(function(c){ depByCat[c.key]=0; });
   depenses.forEach(function(d){ if(depByCat.hasOwnProperty(d.cat)) depByCat[d.cat]+=d.amt; });
 
+  var overflowSnap = computeOverflow(reste);
   var catBudgets = categories.map(function(cat){
-    var budget  = getCatBudget(cat, reste);
-    var spent   = depByCat[cat.key]||0;
-    var alloc   = revAllocations[cat.key]||0;
-    var over    = spent > budget;
+    var budget     = getCatBudget(cat, reste);
+    var adjBudget  = overflowSnap.adjustedBudget[cat.key] !== undefined ? overflowSnap.adjustedBudget[cat.key] : budget;
+    var impact     = overflowSnap.impactInfo[cat.key];
+    var spent      = depByCat[cat.key]||0;
+    var alloc      = revAllocations[cat.key]||0;
+    var over       = spent > budget;
     return {key:cat.key, label:cat.label, pct:Math.round(cat.pct*100),
-            budget:budget, spent:spent, alloc:alloc,
-            remaining:Math.max(0,budget-spent), over:over,
-            overAmt:over?spent-budget:0};
+            budget:budget, adjBudget:adjBudget, spent:spent, alloc:alloc,
+            remaining:Math.max(0,adjBudget-spent), over:over,
+            overAmt:over?spent-budget:0,
+            reducedBy:impact?impact.reducedBy:0,
+            reducedByPct:impact?impact.reducedByPct:0,
+            overflowFrom:impact?impact.overflowFrom:''};
   });
 
   var now  = new Date();
@@ -3349,19 +3428,29 @@ function showSnapshotDetail(key){
     '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="12" width="4" height="9" rx="1" stroke="#4F46E5" stroke-width="1.5"/><rect x="10" y="7" width="4" height="14" rx="1" stroke="#4F46E5" stroke-width="1.5"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="#4F46E5" stroke-width="1.5"/></svg>');
   if(snap.catBudgets&&snap.catBudgets.length>0){
     snap.catBudgets.forEach(function(cb){
-      var fillPct  = cb.budget>0?Math.min(Math.round(cb.spent/cb.budget*100),100):0;
+      var displayBudget = cb.adjBudget !== undefined ? cb.adjBudget : cb.budget;
+      var fillPct  = displayBudget>0?Math.min(Math.round(cb.spent/displayBudget*100),100):0;
       var barColor = cb.over ? '#E03E3E' : fillPct>=75 ? '#C47A30' : '#2A9E72';
       var catInfo  = catIconMap[cb.key] || {icon:'', bg:'#F0F0F0', color:'#666'};
+      var budgetLabel = cb.reducedBy > 0
+        ? fmt(displayBudget)+' <span style="font-size:10px;color:var(--muted);">(initial : '+fmt(cb.budget)+')</span>'
+        : fmt(displayBudget);
       var badges   = '';
       if(cb.over)       badges += '<span style="font-size:10px;font-weight:600;background:#FEF0F0;color:#E03E3E;padding:2px 6px;border-radius:5px;margin-left:6px;">Dépassé +'+fmt(cb.overAmt)+'</span>';
       else if(cb.alloc) badges += '<span style="font-size:10px;font-weight:600;background:#E8F9F2;color:#0A8F5C;padding:2px 6px;border-radius:5px;margin-left:6px;">+'+fmt(cb.alloc)+' annexes</span>';
+      var impactTagSnap = cb.reducedBy > 0
+        ? '<div style="display:flex;align-items:center;gap:5px;margin-top:6px;margin-left:40px;padding:5px 8px;background:#FFF7ED;border-radius:6px;border:0.5px solid #FCD34D;">'+
+            '<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="#D97706" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#D97706" stroke-width="1.5"/></svg>'+
+            '<span style="font-size:10px;color:#92400E;">Réduit de <strong>'+fmt(cb.reducedBy)+'</strong> (−'+cb.reducedByPct+'%) suite au dépassement '+cb.overflowFrom+'</span>'+
+          '</div>'
+        : '';
       html += '<div style="padding:12px 0;border-bottom:.5px solid var(--border);">'+
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">'+
           '<div style="width:30px;height:30px;border-radius:8px;background:'+catInfo.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
             catInfo.icon.replace(/width="20" height="20"/g,'width="14" height="14"')+
           '</div>'+
           '<span style="font-size:13px;font-weight:500;color:var(--text);flex:1;">'+cb.label+badges+'</span>'+
-          '<span style="font-size:13px;font-weight:700;color:'+barColor+';">'+fmt(cb.spent)+' / '+fmt(cb.budget)+'</span>'+
+          '<span style="font-size:13px;font-weight:700;color:'+barColor+';">'+fmt(cb.spent)+' / '+budgetLabel+'</span>'+
         '</div>'+
         '<div style="display:flex;align-items:center;gap:8px;margin-left:40px;">'+
           '<div style="flex:1;height:5px;background:#F0F0F0;border-radius:3px;overflow:hidden;">'+
@@ -3370,8 +3459,9 @@ function showSnapshotDetail(key){
           '<span style="font-size:11px;font-weight:700;color:'+barColor+';min-width:32px;text-align:right;">'+fillPct+'%</span>'+
         '</div>'+
         '<div style="font-size:10px;color:var(--muted);margin-top:4px;margin-left:40px;">'+
-          (cb.over?'<span style="color:#E03E3E;font-weight:600;">Budget dépassé de '+fmt(cb.overAmt)+'</span>':'Reste '+fmt(cb.remaining)+' · '+cb.pct+'% du budget')+
+          (cb.over?'<span style="color:#E03E3E;font-weight:600;">Budget dépassé de '+fmt(cb.overAmt)+'</span>':'Reste '+fmt(cb.remaining !== undefined ? cb.remaining : Math.max(0,displayBudget-cb.spent))+' · '+cb.pct+'% du budget')+
         '</div>'+
+        impactTagSnap+
       '</div>';
     });
   }
@@ -3687,10 +3777,26 @@ function renderStats(){
         ?'<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="flex-shrink:0;margin-left:6px;"><circle cx="14" cy="14" r="10" stroke="#E8F9F2" stroke-width="2.5"/><circle cx="14" cy="14" r="10" stroke="#2A9E72" stroke-width="2.5" stroke-dasharray="'+arc.toFixed(2)+' '+full.toFixed(2)+'" stroke-linecap="round" transform="rotate(-90 14 14)"/><path d="M10 14l3 3 5-5" stroke="#2A9E72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
         :'<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="flex-shrink:0;margin-left:6px;"><circle cx="14" cy="14" r="10" stroke="#FDECEC" stroke-width="2.5"/><circle cx="14" cy="14" r="10" stroke="#E03E3E" stroke-width="2.5" stroke-dasharray="'+full.toFixed(2)+' '+full.toFixed(2)+'" stroke-linecap="round" transform="rotate(-90 14 14)"/><path d="M10.5 10.5l7 7M17.5 10.5l-7 7" stroke="#E03E3E" stroke-width="1.5" stroke-linecap="round"/></svg>';
       var allocNote=alloc>0?' &bull; <span style="color:#0A8F5C;font-weight:600;">+'+fmt(alloc)+' annexes</span>':'';
-      var detailLine='<span style="font-size:11px;color:var(--muted);">Budget : '+fmt(budget)+allocNote+'</span>';
+
+      /* Budget ajusté par overflow */
+      var overflow = computeOverflow(reste);
+      var adjBudget = overflow.adjustedBudget[c.cat.key] !== undefined ? overflow.adjustedBudget[c.cat.key] : budget;
+      var origBudgetVal = overflow.origBudget[c.cat.key] !== undefined ? overflow.origBudget[c.cat.key] : budget;
+      var impact = overflow.impactInfo[c.cat.key];
+      var budgetDisplay = impact
+        ? fmt(adjBudget) + ' <span style="font-size:10px;color:var(--muted);">(initial : '+fmt(origBudgetVal)+')</span>'
+        : fmt(budget);
+
+      var detailLine='<span style="font-size:11px;color:var(--muted);">Budget : '+budgetDisplay+allocNote+'</span>';
       var bigLine=isOver
         ?'<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:500;color:#E24B4A;margin-top:2px;">+'+fmt(Math.abs(restantCat))+' d\u00e9pass\u00e9 ('+overPct+' %)</div>'
-        :'<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:500;color:#2D6A4F;margin-top:2px;">'+fmt(Math.abs(restantCat))+' restant</div>';
+        :'<div style="font-family:\'Poppins\',sans-serif;font-size:15px;font-weight:500;color:#2D6A4F;margin-top:2px;">'+fmt(Math.max(0, adjBudget - c.spent))+' restant</div>';
+      var impactTag = impact
+        ? '<div style="display:flex;align-items:center;gap:5px;margin-top:8px;padding:6px 9px;background:#FFF7ED;border-radius:7px;border:0.5px solid #FCD34D;">'+
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="#D97706" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#D97706" stroke-width="1.5"/></svg>'+
+            '<span style="font-size:10px;color:#92400E;">Budget réduit de <strong>'+fmt(impact.reducedBy)+'</strong> (−'+impact.reducedByPct+' %) suite au dépassement '+impact.overflowFrom+'</span>'+
+          '</div>'
+        : '';
       var row=document.createElement('div');row.className='stat-cat-row';
       row.innerHTML='<div class="stat-cat-icon" style="background:'+c.cat.palBg+';display:flex;align-items:center;justify-content:center;">'+c.cat.svgIcon+'</div>'+
         '<div class="stat-cat-info">'+
@@ -3698,6 +3804,7 @@ function renderStats(){
           detailLine+bigLine+
           '<div class="stat-solde-bar" style="margin-top:8px;"><div class="stat-solde-seg" style="width:'+barW+'%;background:'+barColor+';"></div><div class="stat-solde-seg" style="width:'+(100-parseFloat(barW))+'%;background:#EAF4EE;"></div></div>'+
           '<div class="stat-solde-legend"><span style="color:'+barColor+';">Dépensé '+parseFloat(barW).toFixed(0)+' %</span><span style="color:#2D6A4F;">Restant '+(100-parseFloat(barW)).toFixed(0)+' %</span></div>'+
+          impactTag+
         '</div>'+
         '<div class="stat-cat-right"><div><div class="stat-cat-amt" style="color:var(--accent);">'+fmt(c.spent)+'</div>'+
         '<div class="stat-cat-pct">'+pctOfDep+' % des d\u00e9p.</div></div>'+badge+'</div>';
@@ -4846,9 +4953,11 @@ function renderRevSuggestions(total){
 
       var badge = isAllocated
         ? '<span style="font-size:10px;font-weight:600;background:#E8F9F2;color:#0A8F5C;border-radius:5px;padding:2px 7px;flex-shrink:0;">✓ Alloué</span>'
-        : d.alwaysShow
-          ? '<span style="font-size:10px;font-weight:600;background:#F0EFFF;color:#4F46E5;border-radius:5px;padding:2px 7px;flex-shrink:0;">✦ Recommandé</span>'
-          : '<span style="font-size:10px;font-weight:600;background:#FFF4E5;color:#C47A30;border-radius:5px;padding:2px 7px;flex-shrink:0;">⚠ Proche du budget</span>';
+        : d.fillRate >= 1
+          ? '<span style="font-size:10px;font-weight:600;background:#FEF0F0;color:#E03E3E;border-radius:5px;padding:2px 7px;flex-shrink:0;display:inline-flex;align-items:center;gap:3px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 3L2 21h20L12 3z" stroke="#E03E3E" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5" stroke="#E03E3E" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="18" r="1" fill="#E03E3E"/></svg> Budget dépassé</span>'
+          : d.alwaysShow
+            ? '<span style="font-size:10px;font-weight:600;background:#F0EFFF;color:#4F46E5;border-radius:5px;padding:2px 7px;flex-shrink:0;">✦ Recommandé</span>'
+            : '<span style="font-size:10px;font-weight:600;background:#FFF4E5;color:#C47A30;border-radius:5px;padding:2px 7px;flex-shrink:0;display:inline-flex;align-items:center;gap:3px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#C47A30" stroke-width="2"/><path d="M12 8v5" stroke="#C47A30" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="#C47A30"/></svg> Proche du budget</span>';
 
       var row = document.createElement('div');
       row.style.cssText = isAllocated
