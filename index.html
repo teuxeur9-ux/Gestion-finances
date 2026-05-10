@@ -4533,6 +4533,11 @@ document.getElementById('charge-list').addEventListener('click',function(e){
 var STORAGE_KEY = 'budget_app_data';
 
 function getAppData(){
+  /* Sauvegarder les pct personnalisés des catégories */
+  var categoryPcts = {};
+  for(var i=0;i<categories.length;i++){
+    categoryPcts[categories[i].key] = categories[i].pct;
+  }
   return {
     salary:           document.getElementById('salary').value,
     charges:          chargeItems,
@@ -4542,7 +4547,8 @@ function getAppData(){
     soldeAllocations: soldeAllocations,
     periodStart:      document.getElementById('period-start').value,
     periodEnd:        document.getElementById('period-end').value,
-    snapshots:        getSnapshots()
+    snapshots:        getSnapshots(),
+    categoryPcts:     categoryPcts
   };
 }
 
@@ -4557,6 +4563,13 @@ function applyAppData(data){
   if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
   if(data.periodEnd)   document.getElementById('period-end').value   = data.periodEnd;
   if(Array.isArray(data.snapshots)) saveSnapshots(data.snapshots);
+  /* Restaurer les pct personnalisés */
+  if(data.categoryPcts && typeof data.categoryPcts === 'object'){
+    for(var i=0;i<categories.length;i++){
+      var saved = data.categoryPcts[categories[i].key];
+      if(typeof saved === 'number') categories[i].pct = saved;
+    }
+  }
   return true;
 }
 
