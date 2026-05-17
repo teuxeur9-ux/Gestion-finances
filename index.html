@@ -32,7 +32,6 @@
     --accent:#4F46E5;--accent-light:#F8F7FF;
     --border:rgba(0,0,0,0.06);--shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
     --red:#E03E3E;--green:#0A8F5C;--green-light:#E6F7F1;
-    --sub-bg:#F8F8FA;
   }
   /* ── Auth screen ── */
   #auth-screen{position:fixed;inset:0;z-index:9000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
@@ -192,30 +191,6 @@
   .profile-row{transition:background .15s,transform .12s;transform:scale(1);}
   .profile-row:hover{background:rgba(0,0,0,0.025);}
   .profile-row:active{transform:scale(0.975);background:rgba(0,0,0,0.05);}
-  /* ══ Dark mode — overrides éléments hardcodés ══ */
-  body.dark-mode #quick-rev-btn{
-    background:rgba(10,143,92,0.14) !important;
-    border-color:rgba(10,143,92,0.28) !important;
-    box-shadow:none !important;
-  }
-  body.dark-mode .add-btn{
-    background:rgba(10,143,92,0.14) !important;
-    border-color:rgba(10,143,92,0.28) !important;
-    box-shadow:none !important;
-  }
-  body.dark-mode .extra-item{
-    background:rgba(10,143,92,0.10) !important;
-  }
-  body.dark-mode .extra-toggle:hover{
-    background:rgba(10,143,92,0.10) !important;
-  }
-  body.dark-mode .accueil-cat-cell{
-    border-color:rgba(255,255,255,0.08) !important;
-    box-shadow:none !important;
-  }
-  body.dark-mode .tip-icon-wrap{
-    background:rgba(10,143,92,0.14) !important;
-  }
   .dep-submit:active{opacity:.82;}
   .sub-tab-bar{display:flex;background:rgba(255,255,255,0.6);border-radius:14px;padding:4px;margin-bottom:14px;gap:4px;}
   .sub-tab-btn{flex:1;padding:9px 10px;border-radius:10px;border:none;background:transparent;font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:background .18s,color .18s;-webkit-tap-highlight-color:transparent;}
@@ -258,7 +233,7 @@
   .cat-expand-arrow.open{transform:rotate(180deg);}
   .cat-detail-list{overflow:hidden;max-height:0;transition:max-height .3s ease;}
   .cat-detail-list.open{max-height:2000px;}
-  .cat-detail-list-inner{background:var(--sub-bg);border-radius:10px;margin-top:10px;padding:0 10px;}
+  .cat-detail-list-inner{background:#F8F8FA;border-radius:10px;margin-top:10px;padding:0 10px;}
   .cat-detail-entry{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:.5px solid var(--border);}
   .cat-detail-entry:last-child{border-bottom:none;}
   .cat-detail-left{display:flex;flex-direction:column;}
@@ -1815,10 +1790,7 @@ function toggleProfileModal(){
 function openProfilePage(){
   var page = document.createElement('div');
   page.id = 'profile-page';
-  var isDark = localStorage.getItem('dark_mode') === '1';
-  var pageBg = isDark ? '#0D1117' : '#F2F2F7';
-  page.setAttribute('data-profile-page','1');
-  page.style.cssText = 'position:fixed;inset:0;z-index:5000;background:'+pageBg+';overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);';
+  page.style.cssText = 'position:fixed;inset:0;z-index:5000;background:#F2F2F7;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);';
   document.body.style.overflow = 'hidden';
 
   var userName = localStorage.getItem('user_name') || 'Samuel';
@@ -2024,9 +1996,7 @@ function applyTheme(key){
   var t = THEMES[key] || THEMES.default;
   var r = document.documentElement.style;
   r.setProperty('--accent',      t.accent);
-  /* En dark mode, --accent-light devient une version sombre transparente */
-  var isDark = localStorage.getItem('dark_mode') === '1';
-  r.setProperty('--accent-light', isDark ? hexToRgba(t.accent, 0.15) : t.accentLight);
+  r.setProperty('--accent-light',t.accentLight);
   r.setProperty('--green',       t.green);
   r.setProperty('--green-light', t.greenLight);
   /* Ombres colorées dérivées du shadow du thème (ex: rgba(79,70,229,0.18) → 0.18 / 0.10) */
@@ -2119,55 +2089,23 @@ function toggleDarkMode(){
   applyDarkMode(darkOn);
 }
 
-function hexToRgba(hex, alpha){
-  hex = (hex||'').replace('#','').trim();
-  if(hex.length===3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-  var r=parseInt(hex.substring(0,2),16)||0;
-  var g=parseInt(hex.substring(2,4),16)||0;
-  var b=parseInt(hex.substring(4,6),16)||0;
-  return 'rgba('+r+','+g+','+b+','+alpha+')';
-}
-
 function applyDarkMode(on){
   var r = document.documentElement.style;
-  document.body.classList.toggle('dark-mode', on);
   if(on){
-    r.setProperty('--bg',      '#0D1117');
-    r.setProperty('--surface', '#161B22');
-    r.setProperty('--border',  '#2D333B');
-    r.setProperty('--text',    '#E6EDF3');
-    r.setProperty('--muted',   '#848D97');
-    r.setProperty('--bg2',     '#161B22');
-    r.setProperty('--sub-bg',  '#1C2128');
-    /* Dériver --accent-light sombre depuis la couleur d'accent actuelle */
-    var accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-    r.setProperty('--accent-light', hexToRgba(accent, 0.15));
+    r.setProperty('--bg','#111827'); r.setProperty('--surface','#1F2937');
+    r.setProperty('--border','#374151'); r.setProperty('--text','#F9FAFB');
+    r.setProperty('--muted','#9CA3AF'); r.setProperty('--bg2','#1F2937');
   } else {
-    r.removeProperty('--bg');    r.removeProperty('--surface');
-    r.removeProperty('--border');r.removeProperty('--text');
-    r.removeProperty('--muted'); r.removeProperty('--bg2');
-    r.removeProperty('--sub-bg');
-    /* Restaurer --accent-light depuis le thème actif */
-    var t = THEMES[activeTheme]||THEMES.default;
-    r.setProperty('--accent-light', t.accentLight);
+    r.removeProperty('--bg'); r.removeProperty('--surface'); r.removeProperty('--border');
+    r.removeProperty('--text'); r.removeProperty('--muted'); r.removeProperty('--bg2');
   }
-  /* Mettre à jour les pages profil/sections déjà ouvertes */
-  var pageBg = on ? '#0D1117' : '#F2F2F7';
-  document.querySelectorAll('[data-profile-page],[data-section-page]').forEach(function(el){
-    el.style.background = pageBg;
-  });
-  /* Rafraîchir les cellules catégorie de l'accueil */
-  if(typeof renderAccueil === 'function') renderAccueil();
 }
 /* Apply on load */
 if(localStorage.getItem('dark_mode')==='1') applyDarkMode(true);
 
 function openProfileSection(section){
   var page = document.createElement('div');
-  var isDark = localStorage.getItem('dark_mode') === '1';
-  var pageBg = isDark ? '#0D1117' : '#F2F2F7';
-  page.setAttribute('data-section-page','1');
-  page.style.cssText = 'position:fixed;inset:0;z-index:5100;background:'+pageBg+';overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);';
+  page.style.cssText = 'position:fixed;inset:0;z-index:5100;background:#F2F2F7;overflow-y:auto;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);';
 
   var titles = {animations:'Animations', themes:'Thèmes', autre:'Autre'};
   var content = '';
@@ -2258,8 +2196,7 @@ function setAnimation(key){
     var tog = document.getElementById('anim-toggle-'+k);
     if(!tog) return;
     var on = activeAnimation === k;
-    var accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-    tog.style.background = on ? accentColor : '#D1D5DB';
+    tog.style.background = on ? '#4F46E5' : '#D1D5DB';
     tog.children[0].style.left = on ? '23px' : '3px';
   });
 }
@@ -2560,9 +2497,13 @@ function renderAccueil(){
   var totalDep = depenses.reduce(function(s,d){return s+d.amt;},0);
   var totalRev = extraItems.reduce(function(s,e){return s+e.amt;},0);
   var totalAlloue = Object.keys(revAllocations).reduce(function(s,k){return s+(revAllocations[k]||0);},0);
-  var freeRev  = Math.max(0, totalRev - totalAlloue);
-  /* Argent disponible = reste à vivre - budgets épargne sécurité & projets - dépenses réelles */
+  /* Seules les allocations vers l'épargne "verrouillent" l'argent dans dispo.
+     Les catégories de dépense (alimentation, loisirs, transport, vêtements, imprévus)
+     restent disponibles — l'argent sera dépensé de toute façon. */
   var epargneKeys = ['epargne-sec', 'epargne-proj'];
+  var totalAlloueSavings = epargneKeys.reduce(function(s,k){return s+(revAllocations[k]||0);},0);
+  var freeRev  = Math.max(0, totalRev - totalAlloueSavings);
+  /* Argent disponible = reste à vivre - budgets épargne sécurité & projets - dépenses réelles */
   var epargneReserve = categories.reduce(function(s,cat){
     return epargneKeys.indexOf(cat.key) !== -1 ? s + getCatBudget(cat, reste) : s;
   }, 0);
@@ -2666,12 +2607,8 @@ function burstParticles(el){
     var color   = pct>=100?'#E03E3E':pct>=75?'#C47A30':'#2A9E72';
     var sub     = pct>=100?'Dépassé':'Disponible';
 
-    var isDark = localStorage.getItem('dark_mode') === '1';
     var cell = document.createElement('div');
-    cell.className = 'accueil-cat-cell';
-    cell.style.cssText = isDark
-      ? 'background:'+hexToRgba(cat.palColor||cat.palBg, 0.12)+';border-radius:12px;padding:12px 12px 10px;border:1px solid '+hexToRgba(cat.palColor||cat.palBg, 0.22)+';box-shadow:none;'
-      : 'background:'+cat.palBg+';border-radius:12px;padding:12px 12px 10px;border:1px solid '+cat.palBorder+';box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);';
+    cell.style.cssText = 'background:'+cat.palBg+';border-radius:12px;padding:12px 12px 10px;border:1px solid '+cat.palBorder+';box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);';
     cell.innerHTML =
       '<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">'+
         '<div style="width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+
@@ -4600,11 +4537,6 @@ document.getElementById('charge-list').addEventListener('click',function(e){
 var STORAGE_KEY = 'budget_app_data';
 
 function getAppData(){
-  /* Sauvegarder les pct personnalisés des catégories */
-  var categoryPcts = {};
-  for(var i=0;i<categories.length;i++){
-    categoryPcts[categories[i].key] = categories[i].pct;
-  }
   return {
     salary:           document.getElementById('salary').value,
     charges:          chargeItems,
@@ -4614,8 +4546,7 @@ function getAppData(){
     soldeAllocations: soldeAllocations,
     periodStart:      document.getElementById('period-start').value,
     periodEnd:        document.getElementById('period-end').value,
-    snapshots:        getSnapshots(),
-    categoryPcts:     categoryPcts
+    snapshots:        getSnapshots()
   };
 }
 
@@ -4630,13 +4561,6 @@ function applyAppData(data){
   if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
   if(data.periodEnd)   document.getElementById('period-end').value   = data.periodEnd;
   if(Array.isArray(data.snapshots)) saveSnapshots(data.snapshots);
-  /* Restaurer les pct personnalisés */
-  if(data.categoryPcts && typeof data.categoryPcts === 'object'){
-    for(var i=0;i<categories.length;i++){
-      var saved = data.categoryPcts[categories[i].key];
-      if(typeof saved === 'number') categories[i].pct = saved;
-    }
-  }
   return true;
 }
 
@@ -4946,7 +4870,6 @@ function applySliderValue(key, rawVal){
   updatePctBadge();
   buildGrid(); update();
   buildPctSliders(); /* redraw to sync slider thumb */
-  saveData(); /* persister le changement de pourcentage */
 }
 
 function openInlineEdit(key, currentDisplay, color){
@@ -5119,9 +5042,6 @@ document.getElementById('pct-reset-btn').addEventListener('click', function(){
 buildPctSliders();
 
 /* Retour automatique sur l'onglet Accueil quand on revient sur l'appli */
-/* Fix iOS : :active ne se déclenche pas sur les divs sans listener touch */
-document.addEventListener('touchstart', function(){}, {passive:true});
-
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'visible'){
     var accueilBtn = document.querySelectorAll('.tab-btn')[2];
@@ -5667,7 +5587,7 @@ renderRevList();
   <div style="background:var(--surface);border-radius:16px;padding:16px;border:.5px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);margin-bottom:14px;">
     <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:12px;font-weight:500;">Enregistre rapidement une entrée</div>
     <div style="display:flex;gap:10px;">
-      <button id="quick-rev-btn" onclick="showMainTab('mouvement', document.querySelectorAll('.tab-btn')[3]); setTimeout(function(){showMvtTab('revenus');},50);" style="flex:1;padding:18px 10px;border-radius:16px;border:1.5px solid #A8EDD4;background:#E8F9F2;color:#0A8F5C;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(10,143,92,0.18),0 2px 6px rgba(10,143,92,0.10);">
+      <button onclick="showMainTab('mouvement', document.querySelectorAll('.tab-btn')[3]); setTimeout(function(){showMvtTab('revenus');},50);" style="flex:1;padding:18px 10px;border-radius:16px;border:1.5px solid #A8EDD4;background:#E8F9F2;color:#0A8F5C;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(10,143,92,0.18),0 2px 6px rgba(10,143,92,0.10);">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
           <path d="M12 20V8" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round"/>
           <path d="M7 13l5-5 5 5" stroke="#0A8F5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
