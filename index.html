@@ -4930,10 +4930,12 @@ function buildPctSliders(){
     var cat    = categories[i];
     var pctVal = Math.round(cat.pct * 1000) / 10;
     var eurVal = Math.round(reste * cat.pct * 100) / 100;
-    var sliderVal  = isEur ? eurVal   : pctVal;
-    var sliderMin  = isEur ? 0        : 1;
-    var sliderMax  = isEur ? Math.max(Math.round(reste), 100) : 60;
-    var sliderStep = isEur ? 5        : 0.5;
+    /* Les deux modes partagent min=0 et max proportionnel au reste,
+       de sorte que la position visuelle = cat.pct dans les deux cas → pas de saut */
+    var sliderVal  = isEur ? eurVal : pctVal;
+    var sliderMin  = 0;
+    var sliderMax  = isEur ? Math.max(Math.round(reste), 100) : 100;
+    var sliderStep = isEur ? 1 : 0.1;
     var displayStr = isEur ? fmt(eurVal) : pctVal.toFixed(1)+' %';
 
     var isModSlider = typeof defaultPcts !== 'undefined' && Math.abs(cat.pct - defaultPcts[cat.key]/100) > 0.0005;
@@ -5006,8 +5008,9 @@ function updatePctBadge(){
 
   if(sliderMode === 'eur'){
     var reste = getReste();
+    /* Utiliser uniquement reste×pct (sans getCatAllocation) pour cohérence avec le mode % */
     var allocated = 0;
-    for(var j=0;j<categories.length;j++) allocated += getCatBudget(categories[j], reste);
+    for(var j=0;j<categories.length;j++) allocated += reste * categories[j].pct;
     var leftover = Math.round((reste - allocated) * 100) / 100;
     if(Math.abs(leftover) < 0.5){
       badge.textContent = 'Total : 100 % ✓';
