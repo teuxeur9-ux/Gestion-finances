@@ -4537,6 +4537,8 @@ document.getElementById('charge-list').addEventListener('click',function(e){
 var STORAGE_KEY = 'budget_app_data';
 
 function getAppData(){
+  var categoryPcts = {};
+  for(var i=0;i<categories.length;i++) categoryPcts[categories[i].key] = categories[i].pct;
   return {
     salary:           document.getElementById('salary').value,
     charges:          chargeItems,
@@ -4546,7 +4548,8 @@ function getAppData(){
     soldeAllocations: soldeAllocations,
     periodStart:      document.getElementById('period-start').value,
     periodEnd:        document.getElementById('period-end').value,
-    snapshots:        getSnapshots()
+    snapshots:        getSnapshots(),
+    categoryPcts:     categoryPcts
   };
 }
 
@@ -4561,6 +4564,13 @@ function applyAppData(data){
   if(data.periodStart) document.getElementById('period-start').value = data.periodStart;
   if(data.periodEnd)   document.getElementById('period-end').value   = data.periodEnd;
   if(Array.isArray(data.snapshots)) saveSnapshots(data.snapshots);
+  /* Restaurer les pourcentages personnalisés — clé de la persistance */
+  if(data.categoryPcts && typeof data.categoryPcts === 'object'){
+    for(var i=0;i<categories.length;i++){
+      var saved = data.categoryPcts[categories[i].key];
+      if(typeof saved === 'number' && saved > 0) categories[i].pct = saved;
+    }
+  }
   return true;
 }
 
@@ -4857,10 +4867,8 @@ function applySliderValue(key, rawVal){
   var val = parseFloat(rawVal);
   if(isNaN(val) || val < 0) return;
   var isEur = sliderMode === 'eur';
-  /* Clamp */
   if(isEur) val = Math.min(val, reste2);
   else       val = Math.min(Math.max(val, 0.1), 100);
-  /* Update pct */
   for(var i=0;i<categories.length;i++){
     if(categories[i].key === key){
       categories[i].pct = isEur ? (reste2>0 ? val/reste2 : 0) : val/100;
@@ -4869,7 +4877,8 @@ function applySliderValue(key, rawVal){
   }
   updatePctBadge();
   buildGrid(); update();
-  buildPctSliders(); /* redraw to sync slider thumb */
+  buildPctSliders();
+  saveData(); /* persister immédiatement le pct modifié */
 }
 
 function openInlineEdit(key, currentDisplay, color){
@@ -4981,6 +4990,10 @@ function buildPctSliders(){
       if(span && !span.querySelector('input')) span.textContent = isEur ? fmt(val) : val.toFixed(1)+' %';
       updatePctBadge();
       buildGrid(); update();
+    });
+    /* Sauvegarder quand l'utilisateur relâche le curseur */
+    sl.addEventListener('change', function(){
+      saveData();
     });
   });
 
